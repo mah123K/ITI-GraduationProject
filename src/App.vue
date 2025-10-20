@@ -1,5 +1,6 @@
 <script>
 import HomePage from './components/HomePage.vue';
+import OfferPage from './components/OfferPage.vue';
 import FooterLayout from './layout/FooterLayout.vue';
 import NavBar from './layout/NavBar.vue'
   export default{
@@ -11,7 +12,8 @@ import NavBar from './layout/NavBar.vue'
     },
     components:{
       NavBar,
-      HomePage,
+      // HomePage,
+      // OfferPage,
        FooterLayout,
      
     }
@@ -21,7 +23,7 @@ import NavBar from './layout/NavBar.vue'
 <template>
    
   <nav-bar/>
-  <home-page/>
+   <router-view/>
   <footer-layout/>
 </template>
 

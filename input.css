@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@plugin "daisyui" {
+   themes: light --default
+ }
+
+@theme {
+  --color-first-blue: #5984C6; 
+   --color-secondary-blue: #DAECF6; 
+   --color-dark-blue:#0B161B;
+}

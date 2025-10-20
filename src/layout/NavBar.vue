@@ -1,79 +1,149 @@
 <template>
-    <div>
-        
+   <div>
+  <div class="navbar bg-first-blue  shadow-md fixed top-0 left-0 z-50 w-full">
+    <div class="navbar-start">
+      <!-- Logo -->
+      <router-link to="/" class="flex items-center space-x-2">
+        <img
+          src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760784552/image__11_-removebg-preview_ev3uvd.png"
+          alt="Logo"
+          class="h-10"
+        />
+      </router-link>
+    </div>
 
-<nav class="bg-white w-full fixed border-gray-200">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-    <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
-    </a>
-    <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 " aria-controls="navbar-dropdown" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
-    </button>
-    <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
-      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-white md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white ">
+    <div class="navbar-center hidden lg:flex">
+      <!-- Desktop Menu -->
+      <ul class="menu menu-horizontal text-white px-1 text-lg font-medium">
         <li>
-          <a href="#" class="block py-2 px-3 text-sky-700  rounded-sm md:bg-transparent md:text-sky-700 md:p-0  md:dark:bg-transparent md:dark:hover:text-sky-600" aria-current="page">Home</a>
+          <router-link to="/" class="hover:text-gray-200">Home</router-link>
         </li>
+
+        <!-- Dropdown -->
+        <li tabindex="0">
+          <details>
+            <summary>Services</summary>
+            <ul class="p-2 bg-white text-first-blue ">
+              <li><a>Plumbing</a></li>
+              <li><a>Electrical</a></li>
+              <li><a>Finishing</a></li>
+              <li><a>Carpentry</a></li>
+            </ul>
+          </details>
+        </li>
+
         <li>
-            <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 px-3 text-sky-700 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-sky-700 md:p-0 md:w-auto md:dark:hover:text-sky-600">Dropdown <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-  </svg></button>
-            <!-- Dropdown menu -->
-            <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44  dark:divide-gray-600">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
-                  <li>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 ">Dashboard</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 ">Settings</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 ">Earnings</a>
-                  </li>
-                </ul>
-                <div class="py-1">
-                  <a href="#" class="block px-4 py-2 text-sm text-sky-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
-                </div>
-            </div>
+          <router-link to="/offers" class="">Offers</router-link>
         </li>
-        <li>
-          <a href="#" class="text-sky-700 block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-sky-600 dark:hover:bg-gray-700  md:dark:hover:bg-transparent">Services</a>
-        </li>
-        <li>
-          <a href="#" class="text-sky-700 block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-sky-600 dark:hover:bg-gray-700  md:dark:hover:bg-transparent">Pricing</a>
-        </li>
-        <li>
-          <a href="#" class="text-sky-700 block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-sky-600 dark:hover:bg-gray-700  md:dark:hover:bg-transparent">Contact</a>
-        </li>
+        <li><a>About</a></li>
+        <li><a>Contact</a></li>
       </ul>
     </div>
-      <div class="ml-100">
-          <i class="fa-solid fa-globe mr-5 text-sky-700"></i>
-          <i class="fa-solid fa-moon text-sky-700"></i>
-      </div>
-      <div class="flex items-center space-x-6 rtl:space-x-reverse">
-             <button type="button" class="text-white bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">Signin</button>
-             <button type="button" class="text-sky-700 bg-white border-sky-700  hover:bg-sky-700 hover:text-white focus:ring-4  focus:ring-sky-600 font-medium rounded-lg text-sm px-4 py-2 text-center ">Login</button>
-        </div>
-  </div>
-</nav>
 
+    <div class="navbar-end space-x-3">
+      <!-- Language Icon -->
+      <i class="fa-solid fa-globe cursor-pointer text-xl text-white"></i>
+
+      <!-- Dark Mode Toggle -->
+      <button @click="toggleDarkMode" class="cursor-pointer ">
+        <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+        <i v-else class="fa-solid fa-moon text-white text-xl"></i>
+      </button>
+
+      <!-- Auth Buttons -->
+      <button class="btn btn-white btn-sm">Sign In</button>
+      <button class="btn btn-outline btn-sm  text-white  hover:text-first-blue hover:bg-white">
+        Login
+      </button>
+
+      <!-- Mobile Menu Button -->
+    <button
+        class="btn btn-ghost text-white lg:hidden"
+        @click="isSidebarOpen = true"
+      >
+        <i class="fa-solid fa-bars text-2xl"></i>
+      </button>
     </div>
-</template>
 
+    <!-- Sidebar (Drawer) -->
+    <div
+      v-if="isSidebarOpen"
+      class="fixed inset-0 bg-black/50 z-40"
+      @click="isSidebarOpen = false"
+    ></div>
+
+    <aside
+      v-if="isSidebarOpen"
+      class="fixed top-0 right-0 w-64 h-full bg-white  shadow-lg z-50 p-6 flex flex-col space-y-4"
+    >
+      <button
+        class="self-end text-black hover:text-red-500 hover:bg-white hover:rounded-2xl p-2 cursor-pointer text-2xl"
+        @click="isSidebarOpen = false"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <ul class="menu text-lg text-first-blue bg-white space-y-2">
+        <li><router-link to="/" @click="isSidebarOpen = false">Home</router-link></li>
+        <li>
+          <details>
+            <summary>Services</summary>
+            <ul class="pl-4">
+              <li><a>Plumbing</a></li>
+              <li><a>Electrical</a></li>
+              <li><a>Finishing</a></li>
+              <li><a>Carpentry</a></li>
+            </ul>
+          </details>
+        </li>
+        <li><router-link to="/offers" @click="isSidebarOpen = false">Offers</router-link></li>
+        <li><a>About</a></li>
+        <li><a>Contact</a></li>
+      </ul>
+    </aside>
+
+
+
+</div>
+   </div>
+</template>
 <script>
+
     export default {
-        name: "NavBar"
+        name: "NavBar",
+        
+
+data() {
+    return {
+      isSidebarOpen: false,
+      
+      isDark: false
+    };
+  },
+      methods:{
+         openDropdown() {
+      this.dropdownOpen = true;
+    },
+    closeDropdown() {
+      this.dropdownOpen = false;
+    },
+    // toggleDarkMode() {
+    //   this.isDark = !this.isDark;
+    //   if (this.isDark) {
+    //     document.documentElement.classList.add("dark");
+    //   } else {
+    //     document.documentElement.classList.remove("dark");
+    //   }
+    // },
+      },
+  //      mounted() {
+  //   this.isDark = document.documentElement.classList.contains("dark");
+  // },
     }
 </script>
 
 <style scoped>
   nav{
-    z-index: 1000;
+    z-index: 50;
   }
 </style>
