@@ -51,10 +51,13 @@
       </button>
 
       <!-- Auth Buttons -->
-      <button class="btn btn-white btn-sm">Sign In</button>
-      <button class="btn btn-outline btn-sm  text-white  hover:text-first-blue hover:bg-white">
-        Login
-      </button>
+  <button class="btn btn-white btn-sm">Sign In</button>
+
+<router-link 
+  to="/login" 
+  class="btn btn-outline btn-sm text-white hover:text-first-blue hover:bg-white">
+  Login
+</router-link>
 
       <!-- Mobile Menu Button -->
     <button
