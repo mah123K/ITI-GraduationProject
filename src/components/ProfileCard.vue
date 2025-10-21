@@ -9,7 +9,7 @@
       <img
         src="../images/plumber.png"
         alt="Profile photo"
-        class="absolute w-full h-full object-cover"
+        class="absolute w-full h-[70%] object-contain"
       />
 
       <svg
@@ -51,7 +51,7 @@
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
-          Project Done +45
+          Orders Completed +45
         </div>
 
         <div class="flex items-center gap-1">

@@ -11,7 +11,7 @@
     >
       <!-- Blue div background -->
       <div
-        class="absolute left-[10%] md:left-[15%] lg:left-[20%] top-5 md:top-8 lg:top-10 bottom-5 md:bottom-8 lg:bottom-20 w-[80%] md:w-[75%] lg:w-[70%] rounded-l-3xl bg-first-blue"
+        class="absolute left-[10%] md:left-[15%] lg:left-[20%] top-5 md:top-8 lg:top-10 bottom-5 md:bottom-8 lg:bottom-20 w-[80%] md:w-[75%] lg:w-[70%] rounded-l-3xl bg-accent-color"
       ></div>
       <!-- Worker Image -->
       <img
@@ -36,7 +36,7 @@
         <!-- Title -->
         <h2 class="text-2xl md:text-3xl font-semibold text-black mb-8 lg:mb-12">
           Welcome back to<br />
-          <span class="text-first-blue">T</span>ashteebaty
+          <span class="text-accent-color">T</span>ashteebaty
         </h2>
 
         <!-- Form -->
@@ -59,7 +59,7 @@
                 type="email"
                 id="email"
                 v-model="email"
-                class="block w-full pl-10 pr-3 py-3 border border-first-blue rounded-lg shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm"
+                class="block w-full pl-10 pr-3 py-3 border border-accent-color rounded-lg shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm"
                 placeholder="Enter your email"
                 required
               />
@@ -83,7 +83,7 @@
                 type="password"
                 id="password"
                 v-model="password"
-                class="block w-full pl-10 pr-3 py-3 border border-first-blue rounded-lg shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm"
+                class="block w-full pl-10 pr-3 py-3 border border-accent-color rounded-lg shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm"
                 placeholder="Enter your password"
                 required
               />
@@ -92,7 +92,7 @@
 
           <!-- Forgot password -->
           <div class="flex justify-end mb-4 lg:mb-6">
-            <a href="#" class="text-sm text-first-blue hover:opacity-80"
+            <a href="#" class="text-sm text-accent-color hover:opacity-80"
               >Forgot password?</a
             >
           </div>
@@ -100,7 +100,7 @@
           <!-- Button -->
           <button
             type="submit"
-            class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-first-blue hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-first-blue"
+            class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-accent-color hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-color"
           >
             Sign In
           </button>
@@ -108,7 +108,7 @@
 
         <p class="mt-6 text-center text-gray-600 text-sm">
           Don't have an account?
-          <a href="#" class="ml-1 font-medium text-first-blue hover:opacity-80"
+          <a href="#" class="ml-1 font-medium text-accent-color hover:opacity-80"
             >Sign up</a
           >
         </p>
