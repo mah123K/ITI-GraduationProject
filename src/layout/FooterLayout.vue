@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-first-blue mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8">
+  <footer class="bg-accent-color mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8">
     <!-- Logo & Description -->
     <div>
       <img

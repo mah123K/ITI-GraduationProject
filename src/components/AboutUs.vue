@@ -35,7 +35,7 @@
 </script>
 
 <template>
-  <div class="heroSection relative h-[70vh] flex flex-col justify-center items-center overflow-hidden text-white">
+  <div class="heroSection mt-18 relative h-[70vh] flex flex-col justify-center items-center overflow-hidden text-white">
     
     <img src="../images/final happy workers.png" alt="happy workers smiling" class="w-full h-full object-cover">
     <div class="blueLayer absolute inset-0 bg-[#5984C6] opacity-70"></div>
@@ -177,7 +177,7 @@
   </div>
 
   <div class="feedback relative flex flex-col items-center justify-between w-[70%] mx-auto my-20 text-center">
-    <h1 class="font-bold text-5xl text-accent-color text-center mb-10">Customers FeedBack</h1>
+    <h1 class="main-header">Customers FeedBack</h1>
 
     <div v-if="feedbacks[currentIndex]" :key="currentIndex" class="feedback-item h-[500px]">
       
