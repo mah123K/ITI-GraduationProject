@@ -3,10 +3,14 @@
 @theme {
   --color-accent-color: #5984c6;
   --color-secondry-color: #daecf6;
-  --color-first-blue: #5984c6;
   --color-secondary-blue: #daecf6;
   --color-dark-blue: #0b161b;
 }
 @plugin "daisyui" {
   themes: light --default;
+}
+@layer components {
+  .main-header {
+    @apply text-[48px] font-bold text-[#5984c6] m-10 mt-15 text-center;
+  }
 }

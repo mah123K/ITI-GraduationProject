@@ -7,7 +7,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <!-- SIGNUP CARD -->
         <div
-          class="relative mt-10 w-96 mx-auto bg-first-blue rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
+          class="relative mt-10 w-96 mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
         >
           <div
             class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
@@ -23,7 +23,7 @@
           </div>
           <p class="mt-6 text-lg">on your first order!</p>
           <button
-            class="mt-6 bg-white text-first-blue px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2"
+            class="mt-6 bg-white text-accent-color px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2"
           >
             <span>Get Started</span>
           </button>

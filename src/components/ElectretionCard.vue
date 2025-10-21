@@ -7,9 +7,9 @@
       @mouseleave="isHovered = false"
     >
       <img
-        src="../images/plumber.png"
+        src="../images/electretion.png"
         alt="Profile photo"
-        class="absolute w-full h-full object-cover"
+        class="absolute w-full h-[60%] object-contain"
       />
 
       <svg
@@ -22,7 +22,7 @@
           class="transition-all duration-500"
           :class="{
             'fill-[#0099FF]': isHovered,
-            'fill-white': !isHovered,
+            'fill-[#f3f3f3]': !isHovered,
           }"
           d="
           M0,200
@@ -37,7 +37,7 @@
         class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 border border-white flex items-center justify-center transition-all duration-500"
         :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
       >
-        <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2">
+        <img src="../images/electretionIcon.png" alt="" class="transition-all duration-500 p-2">
       </div>
 
       <div
@@ -129,7 +129,7 @@
 
 <script>
 export default {
-  name: "ProfileCard",
+  name: "ElectretionCard",
   data() {
     return {
       isHovered: false,
