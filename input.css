@@ -1,14 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent-color:#5984C6;
-  --color-secondry-color:#DAECF6;
-  --color-first-blue: #5984C6; 
-  --color-secondary-blue: #DAECF6; 
-  --color-dark-blue:#0B161B;
+  --color-accent-color: #5984c6;
+  --color-secondry-color: #daecf6;
+  --color-first-blue: #5984c6;
+  --color-secondary-blue: #daecf6;
+  --color-dark-blue: #0b161b;
 }
 @plugin "daisyui" {
-  themes: light --default
-  }
-
-
+  themes: light --default;
+}
