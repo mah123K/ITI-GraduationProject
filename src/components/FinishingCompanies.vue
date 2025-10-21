@@ -30,7 +30,7 @@ export default {
       currentView: "grid",
       profiles: [
         {
-          name: "Anas Adel",
+          name: "Qeema Group",
           location: "Giza",
           rating: 4.5,
           bio: "Experienced plumber with 5 years in residential and commercial plumbing.",
@@ -39,7 +39,7 @@ export default {
             "../images/pngtree-construction-worker-engineer-with-building-plan-png-image_13078126.png",
         },
         {
-          name: "Mona Sami",
+          name: "The Design Hub",
           location: "Suez",
           rating: 4.8,
           bio: "Certified electrician specializing in home and office electrical systems.",
@@ -48,7 +48,7 @@ export default {
             "../images/pngtree-construction-worker-engineer-with-building-plan-png-image_13078126.png",
         },
         {
-          name: "Omar Khaled",
+          name: "Oscar Rattan",
           location: "Aswan",
           rating: 4.2,
           bio: "Professional carpenter offering custom furniture and cabinetry services.",
@@ -57,7 +57,7 @@ export default {
             "../images/pngtree-construction-worker-engineer-with-building-plan-png-image_13078126.png",
         },
         {
-          name: "Laila Hassan",
+          name: "Up Interiors",
           location: "Luxor",
           rating: 4.7,
           service: "Plumbing",
@@ -66,7 +66,7 @@ export default {
             "../images/pngtree-construction-worker-engineer-with-building-plan-png-image_13078126.png",
         },
         {
-          name: "Youssef Tarek",
+          name: "Almohandes Co",
           location: "Red Sea",
           rating: 4.6,
           service: "Plumbing",
@@ -75,7 +75,7 @@ export default {
             "../images/pngtree-construction-worker-engineer-with-building-plan-png-image_13078126.png",
         },
         {
-          name: "Lina Mohamed",
+          name: "Up Interiors",
           location: "Alex",
           rating: 4.9,
           bio: "Expert landscaper specializing in garden design and maintenance.",

@@ -22,7 +22,7 @@
           class="transition-all duration-500"
           :class="{
             'fill-[#0099FF]': isHovered,
-            'fill-[#f3f3f3]': !isHovered,
+            'fill-white': !isHovered,
           }"
           d="
           M0,200
@@ -51,7 +51,7 @@
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
-          Project Done +45
+          Orders Completed  +45
         </div>
 
         <div class="flex items-center gap-1">

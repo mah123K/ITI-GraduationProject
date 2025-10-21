@@ -14,9 +14,9 @@
 
       <div class="navbar-center hidden lg:flex">
         <!-- Desktop Menu -->
-        <ul class="menu menu-horizontal text-white px-1 text-lg font-medium">
+        <ul class="menu menu-horizontal text-white px-1 text-lg ">
           <li>
-            <router-link to="/" class="hover:text-gray-200">Home</router-link>
+            <router-link to="/" class="hover:text-gray-200" active-class="font-bold text-secondry-color">Home</router-link>
           </li>
 
           <!-- Dropdown -->
@@ -33,10 +33,10 @@
           </li>
 
           <li>
-            <router-link to="/offers" class="">Offers</router-link>
+            <router-link to="/offers" class="" active-class="font-bold text-secondry-color">Offers</router-link>
           </li>
-          <li><router-link to="/about" @click="isSidebarOpen = false">About</router-link></li>
-          <li><router-link to="/ContactUs" @click="isSidebarOpen = false">Contact Us</router-link></li>
+          <li><router-link to="/about" active-class="font-bold text-secondry-color" @click="isSidebarOpen = false ">About</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-bold text-secondry-color" @click="isSidebarOpen = false">Contact Us</router-link></li>
         </ul>
       </div>
 
@@ -52,11 +52,11 @@
 
         <!-- Auth Buttons -->
         <router-link
-          to="/SignUp" class="btn btn-white btn-sm">Sign UP</router-link>
+          to="/SignUp" class="btn btn-white btn-sm rounded-[10px]">Sign UP</router-link>
 
         <router-link
           to="/login"
-          class="btn btn-outline btn-sm text-white hover:text-accent-color hover:bg-white"
+          class="btn btn-outline btn-sm text-white hover:text-accent-color rounded-[10px] hover:bg-white"
         >
           Login
         </router-link>
