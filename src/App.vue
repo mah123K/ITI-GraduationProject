@@ -24,8 +24,6 @@
   }
 </script>
 <template>
-  <!-- <AboutUs/>
-  <technichionProfile/> -->
   <nav-bar/>
   <router-view/>
   <footer-layout/>
