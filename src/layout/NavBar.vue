@@ -35,7 +35,7 @@
         <li>
           <router-link to="/offers" class="">Offers</router-link>
         </li>
-        <li><a>About</a></li>
+        <li><router-link to="/about" class="">About</router-link></li>
         <li><a>Contact</a></li>
       </ul>
     </div>
@@ -99,8 +99,12 @@
             </ul>
           </details>
         </li>
-        <li><router-link to="/offers" @click="isSidebarOpen = false">Offers</router-link></li>
-        <li><a>About</a></li>
+        <li>
+          <router-link to="/offers" class="">Offers</router-link>
+        </li>
+        <li>
+          <router-link to="/about" class="">About</router-link>
+        </li>
         <li><a>Contact</a></li>
       </ul>
     </aside>
