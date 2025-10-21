@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="navbar bg-first-blue shadow-md fixed top-0 left-0 z-50 w-full">
+    <div class="navbar bg-accent-color shadow-md fixed top-0 left-0 z-50 w-full">
       <div class="navbar-start">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2">
@@ -23,11 +23,11 @@
           <li tabindex="0">
             <details>
               <summary>Services</summary>
-              <ul class="p-2 bg-white text-first-blue">
-                <li><router-link to="/profiles">Plumbing</router-link></li>
-                <li><router-link to="/profiles">Electrical</router-link></li>
-                <li><router-link to="/profiles">Finishing</router-link></li>
-                <li><router-link to="/profiles">Carpentry</router-link></li>
+              <ul class="p-2 bg-white text-accent-color">
+                <li><router-link to="/PlumbersPage">Plumbing</router-link></li>
+                <li><router-link to="/ElectrectionsPage">Electrical</router-link></li>
+                <li><router-link to="/FinishingCompanies">Finishing</router-link></li>
+                <li><router-link to="/CarpentersPage">Carpentry</router-link></li>
               </ul>
             </details>
           </li>
@@ -36,7 +36,7 @@
             <router-link to="/offers" class="">Offers</router-link>
           </li>
           <li><router-link to="/about" @click="isSidebarOpen = false">About</router-link></li>
-          <li><a>Contact</a></li>
+          <li><router-link to="/ContactUs" @click="isSidebarOpen = false">Contact Us</router-link></li>
         </ul>
       </div>
 
@@ -51,11 +51,12 @@
         </button>
 
         <!-- Auth Buttons -->
-        <button class="btn btn-white btn-sm">Sign In</button>
+        <router-link
+          to="/SignUp" class="btn btn-white btn-sm">Sign UP</router-link>
 
         <router-link
           to="/login"
-          class="btn btn-outline btn-sm text-white hover:text-first-blue hover:bg-white"
+          class="btn btn-outline btn-sm text-white hover:text-accent-color hover:bg-white"
         >
           Login
         </router-link>

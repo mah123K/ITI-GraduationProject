@@ -364,7 +364,7 @@ export default {
     <h1 class="font-bold text-5xl text-accent-color text-center mb-10">Work Gallery</h1>
     <div class="galleryContainer flex items-center justify-around flex-wrap w-[100%]">
       
-      <div class="imgContainer rounded-2xl w-[32%] my-3 transition-transform duration-500 hover:scale-102 transition-transform duration-500 hover:scale-102">
+      <div class="imgContainer rounded-2xl w-[32%] my-3 transition-transform duration-500 hover:scale-102">
         <img src="../images/w1.png" alt="">
       </div>
       <div class="imgContainer rounded-2xl w-[32%] my-3 transition-transform duration-500 hover:scale-102">

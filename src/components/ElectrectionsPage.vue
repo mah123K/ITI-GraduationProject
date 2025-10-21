@@ -1,5 +1,6 @@
 <template>
   <div class="profiles-page">
+    <h1 class="main-header mt-30">Electretions</h1>
     <TopBar @view-changed="currentView = $event" />
     <div
       :class="[
@@ -7,7 +8,7 @@
         currentView === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'flex flex-col',
       ]"
     >
-      <ProfileCard
+      <ElectretionCard
         v-for="(profile, index) in profiles"
         :key="index"
         :profile="profile"
@@ -18,12 +19,12 @@
 </template>
 
 <script>
-import ProfileCard from "./ProfileCard.vue";
+import ElectretionCard from "./ElectretionCard.vue";
 import TopBar from "./topBar.vue";
 
 export default {
   name: "ProfilesPage",
-  components: { ProfileCard, TopBar },
+  components: { ElectretionCard, TopBar },
   data() {
     return {
       currentView: "grid",

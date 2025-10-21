@@ -13,7 +13,6 @@
       <div
         class="absolute left-[10%] md:left-[15%] lg:left-[20%] top-5 md:top-8 lg:top-10 bottom-5 md:bottom-8 lg:bottom-20 w-[80%] md:w-[75%] lg:w-[70%] rounded-l-3xl bg-first-blue"
       ></div>
-
       <!-- Worker Image -->
       <img
         src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1760978847/worker.png_siviza.png"
