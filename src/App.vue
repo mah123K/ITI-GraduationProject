@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 import AboutUs from "./components/AboutUs.vue";
 import TechnichionProfile from './components/technichionProfile.vue';
 import HomePage from './components/HomePage.vue';
@@ -19,6 +19,7 @@ export default
       TechnichionProfile
     }
   }
+}
 </script>
 <template>
   <div>
@@ -34,7 +35,8 @@ export default
      
     }
   }
-</script>
+
+
 
 <template>
    
@@ -45,4 +47,31 @@ export default
 
 <style scoped>
 
-</style>
+</style> -->
+
+<template>
+  <div>
+    <nav-bar />
+    <router-view />
+    <footer-layout />
+  </div>
+</template>
+
+<script>
+import FooterLayout from "./layout/FooterLayout.vue";
+import NavBar from "./layout/NavBar.vue";
+
+export default {
+  name: "App",
+  data() {
+    return {};
+  },
+
+  components: {
+    NavBar,
+    FooterLayout,
+  },
+};
+</script>
+
+<style scoped></style>
