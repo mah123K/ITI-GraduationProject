@@ -174,10 +174,21 @@ export default {
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 600 512"
-                class="w-[80px] h-[80px]"
-              >
-                <path fill="#5984c6" d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"/>
-              </svg>
+                class="w-[60px] h-[60px]"
+                >
+                  <path fill="#5984c6" d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"/>
+                </svg>
+                <div class="absolute bottom-6 left-5 z-50">
+  
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 450 512"
+                    class="w-[20px] h-[20px] "
+                  > 
+                    <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                  </svg>
+  
+                </div>
               </div>
               <input ref="idCardInput" type="file" @change="previewIdCard" class="hidden" />
             </div>
@@ -192,19 +203,25 @@ export default {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 450 512"
-                  class="w-[80px] h-[80px]"
+                  class="w-[60px] h-[60px]"
                 >
                   <path fill="#5984c6" d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/>              
                 </svg>
+                <div class="absolute bottom-6 left-5 z-50">
+    
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 450 512"
+                      class="w-[20px] h-[20px] "
+                    > 
+                      <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                    </svg>
+    
+                  </div>
               </div>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 450 512"
-                  class="w-[30px] h-[30px] "
-                > 
-                <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
-              </svg>
-              <div class="absolute"></div>
+              <div class="absolute">
+                
+              </div>
               <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
             </div>
           </div>
@@ -216,15 +233,13 @@ export default {
               <input v-model="formTechnician.password" type="password" placeholder="Password" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.confirmPassword" type="password" placeholder="Confirm Password" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.phone" type="text" placeholder="Phone Number" class="p-4 border border-gray-300 rounded-xl" />
-              <textarea v-model="formTechnician.description" placeholder="Description / Bio" class="p-4 border border-gray-300 rounded-2xl resize-none"></textarea>
             </div>
             <div class="flex flex-col gap-5">
               <input v-model="formTechnician.skill" type="text" placeholder="Work type" class="p-4 border border-gray-300 rounded-xl" />
-              <input v-model="formTechnician.availability" type="text" placeholder="Hourly Rate / Price Range" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.city" type="text" placeholder="Work Area (City / Region)" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.experience" type="text" placeholder="Years of Experience" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.address" type="text" placeholder="Address" class="p-4 border border-gray-300 rounded-xl" />
-              <textarea v-model="formTechnician.portfolio" placeholder="Portfolio (Upload or links)" class="p-4 border border-gray-300 rounded-2xl resize-none"></textarea>
+              <input v-model="formTechnician.description" placeholder="Bio" class="p-4 border border-gray-300 rounded-2xl resize-none">
             </div>
           </div>
 
@@ -258,28 +273,63 @@ export default {
           <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full">
 
             <div class="flex flex-col items-start ml-40">
-              <label class="font-semibold mb-2">Company Registration</label>
+              <label class="font-semibold mb-2">Tax Card</label>
               <div
-                @click="$refs.crnInput.click()"
-                class="w-32 h-32 rounded-xl border-2 border-gray-300 overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
+                @click="$refs.idCardInput.click()"
+                class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <img v-if="crnPreview" :src="crnPreview" class="w-full h-full object-cover" />
-                <i v-else class="fa-solid fa-file text-gray-400 text-3xl"></i>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 600 512"
+                class="w-[60px] h-[60px]"
+                >
+                  <path fill="#5984c6" d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"/>
+                </svg>
+                <div class="absolute bottom-6 left-5 z-50">
+  
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 450 512"
+                    class="w-[20px] h-[20px] "
+                  > 
+                    <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                  </svg>
+  
+                </div>
               </div>
-              <input ref="crnInput" type="file" @change="previewCrn" class="hidden" />
+              <input ref="idCardInput" type="file" @change="previewIdCard" class="hidden" />
             </div>
 
 
             <div class="flex flex-col items-end mr-40">
               <label class="font-semibold mb-2">Company Logo</label>
               <div
-                @click="$refs.logoInput.click()"
-                class="w-32 h-32 rounded-xl border-2 border-gray-300 overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
+                @click="$refs.idCardInput.click()"
+                class="w-32 h-32 rounded-full  shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <img v-if="logoPreview" :src="logoPreview" class="w-full h-full object-cover" />
-                <i v-else class="fa-solid fa-building text-gray-400 text-3xl"></i>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 390 512"
+                  class="w-[60px] h-[60px]"
+                >
+                  <path fill="#5984c6" d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM176 352l32 0c17.7 0 32 14.3 32 32l0 80-96 0 0-80c0-17.7 14.3-32 32-32zM96 112c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM240 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM96 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm144-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/>              
+                </svg>
+                <div class="absolute bottom-6 left-5 z-50">
+    
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 450 512"
+                      class="w-[20px] h-[20px] "
+                    > 
+                      <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                    </svg>
+    
+                  </div>
               </div>
-              <input ref="logoInput" type="file" @change="previewLogo" class="hidden" />
+              <div class="absolute">
+                
+              </div>
+              <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
             </div>
           </div>
 
@@ -290,7 +340,7 @@ export default {
               <input v-model="formCompany.password" type="password" placeholder="Password" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formCompany.confirmPassword" type="password" placeholder="Confirm Password" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formCompany.phone" type="text" placeholder="Phone" class="p-4 border border-gray-300 rounded-xl" />
-              <textarea v-model="formCompany.description" placeholder="Description / Bio" class="p-4 border border-gray-300 rounded-2xl resize-none"></textarea>
+              <textarea v-model="formCompany.description" placeholder="Bio" class="p-4 border border-gray-300 rounded-2xl resize-none"></textarea>
             </div>
             <div class="flex flex-col gap-5">
               <input v-model="formCompany.address" type="text" placeholder="Address" class="p-4 border border-gray-300 rounded-xl" />
@@ -298,7 +348,6 @@ export default {
               <input v-model="formCompany.website" type="text" placeholder="Website / Social Links" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formCompany.teamSize" type="text" placeholder="Team Size" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formCompany.crn" type="text" placeholder="Company Registration Number (CRN)" class="p-4 border border-gray-300 rounded-xl" />
-              <textarea v-model="formCompany.portfolio" placeholder="Portfolio (Upload or links)" class="p-4 border border-gray-300 rounded-2xl resize-none"></textarea>
             </div>
           </div>
 
