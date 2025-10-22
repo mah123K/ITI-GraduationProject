@@ -1,8 +1,7 @@
-<template>
+<template> 
   <div>
     <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
       <div class="navbar-start">
-        <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2">
           <img
             src="../images/site logo.png"
@@ -13,61 +12,48 @@
       </div>
 
       <div class="navbar-center hidden lg:flex">
-        <!-- Desktop Menu -->
         <ul class="menu menu-horizontal text-black px-1 text-lg ">
           <li>
-            <router-link to="/" class="hover:text-gray-200" active-class="font-bold text-black">Home</router-link>
+            <router-link to="/" class="" active-class="font-semibold text-black">Home</router-link>
           </li>
 
-          <!-- Dropdown -->
-          <li tabindex="0">
-            <details>
-              <summary>Services</summary>
-              <ul class="p-2 bg-white text-accent-color">
-                <li><router-link to="/PlumbersPage">Plumbing</router-link></li>
-                <li><router-link to="/ElectrectionsPage">Electrical</router-link></li>
-                <li><router-link to="/FinishingCompanies">Finishing</router-link></li>
-                <li><router-link to="/CarpentersPage">Carpentry</router-link></li>
-              </ul>
-            </details>
+          <li class="relative group ">
+            <a class="cursor-pointer">Services</a>
+            <ul class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl">
+              <li><router-link to="/PlumbersPage">Plumbing</router-link></li>
+              <li><router-link to="/ElectrectionsPage">Electrical</router-link></li>
+              <li><router-link to="/FinishingCompanies">Finishing</router-link></li>
+              <li><router-link to="/CarpentersPage">Carpentry</router-link></li>
+            </ul>
           </li>
 
           <li>
-            <router-link to="/offers" class="" active-class="font-bold text-black">Offers</router-link>
+            <router-link to="/offers" class="" active-class="font-semibold text-black">Offers</router-link>
           </li>
-          <li><router-link to="/about" active-class="font-bold text-black" @click="isSidebarOpen = false ">About</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-bold text-black" @click="isSidebarOpen = false">Contact Us</router-link></li>
+          <li><router-link to="/about" active-class="font-semibold text-black" @click="isSidebarOpen = false ">About</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-semibold text-black" @click="isSidebarOpen = false">Contact Us</router-link></li>
         </ul>
       </div>
 
       <div class="navbar-end space-x-3">
-        <!-- Language Icon -->
         <i class="fa-solid fa-globe cursor-pointer text-xl text-white"></i>
-
-        <!-- Dark Mode Toggle -->
         <button @click="toggleDarkMode" class="cursor-pointer">
           <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
           <i v-else class="fa-solid fa-moon text-white text-xl"></i>
         </button>
-
-        <!-- Auth Buttons -->
         <router-link
           to="/SignUp" class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white">Sign UP</router-link>
-
         <router-link
           to="/login"
           class="btn btn-outline btn-sm text-accent-color  rounded-[10px] hover:bg-white"
         >
           Login
         </router-link>
-
-        <!-- Mobile Menu Button -->
         <button class="btn btn-ghost text-white lg:hidden" @click="isSidebarOpen = true">
           <i class="fa-solid fa-bars text-2xl"></i>
         </button>
       </div>
 
-      <!-- Sidebar (Drawer) -->
       <div
         v-if="isSidebarOpen"
         class="fixed inset-0 bg-black/50 z-40"
@@ -124,18 +110,7 @@ export default {
     closeDropdown() {
       this.dropdownOpen = false;
     },
-    // toggleDarkMode() {
-    //   this.isDark = !this.isDark;
-    //   if (this.isDark) {
-    //     document.documentElement.classList.add("dark");
-    //   } else {
-    //     document.documentElement.classList.remove("dark");
-    //   }
-    // },
   },
-  //      mounted() {
-  //   this.isDark = document.documentElement.classList.contains("dark");
-  // },
 };
 </script>
 
