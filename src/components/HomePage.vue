@@ -1,14 +1,15 @@
 <template>
   <div>
     <!--hero section-->
-    <section class="hero relative w-full">
+    <section class="hero relative w-full mt-18">
       <img
-        src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760692341/image_jmqili.jpg"
+        src="../images/homeHero.png"
         alt="Hero"
-        class=""
+        class="h-[60vh]"
       />
     </section>
     <!--cards-->
+    <h2 class="text-center main-header">Our Services</h2>
     <div class="flex justify-center">
       <div class="grid grid-cols-2 gap-10 mt-10 mb-10 md:grid-cols-4">
         <div
@@ -20,7 +21,7 @@
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760695818/image__1_-removebg-preview_spqrzh.png"
                 class=""
               />
-              <span class="text-center block text-[#5984C6] text-xl font-medium"
+              <span class="text-center block text-accent-color text-xl font-medium"
                 >Plumbing</span
               >
             </div>
@@ -35,7 +36,7 @@
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__2_-removebg-preview_qlbzwa.png"
                 class="w-full"
               />
-              <span class="text-center block text-[#5984C6] text-xl font-medium"
+              <span class="text-center block text-accent-color text-xl font-medium"
                 >Finishing</span
               >
             </div>
@@ -50,7 +51,7 @@
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__3_-removebg-preview_ko98nb.png"
                 class=""
               />
-              <span class="text-center block text-[#5984C6] text-xl font-medium"
+              <span class="text-center block text-accent-color text-xl font-medium"
                 >Electrical</span
               >
             </div>
@@ -65,7 +66,7 @@
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__4_-removebg-preview_ihc9at.png"
                 class=""
               />
-              <span class="text-center block text-[#5984C6] text-xl font-medium"
+              <span class="text-center block text-accent-color text-xl font-medium"
                 >Carpentry</span
               >
             </div>
@@ -82,10 +83,10 @@
     </div>
     <div class="flex justify-center mt-5">
       <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="card bg-secondary-blue rounded-xl h-fit w-70 shadow-sm">
+        <div class="card bg-secondry-color rounded-xl h-fit w-70 shadow-lg">
           <div class="offer absolute">
             <img
-              src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760703911/image__8_-removebg-preview_oymppq.png"
+              src="../images/offerdisc.png"
               class="w-15 rounded-b-full"
               alt=""
             />
@@ -97,11 +98,11 @@
             class="w-full rounded-t-2xl"
           />
           <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600">10% OFF</h2>
-            <p>on your First Service</p>
+            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
+            <p class="text-lg">on your First Service</p>
             <div class="card-actions pb-3">
               <button
-                class="btn mt-2 text-white rounded-sm p-1.5 cursor-pointer bg-[#5984C6]"
+                class="btn mt-2 text-white px-3 cursor-pointer bg-accent-color rounded-[10px] text-lg"
               >
                 Claim offer
               </button>
@@ -109,10 +110,10 @@
           </div>
         </div>
 
-        <div class="card bg-secondary-blue rounded-2xl w-70 shadow-sm">
+        <div class="card bg-secondry-color rounded-2xl w-70 shadow-lg">
           <div class="offer absolute">
             <img
-              src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760703911/image__8_-removebg-preview_oymppq.png"
+              src="../images/offerdisc.png"
               class="w-15 rounded-b-full"
               alt=""
             />
@@ -124,11 +125,11 @@
             class="w-full rounded-t-2xl"
           />
           <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600">10% OFF</h2>
-            <p>on your First Service</p>
+            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
+            <p class="text-lg">on your First Service</p>
             <div class="card-actions pb-3">
               <button
-                class="btn mt-2 text-white rounded-sm p-1.5 cursor-pointer bg-[#5984C6]"
+                class="btn mt-2 text-white rounded-[10px] px-3 cursor-pointer bg-accent-color text-lg"
               >
                 Claim offer
               </button>
@@ -136,10 +137,10 @@
           </div>
         </div>
 
-        <div class="card bg-secondary-blue rounded-2xl w-70 shadow-sm">
+        <div class="card bg-secondry-color rounded-2xl w-70 shadow-lg">
           <div class="offer absolute">
             <img
-              src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760703911/image__8_-removebg-preview_oymppq.png"
+              src="../images/offerdisc.png"
               class="w-15 rounded-b-full"
               alt=""
             />
@@ -151,11 +152,11 @@
             class="w-full rounded-t-2xl"
           />
           <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600">10% OFF</h2>
-            <p>on your First Service</p>
+            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
+            <p class="text-lg">on your First Service</p>
             <div class="card-actions pb-3">
               <button
-                class="btn mt-2 text-white rounded-sm p-1.5 cursor-pointer bg-[#5984C6]"
+                class="btn mt-2 text-white rounded-[10px] px-3 cursor-pointer bg-accent-color text-lg"
               >
                 Claim offer
               </button>
@@ -196,7 +197,7 @@
 
           <li class="row flex flex-row justify-between pb-15">
             <div class="text-4xl font-thin pr-5">
-              <i class="fa-solid fa-people-group text-[#5984C6] w-10"></i>
+              <i class="fa-solid fa-people-group text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
@@ -207,7 +208,7 @@
 
           <li class="row flex flex-row justify-between pb-15">
             <div class="text-4xl font-thin pr-5">
-              <i class="fa-solid fa-address-card text-[#5984C6] w-10"></i>
+              <i class="fa-solid fa-address-card text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
@@ -219,7 +220,7 @@
 
           <li class="row flex flex-row justify-between pb-15">
             <div class="text-4xl font-thin pr-5">
-              <i class="fa-solid fa-headphones text-[#5984C6] w-10"></i>
+              <i class="fa-solid fa-headphones text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
@@ -257,7 +258,7 @@
               class="w-24 h-24 mb-5 rounded-full object-cover"
               alt="client"
             />
-            <h2 class="text-[#5984C6] text-2xl mb-2 font-medium">
+            <h2 class="text-accent-color text-2xl mb-2 font-medium">
               {{ item.name }}
             </h2>
             <div class="flex justify-center text-yellow-300 mb-2">
@@ -279,7 +280,7 @@
           :key="'dot-' + index"
           @click="goToSlide(index)"
           class="w-3 h-3 rounded-full transition-colors"
-          :class="currentSlide === index ? 'bg-[#5984C6]' : 'bg-gray-300'"
+          :class="currentSlide === index ? 'bg-accent-color' : 'bg-gray-300'"
         ></button>
       </div>
 
