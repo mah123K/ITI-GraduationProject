@@ -1,22 +1,22 @@
 <template>
   <div>
-    <div class="navbar bg-accent-color shadow-md fixed top-0 left-0 z-50 w-full">
+    <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
       <div class="navbar-start">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2">
           <img
-            src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760784552/image__11_-removebg-preview_ev3uvd.png"
+            src="../images/site logo.png"
             alt="Logo"
-            class="h-10"
+            class=" w-[180px] mt-3 ml-5"
           />
         </router-link>
       </div>
 
       <div class="navbar-center hidden lg:flex">
         <!-- Desktop Menu -->
-        <ul class="menu menu-horizontal text-white px-1 text-lg ">
+        <ul class="menu menu-horizontal text-black px-1 text-lg ">
           <li>
-            <router-link to="/" class="hover:text-gray-200" active-class="font-bold text-secondry-color">Home</router-link>
+            <router-link to="/" class="hover:text-gray-200" active-class="font-bold text-black">Home</router-link>
           </li>
 
           <!-- Dropdown -->
@@ -33,10 +33,10 @@
           </li>
 
           <li>
-            <router-link to="/offers" class="" active-class="font-bold text-secondry-color">Offers</router-link>
+            <router-link to="/offers" class="" active-class="font-bold text-black">Offers</router-link>
           </li>
-          <li><router-link to="/about" active-class="font-bold text-secondry-color" @click="isSidebarOpen = false ">About</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-bold text-secondry-color" @click="isSidebarOpen = false">Contact Us</router-link></li>
+          <li><router-link to="/about" active-class="font-bold text-black" @click="isSidebarOpen = false ">About</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-bold text-black" @click="isSidebarOpen = false">Contact Us</router-link></li>
         </ul>
       </div>
 
@@ -52,11 +52,11 @@
 
         <!-- Auth Buttons -->
         <router-link
-          to="/SignUp" class="btn btn-white btn-sm rounded-[10px]">Sign UP</router-link>
+          to="/SignUp" class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white">Sign UP</router-link>
 
         <router-link
           to="/login"
-          class="btn btn-outline btn-sm text-white hover:text-accent-color rounded-[10px] hover:bg-white"
+          class="btn btn-outline btn-sm text-accent-color  rounded-[10px] hover:bg-white"
         >
           Login
         </router-link>

@@ -68,7 +68,7 @@
         >
           <div class="absolute top-0 left-0">
             <img
-              src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760703911/image__8_-removebg-preview_oymppq.png"
+              src="../images/offerdisc.png"
               class="w-15"
               alt=""
             />
@@ -85,7 +85,7 @@
             <p class="text-gray-700 text-sm">{{ offer.description }}</p>
             <div class="mt-4">
               <button
-                class="bg-[#5984C6] text-white rounded-md px-4 py-2 hover:bg-[#4a6ca6] transition"
+                class="bg-accent-color text-white  font-semibold py-2 hover:bg-[#4a6ca6] transition rounded-[10px] px-3 text-lg"
               >
                 Claim Offer
               </button>
@@ -122,11 +122,17 @@
     image:
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702373/image_7_gacwsb.jpg",
   },
-   {
+  {
     title: "10% OFF",
     description: "on your First Service",
     image:
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702375/image_5_qdnori.jpg",
+  },
+  {
+    title: "15% OFF",
+    description: "on finishing home Services",
+    image:
+      "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
   },
   {
     title: "15% OFF",
