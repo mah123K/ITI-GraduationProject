@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="viewType === 'grid'"
-      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 w-full h-100 rounded-2xl overflow-hidden  shadow-xl transition-all duration-200"
+      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 w-full h-100 rounded-2xl overflow-hidden shadow-xl transition-all duration-200"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
     >
@@ -37,7 +37,7 @@
         class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 border border-white flex items-center justify-center transition-all duration-500"
         :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
       >
-        <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2">
+        <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2" />
       </div>
 
       <div
@@ -85,7 +85,7 @@
       v-else
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
-      class="flex flex-col sm:flex-row items-start bg-white rounded-2xl overflow-hidden border border-[#0B161B] shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
+      class="flex flex-col sm:flex-row items-start bg-white rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
     >
       <img
         src="../images/lamp-big-3.jpg"
