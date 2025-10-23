@@ -121,14 +121,14 @@
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-// بعد تسجيل الدخول بنجاح
-const redirectData = localStorage.getItem("redirectAfterLogin");
-if (redirectData) {
-  const { path, query } = JSON.parse(redirectData);
-  localStorage.removeItem("redirectAfterLogin");
-  router.push({ path, query });
-} else {
-  router.push("/"); // لو مفيش وجهة محددة، يروح للصفحة الرئيسية
-}
+// // بعد تسجيل الدخول بنجاح
+// const redirectData = localStorage.getItem("redirectAfterLogin");
+// if (redirectData) {
+//   const { path, query } = JSON.parse(redirectData);
+//   localStorage.removeItem("redirectAfterLogin");
+//   router.push({ path, query });
+// } else {
+//   router.push("/"); // لو مفيش وجهة محددة، يروح للصفحة الرئيسية
+// }
 
 </script>
