@@ -157,8 +157,9 @@ export default {
         </div>
       </div>
       <div class="flex justify-center mb-6">
-        <button @click="openPopup()" class="bg-[#5984C6] text-white px-4 py-1 rounded-lg text-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer">
-          Hire Me
+        <!-- <button @click="openPopup()" class="bg-[#5984C6] text-white px-4 py-1 rounded-lg text-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"> -->
+        <button class="bg-[#5984C6] text-white px-4 py-1 rounded-lg text-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer">
+          <router-link to="/chat">Hire Me</router-link>
         </button>
       </div>
     </div>

@@ -3,111 +3,209 @@
     name:"AboutUs",
     data(){
       return{
-        currentIndex:0,
-        feedbacks: [
+        
+      numbersStarted: false,
+      animatedNumbers: {
+        services: 0,
+        users: 0,
+        orders: 0,
+        rating: 0,
+      },
+      targetNumbers: {
+        services: 2000,
+        users: 6000,
+        orders: 75,
+        rating: 4.9,
+      },
+        currentSlide:0,
+      interval: null,
+          slides: [
         {
-          name: "manar morad",
-          image: new URL("../images/Ellipse 47.png", import.meta.url).href,
-          text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
+          image:
+            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
+          name: "Client 1",
+          text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
         },
         {
-          name: "mohamed amir",
-          image: new URL("../images/Ellipse 46.png", import.meta.url).href,
+          image:
+            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002635_ny2rnm.png",
+          name: "Client 2",
           text: "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!"
         },
         {
-          name: "samir khaled",
-          image: new URL("../images/Ellipse 46.png", import.meta.url).href,
-          text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
-        }
-        ]
+          image:
+            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002730_y0bkp5.png",
+          name: "Client 3",
+          text: "Highly recommend Tashtebaty for reliable and quality work.",
+        },
+        {
+          image:
+            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
+          name: "Client 4",
+          text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
+        },
+      ],
       }
     },
     methods: {
-      nextFeedback() {
-      this.currentIndex = (this.currentIndex + 1) % this.feedbacks.length;
-      },
-      prevFeedback() {
-        this.currentIndex = (this.currentIndex - 1 + this.feedbacks.length) % this.feedbacks.length;
+       nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    },
+    prevSlide() {
+      this.currentSlide =
+        (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    },
+    goToSlide(index) {
+      this.currentSlide = index;
+    },
+      handleScroll() {
+      const section = this.$refs.numbersSection;
+      const rect = section.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+
+      if (isVisible && !this.numbersStarted) {
+        this.numbersStarted = true;
+        this.startCountAnimation();
       }
-    }
+    },
+    startCountAnimation() {
+      const duration = 2000; // total duration in ms
+      const startTime = performance.now();
+
+      const animate = (currentTime) => {
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+
+        this.animatedNumbers.services = Math.floor(
+          this.targetNumbers.services * progress
+        );
+        this.animatedNumbers.users = Math.floor(
+          this.targetNumbers.users * progress
+        );
+        this.animatedNumbers.orders = Math.floor(
+          this.targetNumbers.orders * progress
+        );
+        this.animatedNumbers.rating = (this.targetNumbers.rating * progress).toFixed(1);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    },
+    },
+    mounted() {
+    this.interval = setInterval(this.nextFeedback, 5000);
+     window.addEventListener("scroll", this.handleScroll);
+  },
+
+  beforeUnmount() {
+    clearInterval(this.interval);
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+  
   }
 </script>
 
 <template>
-  <div class="heroSection mt-18 relative h-[70vh] flex flex-col justify-center items-center overflow-hidden text-white">
-    
-    <img src="../images/final happy workers.png" alt="happy workers smiling" class="w-full h-full object-cover">
+    <div
+    class="heroSection mt-18 relative h-[70vh] flex flex-col justify-center items-center overflow-hidden text-white"
+  >
+    <img
+      src="../images/final happy workers.png"
+      alt="happy workers smiling"
+      class="w-full h-full object-cover"
+    />
     <div class="blueLayer absolute inset-0 bg-[#5984C6] opacity-70"></div>
 
-    <div class="textContainer absolute flex flex-col w-1/2 mx-auto ">
-      <h2 class="text-3xl font-semibold my-4">About Tashtebaty</h2>
-      <h1 class="text-5xl font-semibold my-4">We provide the highest quality with the best Prices in the market</h1>
-      <p class="text-xl">A leading Egyptian platform founded in 2025 by five founders united by a single goal: to simplify access to the best home maintenance and professional services in Egypt.
-      Tashtebaty was born from our belief in the necessity of building a bridge of trust and professionalism between our valued customers and the most skilled craftsmen and technicians. We are not just a middleman; we are your trusted partner who guarantees quality work and peace of mind.
+    <div
+      class="textContainer absolute flex flex-col w-11/12 md:w-2/3 lg:w-1/2 mx-auto text-center md:text-left"
+    >
+      <h2 class="text-xl md:text-2xl font-semibold my-4">About Tashtebaty</h2>
+      <h1
+        class="text-2xl md:text-4xl font-semibold my-4 leading-snug md:leading-tight"
+      >
+        We provide the highest quality with the best Prices in the market
+      </h1>
+      <p class="text-sm md:text-base leading-relaxed">
+        A leading Egyptian platform founded in 2025 by five founders united by a
+        single goal: to simplify access to the best home maintenance and
+        professional services in Egypt. Tashtebaty was born from our belief in
+        the necessity of building a bridge of trust and professionalism between
+        our valued customers and the most skilled craftsmen and technicians.
       </p>
     </div>
-
   </div>
 
-  <div class="OurSpecialFeatures flex w-3/4 mx-auto justify-between items-center">
 
-    <div class="imagesContainer w-1/2 relative flex flex-col items-center">
+  <div class="OurSpecialFeatures flex justify-center my-10">
+<div class="lg:grid lg:grid-cols-2">
+    <div class="imagesContainer   md:flex-col items-center relative hidden lg:flex">
       <img 
         src="../images/Rectangle 19.png" 
         alt="technician with wrench"
-        class="rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg relative z-10"
+        class="relative rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg  z-10"
       />
       <img 
         src="../images/Rectangle 18.png" 
         alt="electrician working"
-        class="rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg absolute -bottom-50 left-0 z-10"
+        class=" object-cover w-80  shadow-lg absolute top-60 left-50 z-10"
       />
     </div>
 
-    <div class="textContainer w-1/2 my-20">
-      <h2 class="text-3xl font-semibold my-4 ">Our special features</h2>
-      <h1 class="text-5xl font-semibold my-4 text-accent-color">We don't just fix homes, we deliver an experience.</h1>
+    <div class="textContainer lg:w-xl gap-5 flex flex-col w-96 md:w-2xl justify-center">
+      <h2 class="text-xl font-semibold my-4 ">Our special features</h2>
+      <h1 class="text-4xl font-semibold my-4 text-accent-color">We don't just fix homes, we deliver an experience.</h1>
       <ul>
-        <li class="text-xl my-2"><h2 class="text-3xl my-2 text-accent-color">Certified Technicians</h2>Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.</li>
-        <li class="text-xl my-2"><h2 class="text-3xl my-2 text-accent-color">24/7 Priority Support</h2>Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.</li>
-        <li class="text-xl my-2"><h2 class="text-3xl my-2 text-accent-color">Transparent Pricing Policy</h2>No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for.</li>
+        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">Certified Technicians</h2>Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.</li>
+        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">24/7 Priority Support</h2>Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.</li>
+        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">Transparent Pricing Policy</h2>No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for.</li>
       </ul>
     </div>
-    
+    </div>
   </div>
 
-  <div class="numbersSection bg-accent-color text-white my-15">
-    <div class="container flex justify-between items-center w-3/4 mx-auto py-10 text-center">
-      <div class="number flex flex-col ">
-        <h1 class="font-semibold text-[45px]">2000+</h1>
-        <p class="text-2xl">Completed services</p>
+  <div ref="numbersSection" class="numbersSection bg-accent-color text-white my-15">
+    <div
+      class="container grid grid-cols-2 md:grid-cols-4 gap-8 w-11/12 mx-auto py-10 text-center"
+    >
+      <div class="number flex flex-col">
+        <h1 class="font-semibold text-3xl md:text-[45px]">
+          {{ animatedNumbers.services }}+
+        </h1>
+        <p class="text-lg md:text-2xl">Completed services</p>
       </div>
       <div class="number flex flex-col">
-        <h1 class="font-semibold text-[45px]">6000+</h1>
-        <p class="text-2xl">Registered users</p>
+        <h1 class="font-semibold text-3xl md:text-[45px]">
+          {{ animatedNumbers.users }}+
+        </h1>
+        <p class="text-lg md:text-2xl">Registered users</p>
       </div>
       <div class="number flex flex-col">
-        <h1 class="font-semibold text-[45px]">75%+</h1>
-        <p class="text-2xl">Repeated Orders</p>
+        <h1 class="font-semibold text-3xl md:text-[45px]">
+          {{ animatedNumbers.orders }}%
+        </h1>
+        <p class="text-lg md:text-2xl">Repeated Orders</p>
       </div>
       <div class="number flex flex-col">
-        <h1 class="font-semibold text-[45px]">4.9+</h1>
-        <p class="text-2xl">Average rating</p>
+        <h1 class="font-semibold text-3xl md:text-[45px]">
+          {{ animatedNumbers.rating }}+
+        </h1>
+        <p class="text-lg md:text-2xl">Average rating</p>
       </div>
     </div>
   </div>
 
-  <div class="WhyToChooseUs flex w-3/4 mx-auto justify-between items-center">
 
-    <div class="imagesContainer flex flex-col w-1/2">
-      <img src="../images/Rectangle 21.png" class="rounded-[40px] w-[400px] h-[450px] object-cover shadow-lg  z-10" alt="">
-      <img src="../images/Rectangle 22.png" class="rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg relative z-20 bottom-50 left-50" alt="">
+  <div class="WhyToChooseUs flex justify-center items-center w-full mb-15">
+<div class="grid grid-cols-2">
+    <div class="imagesContainer flex flex-col justify-center items-center">
+      <img src="../images/Rectangle 21.png" class="rounded-[40px]  h-80 mb-5 lg:w-[400px] lg:h-[380px] object-cover shadow-lg relative  z-10" alt="">
     </div>
 
-    <div class="textContainer flex flex-col my-20 w-[40%]">
-      <h2 class="text-3xl font-semibold my-4">Why choose us?</h2>
-      <p class="text-xl my-10">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
+    <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
+      <h2 class="text-3xl font-semibold">Why choose us?</h2>
+      <p class="md:text-md text-sm">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
       
       <ul class="space-y-4">
       <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -174,49 +272,95 @@
       </li>
     </ul>
     </div>
+    </div>
   </div>
 
-  <div class="feedback relative flex flex-col items-center justify-between w-[70%] mx-auto my-20 text-center">
-    <h1 class="main-header">Customers FeedBack</h1>
+  <div class="relative w-full">
+      <!-- العنوان -->
+      <h2 class="font-semibold text-accent-color text-3xl text-center mt-5  lg:main-header">Our Customers Feedback</h2>
 
-    <div v-if="feedbacks[currentIndex]" :key="currentIndex" class="feedback-item h-[500px]">
-      
-      <div class="imgContainer flex flex-col items-center justify-center">
-        <img :src="feedbacks[currentIndex].image" class="w-[170px]" alt="">
-        <p class="text-[20px] font-semibold">{{ feedbacks[currentIndex].name }}</p>
-        <div class="flex justify-center my-4 text-yellow-400 text-xl ">
-          <svg v-for="n in 5" :key="n" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-6 h-6 mx-1 fill-current">
-            <path d="M316.9 18C311.6 7 300.4 0 288 0s-23.6 7-28.9 18L195 150.3 
-            47.9 171.5c-12.2 1.8-22.3 10.3-26.2 21.9s-.7 24.4 
-            7.9 32.9L150 357.4 129.1 504.6c-1.8 12.2 3 24.5 
-            12.6 32s22.4 9 33.2 4.2L288 439.6l113.1 61.2c10.8 
-            4.8 23.6 3.3 33.2-4.2s14.4-19.8 12.6-32L426 
-            357.4l120.4-131.1c8.6-8.5 11.7-21.3 
-            7.9-32.9s-14-20.1-26.2-21.9L381 
-            150.3 316.9 18z" />
-          </svg>
+      <!-- السلايدر -->
+      <div class="relative h-80 overflow-hidden rounded-lg">
+        <div
+          v-for="(item, index) in slides"
+          :key="index"
+          class="absolute inset-0 transition-all duration-700 ease-in-out"
+          :class="{
+            'translate-x-0 opacity-100 z-10': currentSlide === index,
+            'translate-x-full opacity-0 z-0': currentSlide < index,
+            '-translate-x-full opacity-0 z-0': currentSlide > index,
+          }"
+        >
+          <div
+            class="flex flex-col items-center justify-center h-full px-4 text-center"
+          >
+            <img
+              :src="item.image"
+              class="w-24 h-24 mb-5 rounded-full object-cover"
+              alt="client"
+            />
+            <h2 class="text-accent-color text-2xl mb-2 font-medium">
+              {{ item.name }}
+            </h2>
+            <div class="flex justify-center text-yellow-300 mb-2">
+              <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
+            </div>
+            <p class="text-gray-700 text-sm max-w-xl">
+              {{ item.text }}
+            </p>
+          </div>
         </div>
       </div>
-      
-      <div class="reviewText">
-        <button 
-          @click="prevFeedback" 
-          class="absolute left-0 text-4xl text-accent-color hover:text-[#4a74b3] transition"
-        >
-          &#10094;
-        </button>
-        <button 
-          @click="nextFeedback" 
-          class="absolute right-0 text-4xl text-accent-color hover:text-[#4a74b3] transition"
-        >
-          &#10095;
-        </button>
-        <p class="text-[20px] mx-20">{{ feedbacks[currentIndex].text }}</p>
-      </div>
 
+      <!-- الأسهم -->
+      <button
+        @click="prevSlide"
+        class="absolute top-0 left-0 lg:top-20 lg:left-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+      >
+        <span
+          class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
+        >
+          <svg
+            class="w-4 h-4 text-gray-800"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 1 1 5l4 4"
+            />
+          </svg>
+        </span>
+      </button>
+
+      <button
+        @click="nextSlide"
+        class="absolute top-0 right-0 lg:top-20 lg:right-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+      >
+        <span
+          class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
+        >
+          <svg
+            class="w-4 h-4 text-gray-800"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+        </span>
+      </button>
     </div>
-
-  </div>
 </template>
 
 <style scoped>

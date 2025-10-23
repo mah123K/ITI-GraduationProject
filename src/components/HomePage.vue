@@ -1,17 +1,17 @@
 <template>
   <div>
     <!--hero section-->
-    <section class="hero relative w-full mt-18">
+    <section class="hero relative w-full ">
       <img
-        src="../images/homeHero.png"
+        src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760692341/image_jmqili.jpg"
         alt="Hero"
-        class="h-[60vh]"
+        class="h-screen w-full"
       />
     </section>
     <!--cards-->
     <h2 class="text-center main-header">Our Services</h2>
     <div class="flex justify-center">
-      <div class="grid grid-cols-2 gap-10 mt-10 mb-10 md:grid-cols-4">
+      <div class="grid grid-cols-2 gap-10  md:grid-cols-4">
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
@@ -78,7 +78,7 @@
     <div>
       <h2 class="text-center main-header">Exclusive Offers</h2>
     </div>
-    <div class="text-first-blue flex justify-end mr-10">
+    <div class="text-accent-color flex justify-end mr-10">
       <router-link to="/offers">see more</router-link>
     </div>
     <div class="flex justify-center mt-5">
@@ -334,29 +334,42 @@
       </button>
     </div>
     <!--our work-->
-    <h2 class="hidden md:block mb-5 main-header">Our Work</h2>
-    <div class="flex justify-center">
+    <div class="work-gallery py-16 bg-gray-50">
+  <div class="text-center mb-10">
+    <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
+      Our Work Gallery
+    </h2>
+    <p class="text-gray-600 max-w-2xl mx-auto text-base">
+      Take a look at some of our completed projects — from home repairs to full renovations. Every project is handled with care, precision, and quality.
+    </p>
+  </div>
+
+  <div class="flex justify-center">
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-11/12 md:w-4/5"
+    >
       <div
-        class="md:grid md:grid-cols-9 grid-cols-3 hidden grid-rows-2 md:w-2xl"
+        v-for="(image, index) in works"
+        :key="index"
+        class="relative group overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
       >
+        <img
+          :src="image.src"
+          :alt="image.alt"
+          class="w-full h-48 sm:h-56 md:h-64 lg:h-62 object-cover transform group-hover:scale-110 transition-transform duration-500"
+        />
         <div
-          v-for="(image, index) in works"
-          :key="index"
-          :class="[
-            'overflow-hidden rounded-2xl cursor-pointer transition-transform duration-300 hover:scale-105',
-            image.size === 'large'
-              ? 'col-span-1 row-span-1'
-              : 'col-span-2 row-span-1',
-          ]"
+          class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
         >
-          <img
-            :src="image.src"
-            :alt="image.alt"
-            class="w-full h-full object-cover"
-          />
+          <p class="text-white text-sm md:text-base font-medium">
+            {{ image.alt }}
+          </p>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
     <!--contact info-->
     <div class="flex justify-center mt-10">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
