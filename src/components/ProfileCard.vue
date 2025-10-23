@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="viewType === 'grid'"
-      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 w-full h-100 rounded-2xl overflow-hidden  shadow-xl transition-all duration-200"
+      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 w-full h-100 rounded-2xl overflow-hidden shadow-xl transition-all duration-200"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
     >
@@ -37,7 +37,7 @@
         class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 border border-white flex items-center justify-center transition-all duration-500"
         :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
       >
-        <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2">
+        <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2" />
       </div>
 
       <div
@@ -65,7 +65,7 @@
             class="mt-4 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition-all duration-500"
             :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
           >
-            <router-link to="/technichionProfile">View Profile</router-link>
+            <router-link to="/technicianProfile">View Profile</router-link>
           </button>
 
           <div class="flex items-center gap-1 mt-2">
@@ -85,7 +85,7 @@
       v-else
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
-      class="flex flex-col sm:flex-row items-start bg-white rounded-2xl overflow-hidden border border-[#0B161B] shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
+      class="flex flex-col sm:flex-row items-start bg-white rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
     >
       <img
         src="../images/lamp-big-3.jpg"

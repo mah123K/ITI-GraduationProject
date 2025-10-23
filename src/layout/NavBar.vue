@@ -1,37 +1,68 @@
-<template> 
+<template>
   <div>
     <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
       <div class="navbar-start">
         <router-link to="/" class="flex items-center space-x-2">
-          <img
-            src="../images/site logo.png"
-            alt="Logo"
-            class=" w-[180px] mt-3 ml-5"
-          />
+          <img src="../images/site logo.png" alt="Logo" class="w-[180px] mt-3 ml-5" />
         </router-link>
       </div>
 
       <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal text-black px-1 text-lg ">
+        <ul class="menu menu-horizontal text-black px-1 text-lg">
           <li>
             <router-link to="/" class="" active-class="font-semibold text-black">Home</router-link>
           </li>
 
-          <li class="relative group ">
+          <li class="relative group">
             <a class="cursor-pointer">Services</a>
-            <ul class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl">
-              <li><router-link to="/PlumbersPage">Plumbing</router-link></li>
-              <li><router-link to="/ElectrectionsPage">Electrical</router-link></li>
-              <li><router-link to="/FinishingCompanies">Finishing</router-link></li>
-              <li><router-link to="/CarpentersPage">Carpentry</router-link></li>
+            <ul
+              class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl"
+            >
+              <li>
+                <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
+                  Plumbing
+                </router-link>
+              </li>
+              <li>
+                <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
+                  Electrical
+                </router-link>
+              </li>
+              <li>
+                <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
+                  Finishing
+                </router-link>
+              </li>
+
+              <li>
+                <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
+                  Carpentry
+                </router-link>
+              </li>
             </ul>
           </li>
 
           <li>
-            <router-link to="/offers" class="" active-class="font-semibold text-black">Offers</router-link>
+            <router-link to="/offers" class="" active-class="font-semibold text-black"
+              >Offers</router-link
+            >
           </li>
-          <li><router-link to="/about" active-class="font-semibold text-black" @click="isSidebarOpen = false ">About</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-semibold text-black" @click="isSidebarOpen = false">Contact Us</router-link></li>
+          <li>
+            <router-link
+              to="/about"
+              active-class="font-semibold text-black"
+              @click="isSidebarOpen = false"
+              >About</router-link
+            >
+          </li>
+          <li>
+            <router-link
+              to="/ContactUs"
+              active-class="font-semibold text-black"
+              @click="isSidebarOpen = false"
+              >Contact Us</router-link
+            >
+          </li>
         </ul>
       </div>
 
@@ -42,10 +73,13 @@
           <i v-else class="fa-solid fa-moon text-white text-xl"></i>
         </button>
         <router-link
-          to="/SignUp" class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white">Sign UP</router-link>
+          to="/SignUp"
+          class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
+          >Sign UP</router-link
+        >
         <router-link
           to="/login"
-          class="btn btn-outline btn-sm text-accent-color  rounded-[10px] hover:bg-white"
+          class="btn btn-outline btn-sm text-accent-color rounded-[10px] hover:bg-white"
         >
           Login
         </router-link>
