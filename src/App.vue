@@ -24,8 +24,8 @@
   <nav-bar/>
   <router-view/>
   <footer-layout/> 
-  <TechnicionDashNav/>
-  <TechncionDashboard />
+  <!-- <TechnicionDashNav/>
+  <TechncionDashboard /> -->
 </template>
 
 <style scoped>

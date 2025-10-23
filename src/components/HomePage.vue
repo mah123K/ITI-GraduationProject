@@ -15,7 +15,7 @@
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
-          <router-link to="/PlumbersPage">
+          <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
               <img
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760695818/image__1_-removebg-preview_spqrzh.png"
@@ -30,7 +30,7 @@
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
-          <router-link to="/FinishingCompanies">
+          <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
               <img
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__2_-removebg-preview_qlbzwa.png"
@@ -45,7 +45,7 @@
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
-          <router-link to="/ElectrectionsPage">
+          <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
               <img
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__3_-removebg-preview_ko98nb.png"
@@ -60,7 +60,7 @@
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
-          <router-link to="/CarpentersPage">
+          <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>
               <img
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__4_-removebg-preview_ihc9at.png"
