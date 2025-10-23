@@ -84,7 +84,7 @@ export default {
       this.crnPreview = null;
     }
   }
-};
+}
 </script>
 
 <template>

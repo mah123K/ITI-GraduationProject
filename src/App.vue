@@ -24,7 +24,7 @@
   }
 </script>
 <template>
-  <nav-bar/>
+  <nav-bar />
   <router-view/>
   <footer-layout/>
 </template>
