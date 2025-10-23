@@ -1,7 +1,7 @@
 <template>
   <div ref="wrapper">
     <div
-      class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10 pt-36 sm:pt-28 lg:pt-20 px-4 max-w-7xl mx-auto"
+      class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10 px-4 max-w-7xl mx-auto"
     >
       <!-- Left section -->
       <div class="flex flex-row items-center w-full md:w-auto">
@@ -11,7 +11,7 @@
             id="dropdownDefault"
             @click.stop="toggleDropdown"
             :aria-expanded="showDropdown"
-            class="flex items-center justify-center gap-1 px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 hover:bg-gray-100 text-sm md:text-base transition"
+            class="flex items-center justify-center gap-1 px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 hover:bg-[#DAECF6]/30 text-sm md:text-base transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -130,12 +130,11 @@
         class="flex flex-row flex-wrap items-center gap-3 w-full md:w-auto justify-start md:justify-end"
       >
         <select
-          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition"
+          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition "
         >
-          <option>Default sort</option>
+          <option >Default sort</option>
           <option>Rating</option>
-          <option>Price</option>
-          <option>Newest</option>
+          <option>Location</option>
         </select>
 
         <!-- grid view icon -->
@@ -143,7 +142,7 @@
           @click="changeView('grid')"
           :class="[
             'border rounded-lg border-[#0B161B]/15 w-10 h-10 flex items-center justify-center cursor-pointer transition',
-            currentView === 'grid' ? 'bg-gray-200 border-blue-400' : '',
+            currentView === 'grid' ? 'bg-[#DAECF6]/40 border-[#5984C6]' : '',
           ]"
         >
           <svg
@@ -163,7 +162,7 @@
           @click="changeView('list')"
           :class="[
             'border rounded-lg border-[#0B161B]/15 w-10 h-10 flex items-center justify-center cursor-pointer transition',
-            currentView === 'list' ? 'bg-gray-200 border-blue-400' : '',
+            currentView === 'list' ? 'bg-[#DAECF6]/40 border-[#5984C6]' : '',
           ]"
         >
           <svg
@@ -215,6 +214,13 @@ export default {
     changeView(view) {
       this.currentView = view;
       this.$emit("view-changed", view);
+      this.showDropdown = false;
+    },
+    handleDocumentClick(e) {
+      const wrapper = this.$refs.wrapper;
+      if (wrapper && !wrapper.contains(e.target)) {
+        this.showDropdown = false;
+      }
     },
   },
   mounted() {

@@ -2,7 +2,7 @@
   import HomePage from './components/HomePage.vue';
   import OfferPage from './components/OfferPage.vue';
   import AboutUs from "./components/AboutUs.vue";
-  import TechnichionProfile from './components/technichionProfile.vue';
+  import TechnichionProfile from './components/technicianProfile.vue';
   import FooterLayout from './layout/FooterLayout.vue';
   import NavBar from './layout/NavBar.vue'
   export default 
