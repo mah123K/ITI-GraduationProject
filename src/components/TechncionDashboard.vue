@@ -1,5 +1,7 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import Chart from "chart.js/auto";
+
 import ordersCard from "../components/ordersCard.vue";
 import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
@@ -20,10 +22,12 @@ const newImage = ref(null);
 const serviceTitle = ref("");
 const servicePrice = ref("");
 
+// Tabs
 const handleTabChange = (tabName) => {
   mainTab.value = tabName;
 };
 
+// Orders handlers
 const handleAcceptOrder = (id) => {
   const order = orders.value.find((o) => o.id === id);
   if (order) order.status = "upcoming";
@@ -37,6 +41,7 @@ const handleMarkCompletedOrder = (id) => {
   if (order) order.status = "completed";
 };
 
+// Services handlers
 const openEditPopup = (service) => {
   selectedService.value = service;
   serviceTitle.value = service.descreption;
@@ -80,6 +85,7 @@ const saveChanges = () => {
 
 const closePopup = () => (showPopup.value = false);
 
+// Filter orders
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
     if (orderTab.value === "requests") return o.status === "new";
@@ -88,8 +94,62 @@ const filteredOrders = computed(() =>
     return false;
   })
 );
-</script>
 
+let chartInstance = null;
+
+watch(mainTab, (newTab) => {
+  if (newTab === "earnings") {
+    setTimeout(() => {
+      const ctx = document.getElementById("earningsChart");
+      if (!ctx) return;
+
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+          datasets: [
+            {
+              label: "Earnings (EGP)",
+              data: [500, 1200, 900, 1800, 2300, 2600],
+              backgroundColor: "rgba(19, 59, 93, 0.2)",
+              borderColor: "#133B5D",
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: "#1b5383",
+              pointRadius: 5,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "#133B5D",
+              titleColor: "#fff",
+              bodyColor: "#fff",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: "#e0e0e0" },
+              ticks: { color: "#133B5D" },
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: "#133B5D" },
+            },
+          },
+        },
+      });
+    }, 200);
+  }
+});
+</script>
 
 <template>
   <div class="min-h-screen bg-gray-100 flex">
@@ -99,9 +159,7 @@ const filteredOrders = computed(() =>
       <template v-if="mainTab === 'orders'">
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Orders</h2>
 
-        <div
-          class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium"
-        >
+        <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
           <button
             @click="orderTab = 'requests'"
             :class="[
@@ -187,6 +245,74 @@ const filteredOrders = computed(() =>
           />
         </div>
       </template>
+
+      <template v-else-if="mainTab === 'earnings'">
+        <div class="earningsSection">
+          <!-- Header -->
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">
+            My Earnings
+          </h2>
+
+          <!-- Total Earnings Card -->
+          <div
+            class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
+          >
+            <div>
+              <p class="text-lg opacity-90">Total Earnings</p>
+              <h1 class="text-5xl font-bold mt-2">4,530 EGP</h1>
+              <p class="text-sm text-gray-200 mt-2">Updated today</p>
+              <p class="text-sm mt-1 text-green-300 font-medium">
+                <img src="../images/increase.png" class="inline-block w-6 h-6 mr-2" alt="" />
+                12% this month
+              </p>
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Earnings Overview</h3>
+            <canvas id="earningsChart" height="120"></canvas>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="bg-white rounded-2xl shadow-md p-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Recent Orders</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b text-gray-600">
+                    <th class="pb-2">Date</th>
+                    <th class="pb-2">Service</th>
+                    <th class="pb-2">Client</th>
+                    <th class="pb-2 text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="order in orders"
+                    :key="order.id"
+                    class="border-b hover:bg-gray-50 transition-colors odd:bg-gray-50/40"
+                  >
+                    <td class="py-2">{{ order.date }}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.customer }}</td>
+                    <td class="text-right">
+                      <span
+                        class="px-2 py-1 rounded-full bg-green-100 text-green-700 font-semibold"
+                      >
+                        {{ order.price }} EGP
+                      </span>
+                    </td>
+                  </tr>
+                  <tr v-if="!orders.length">
+                    <td colspan="4" class="text-center py-4 text-gray-500">No recent orders yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
 
     <div
@@ -194,9 +320,7 @@ const filteredOrders = computed(() =>
       @click.self="closePopup"
       class="fixed inset-0 bg-[#0000009c] bg-opacity-50 flex justify-center items-center z-50"
     >
-      <div
-        class="bg-white rounded-2xl p-8 w-[450px] shadow-xl text-center relative"
-      >
+      <div class="bg-white rounded-2xl p-8 w-[450px] shadow-xl text-center relative">
         <button
           @click="closePopup"
           class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
@@ -237,9 +361,7 @@ const filteredOrders = computed(() =>
         </div>
 
         <div class="text-center mb-4">
-          <label class="block font-semibold text-gray-700 mb-1"
-            >Service Title</label
-          >
+          <label class="block font-semibold text-gray-700 mb-1">Service Title</label>
           <input
             v-model="serviceTitle"
             type="text"
@@ -249,9 +371,7 @@ const filteredOrders = computed(() =>
         </div>
 
         <div class="text-center mb-4">
-          <label class="block font-semibold text-gray-700 mb-1"
-            >Service Price</label
-          >
+          <label class="block font-semibold text-gray-700 mb-1">Service Price</label>
           <input
             v-model="servicePrice"
             type="text"
