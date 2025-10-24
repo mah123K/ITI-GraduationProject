@@ -1,7 +1,7 @@
 export let orders = [
   {
     id: 1,
-    title: "Fix tap leak",
+    descreption: "Fix tap leak",
     price: 200,
     date: "25-August",
     time: "2:00 PM",
@@ -11,7 +11,7 @@ export let orders = [
   },
   {
     id: 2,
-    title: "Pipe leakage repair",
+    descreption: "Pipe leakage repair",
     price: 250,
     date: "26-August",
     time: "4:30 PM",
@@ -21,7 +21,7 @@ export let orders = [
   },
   {
     id: 3,
-    title: "Install water filter",
+    descreption: "Install water filter",
     price: 300,
     date: "28-August",
     time: "11:00 AM",
