@@ -1,20 +1,26 @@
 <script setup>
+import { ref, computed } from "vue"
   const props = defineProps({
     order: Object,
   })
 
   const emit = defineEmits(["acceptOrder","declineOrder"])
+  const showDetails = ref(false)
 
   const handleAccept = () => {
     emit("acceptOrder", props.order.id)
   }
   const handleDecline = () => {
   emit("declineOrder", props.order.id)
-}
+  }
+  const shortDescription = computed(() => {
+  const desc = props.order.descreption || ""
+  return desc.length > 15 ? desc.slice(0, 15) + "..." : desc
+  })
 </script>
 <template>
   <div class="order rounded-2xl shadow-md p-5 w-[31%] bg-white m-2 relative">
-    <button class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2">Details</button>
+    <button @click="showDetails = true" class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2">Details</button>
     <div class="element flex m-1 text-lg">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -23,7 +29,7 @@
       >
         <path fill="#2574b9" d="M384 32c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0zM342 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L189.1 315.2 137 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.9 7.5 18.8 7s13.4-4.1 17.5-9.8L347.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z"/>
       </svg>
-      <p class="mx-1"><span class="font-bold text-[#133B5D]">Order: </span> {{ order.descreption }}</p>
+      <p class="mx-1"><span class="font-bold text-[#133B5D]">Order: </span> {{ shortDescription }}</p>
     </div>
 
     <div class="element flex m-1 text-lg">
@@ -102,6 +108,34 @@
           <path fill="white" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/>          
         </svg>
         <p class="text-[10px] font-bold">Decline</p>
+      </div>
+    </div>
+  </div>
+  <div
+    v-if="showDetails"
+    class="fixed inset-0 bg-[#0000008a]  flex justify-center items-center z-50" @click.self="showDetails = false"
+  >
+    <div
+      class="bg-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+    >
+      <button
+        @click="showDetails = false"
+        class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
+      >
+        ✕
+      </button>
+
+      <h2 class="text-2xl font-semibold text-[#133B5D] mb-4 text-center">
+        Order Details
+      </h2>
+
+      <div class="mt-4 space-y-2 text-lg">
+        <textarea disabled class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] disabled"> {{ order.descreption }} </textarea>
+        <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+        <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+        <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+        <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
       </div>
     </div>
   </div>

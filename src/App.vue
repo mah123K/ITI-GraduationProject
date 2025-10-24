@@ -23,7 +23,7 @@
 <template>
   <nav-bar/>
   <router-view/>
-  <footer-layout/>  
+  <footer-layout/> 
   <!-- <TechnicionDashNav/>
   <TechncionDashboard /> -->
 </template>
