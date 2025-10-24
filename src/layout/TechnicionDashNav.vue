@@ -13,7 +13,7 @@ const handleTabClick = (tabName) => {
 </script>
 
 <template>
-  <div class="navigationAside w-[20%] h-[100vh] bg-[#133B5D] flex flex-col items-center text-white fixed">
+  <div class="navigationAside w-[20%] h-screen bg-[#133B5D] flex flex-col items-center text-white fixed">
     <div class="navContents p-3 flex justify-between">
       <img src="../images/white logo.png" class="w-[200px]" alt="Logo">
     </div>
@@ -29,7 +29,7 @@ const handleTabClick = (tabName) => {
     <div class="navList text-center">
       <ul class="flex flex-col items-center justify-between h-[350px] m-5">
         <li
-          class="text-lg font-bold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
+          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
           :class="props.active === 'requests' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
           @click="handleTabClick('requests')"
         >
@@ -37,7 +37,7 @@ const handleTabClick = (tabName) => {
         </li>
 
         <li
-          class="text-lg font-bold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
+          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
           :class="props.active === 'upcoming' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
           @click="handleTabClick('upcoming')"
         >
@@ -45,15 +45,23 @@ const handleTabClick = (tabName) => {
         </li>
 
         <li
-          class="text-lg font-bold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
+          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
           :class="props.active === 'completed' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
           @click="handleTabClick('completed')"
         >
           Completed Orders
         </li>
-        <li class="text-lg font-bold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">My Services</li>
-        <li class="text-lg font-bold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">My Earnings</li>
-        <li class="text-lg font-bold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Settings</li>
+        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Appoientments</li>
+        <li
+          class="text-lg font-bold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
+          :class="props.active === 'services' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
+          @click="handleTabClick('services')"
+        >
+          My Services
+        </li>
+
+        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">My Earnings</li>
+        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Settings</li>
         <button class="border rounded-xl px-3 mt-4">Log Out</button>
       </ul>
     </div>
