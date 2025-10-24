@@ -1,92 +1,3 @@
-<script>
-export default {
-  data() {
-    return {
-      tabs: ["Client", "Technician", "Company"],
-      activeTab: "Client",
-      loginRoute: "/login",
-
-      formClient: { name: "", email: "", password: "", confirmPassword: "", phone: "", address: "", city: "" },
-      formTechnician: { name: "", email: "", password: "", confirmPassword: "", phone: "", address: "", city: "", experience: "", skill: "", certification: "", availability: "", portfolio: "", description: "", profileImage: null, idCardImage: null },
-      formCompany: { companyName: "", email: "", password: "", confirmPassword: "", phone: "", address: "", city: "", website: "", teamSize: "", crn: "", portfolio: "", description: "", logoImage: null, crnImage: null },
-
-      successMessageClient: "",
-      successMessageTechnician: "",
-      successMessageCompany: "",
-
-      profilePreview: null,
-      idCardPreview: null,
-      logoPreview: null,
-      crnPreview: null
-    };
-  },
-  methods: {
-    toggleTab(tab) { this.activeTab = tab; },
-
-    previewProfile(event) {
-      const file = event.target.files[0];
-      if (file) { this.formTechnician.profileImage = file; this.profilePreview = URL.createObjectURL(file); }
-    },
-    previewIdCard(event) {
-      const file = event.target.files[0];
-      if (file) { this.formTechnician.idCardImage = file; this.idCardPreview = URL.createObjectURL(file); }
-    },
-    previewLogo(event) {
-      const file = event.target.files[0];
-      if (file) { this.formCompany.logoImage = file; this.logoPreview = URL.createObjectURL(file); }
-    },
-    previewCrn(event) {
-      const file = event.target.files[0];
-      if (file) { this.formCompany.crnImage = file; this.crnPreview = URL.createObjectURL(file); }
-    },
-
-    validateEmail(email) { return /\S+@\S+\.\S+/.test(email); },
-    validatePhone(phone) { return /^\d+$/.test(phone); },
-
-    submitClient() {
-      if (!this.formClient.name || !this.formClient.email || !this.formClient.password || !this.formClient.confirmPassword) { alert("Please fill all required fields!"); return; }
-      if (!this.validateEmail(this.formClient.email)) { alert("Invalid email!"); return; }
-      if (this.formClient.password !== this.formClient.confirmPassword) { alert("Passwords do not match!"); return; }
-      if (!this.validatePhone(this.formClient.phone)) { alert("Phone number should contain digits only!"); return; }
-
-      console.log("Client Data:", this.formClient);
-      this.successMessageClient = "Client data submitted!";
-      setTimeout(() => (this.successMessageClient = ""), 3000);
-      Object.keys(this.formClient).forEach(k => (this.formClient[k] = ""));
-    },
-
-    submitTechnician() {
-      if (!this.formTechnician.name || !this.formTechnician.email || !this.formTechnician.password || !this.formTechnician.confirmPassword) { alert("Please fill all required fields!"); return; }
-      if (!this.validateEmail(this.formTechnician.email)) { alert("Invalid email!"); return; }
-      if (this.formTechnician.password !== this.formTechnician.confirmPassword) { alert("Passwords do not match!"); return; }
-      if (!this.validatePhone(this.formTechnician.phone)) { alert("Phone number should contain digits only!"); return; }
-      if (!this.formTechnician.profileImage || !this.formTechnician.idCardImage) { alert("Please upload profile and ID card images!"); return; }
-
-      console.log("Technician Data:", this.formTechnician);
-      this.successMessageTechnician = "Technician data submitted!";
-      setTimeout(() => (this.successMessageTechnician = ""), 3000);
-      Object.keys(this.formTechnician).forEach(k => this.formTechnician[k] = "");
-      this.profilePreview = null;
-      this.idCardPreview = null;
-    },
-
-    submitCompany() {
-      if (!this.formCompany.companyName || !this.formCompany.email || !this.formCompany.password || !this.formCompany.confirmPassword) { alert("Please fill all required fields!"); return; }
-      if (!this.validateEmail(this.formCompany.email)) { alert("Invalid email!"); return; }
-      if (this.formCompany.password !== this.formCompany.confirmPassword) { alert("Passwords do not match!"); return; }
-      if (!this.validatePhone(this.formCompany.phone)) { alert("Phone number should contain digits only!"); return; }
-
-      console.log("Company Data:", this.formCompany);
-      this.successMessageCompany = "Company data submitted!";
-      setTimeout(() => (this.successMessageCompany = ""), 3000);
-      Object.keys(this.formCompany).forEach(k => (this.formCompany[k] = ""));
-      this.logoPreview = null;
-      this.crnPreview = null;
-    }
-  }
-}
-</script>
-
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-25">
     <h1 class="text-4xl font-bold text-accent-color mb-2">Sign Up</h1>
@@ -143,11 +54,7 @@ export default {
             Sign Up
           </button>
 
-          <transition name="message-fade">
-            <p v-if="successMessageClient" class="text-green-600 text-center mt-4 font-semibold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-circle-check"></i> {{ successMessageClient }}
-            </p>
-          </transition>
+       
 
           <p class="text-center mt-4 text-gray-500">
             Already have an account?
@@ -162,65 +69,40 @@ export default {
         >
           <h2 class="text-3xl font-bold mb-8 text-center text-accent-color ">Technician Registration</h2>
 
-
           <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full">
-
             <div class="flex flex-col items-start ml-40">
               <label class="font-semibold mb-2">ID Card</label>
               <div
                 @click="$refs.idCardInput.click()"
                 class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 600 512"
-                class="w-[60px] h-[60px]"
-                >
+                <!-- icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 512" class="w-[60px] h-[60px]">
                   <path fill="#5984c6" d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"/>
                 </svg>
                 <div class="absolute bottom-6 left-5 z-50">
-  
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 450 512"
-                    class="w-[20px] h-[20px] "
-                  > 
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[20px] h-[20px] ">
                     <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
                   </svg>
-  
                 </div>
               </div>
               <input ref="idCardInput" type="file" @change="previewIdCard" class="hidden" />
             </div>
 
-
             <div class="flex flex-col items-end mr-40">
               <label class="font-semibold mb-2">Profile Picture</label>
               <div
-                @click="$refs.idCardInput.click()"
-                class="w-32 h-32 rounded-full  shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
+                @click="$refs.profileInput.click()"
+                class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 450 512"
-                  class="w-[60px] h-[60px]"
-                >
-                  <path fill="#5984c6" d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/>              
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[60px] h-[60px]">
+                  <path fill="#5984c6" d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/>
                 </svg>
                 <div class="absolute bottom-6 left-5 z-50">
-    
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 450 512"
-                      class="w-[20px] h-[20px] "
-                    > 
-                      <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
-                    </svg>
-    
-                  </div>
-              </div>
-              <div class="absolute">
-                
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[20px] h-[20px] ">
+                    <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                  </svg>
+                </div>
               </div>
               <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
             </div>
@@ -239,23 +121,18 @@ export default {
               <input v-model="formTechnician.city" type="text" placeholder="Work Area (City / Region)" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.experience" type="text" placeholder="Years of Experience" class="p-4 border border-gray-300 rounded-xl" />
               <input v-model="formTechnician.address" type="text" placeholder="Address" class="p-4 border border-gray-300 rounded-xl" />
-              <input v-model="formTechnician.description" placeholder="Bio" class="p-4 border border-gray-300 rounded-2xl resize-none">
+              <input v-model="formTechnician.description" placeholder="Bio" class="p-4 border border-gray-300 rounded-2xl resize-none"/>
             </div>
           </div>
 
           <button
-            @click="submitClient"
+            @click="submitTechnician"
             class="mt-10 mx-auto  bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer"
           >
             Sign Up
           </button>
 
-          <transition name="message-fade">
-            <p v-if="successMessageTechnician" class="text-green-600 text-center mt-4 font-semibold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-circle-check"></i> {{ successMessageTechnician }}
-            </p>
-          </transition>
-
+     
           <p class="text-center mt-4 text-gray-500">
             Already have an account?
             <a :href="loginRoute" class="text-accent-color font-semibold hover:underline">Login here</a>
@@ -269,67 +146,41 @@ export default {
         >
           <h2 class="text-3xl font-bold mb-8 text-center text-accent-color">Company Registration</h2>
 
-
           <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full">
-
             <div class="flex flex-col items-start ml-40">
               <label class="font-semibold mb-2">Tax Card</label>
               <div
-                @click="$refs.idCardInput.click()"
+                @click="$refs.crnInput.click()"
                 class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 600 512"
-                class="w-[60px] h-[60px]"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 512" class="w-[60px] h-[60px]">
                   <path fill="#5984c6" d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"/>
                 </svg>
                 <div class="absolute bottom-6 left-5 z-50">
-  
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 450 512"
-                    class="w-[20px] h-[20px] "
-                  > 
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[20px] h-[20px] ">
                     <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
                   </svg>
-  
                 </div>
               </div>
-              <input ref="idCardInput" type="file" @change="previewIdCard" class="hidden" />
+              <input ref="crnInput" type="file" @change="previewCrn" class="hidden" />
             </div>
-
 
             <div class="flex flex-col items-end mr-40">
               <label class="font-semibold mb-2">Company Logo</label>
               <div
-                @click="$refs.idCardInput.click()"
+                @click="$refs.logoInput.click()"
                 class="w-32 h-32 rounded-full  shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 390 512"
-                  class="w-[60px] h-[60px]"
-                >
-                  <path fill="#5984c6" d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM176 352l32 0c17.7 0 32 14.3 32 32l0 80-96 0 0-80c0-17.7 14.3-32 32-32zM96 112c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM240 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM96 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm144-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/>              
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 512" class="w-[60px] h-[60px]">
+                  <path fill="#5984c6" d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM176 352l32 0c17.7 0 32 14.3 32 32l0 80-96 0 0-80c0-17.7 14.3-32 32-32zM96 112c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM240 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM96 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm144-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0 8.8 7.2-16 16-16z"/>
                 </svg>
                 <div class="absolute bottom-6 left-5 z-50">
-    
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 450 512"
-                      class="w-[20px] h-[20px] "
-                    > 
-                      <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
-                    </svg>
-    
-                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[20px] h-[20px] ">
+                    <path fill="#5984c6" d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                  </svg>
+                </div>
               </div>
-              <div class="absolute">
-                
-              </div>
-              <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
+              <input ref="logoInput" type="file" @change="previewLogo" class="hidden" />
             </div>
           </div>
 
@@ -352,17 +203,13 @@ export default {
           </div>
 
           <button
-            @click="submitClient"
+            @click="submitCompany"
             class="mt-10 mx-auto  bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer"
           >
             Sign Up
           </button>
 
-          <transition name="message-fade">
-            <p v-if="successMessageCompany" class="text-green-600 text-center mt-4 font-semibold flex items-center justify-center gap-2">
-              <i class="fa-solid fa-circle-check"></i> {{ successMessageCompany }}
-            </p>
-          </transition>
+      
 
           <p class="text-center mt-4 text-gray-500">
             Already have an account?
@@ -375,10 +222,244 @@ export default {
   </div>
 </template>
 
+<script>
+/*
+  Assumptions:
+  - You have src/firebase.js that exports: auth, db, storage
+  - firebase.js should initialize firebase app and export Firestore & Storage instances.
+*/
+import { auth, db, storage } from "@/firebase/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+
+export default {
+  data() {
+    return {
+      tabs: ["Client", "Technician", "Company"],
+      activeTab: "Client",
+      loginRoute: "/login",
+
+      // forms
+      formClient: {
+        name: "", email: "", password: "", confirmPassword: "", phone: "", address: "", city: ""
+      },
+      formTechnician: {
+        name: "", email: "", password: "", confirmPassword: "", phone: "", address: "",
+        city: "", experience: "", skill: "", certification: "", availability: "", portfolio: "", description: "", profileImage: null, idCardImage: null
+      },
+      formCompany: {
+        companyName: "", email: "", password: "", confirmPassword: "", phone: "", address: "",
+        city: "", website: "", teamSize: "", crn: "", portfolio: "", description: "", logoImage: null, crnImage: null
+      },
+
+      // messages & previews
+      successMessageClient: "",
+      successMessageTechnician: "",
+      successMessageCompany: "",
+
+      profilePreview: null,
+      idCardPreview: null,
+      logoPreview: null,
+      crnPreview: null
+    };
+  },
+  methods: {
+    toggleTab(tab) { this.activeTab = tab; },
+
+    // preview handlers (store File + create preview)
+    previewProfile(e) {
+      const file = e.target.files[0];
+      if (file) { this.formTechnician.profileImage = file; this.profilePreview = URL.createObjectURL(file); }
+    },
+    previewIdCard(e) {
+      const file = e.target.files[0];
+      if (file) { this.formTechnician.idCardImage = file; this.idCardPreview = URL.createObjectURL(file); }
+    },
+    previewLogo(e) {
+      const file = e.target.files[0];
+      if (file) { this.formCompany.logoImage = file; this.logoPreview = URL.createObjectURL(file); }
+    },
+    previewCrn(e) {
+      const file = e.target.files[0];
+      if (file) { this.formCompany.crnImage = file; this.crnPreview = URL.createObjectURL(file); }
+    },
+
+    validateEmail(email) { return /\S+@\S+\.\S+/.test(email); },
+    validatePhone(phone) { return phone === "" || /^\d+$/.test(phone); },
+
+    // ---- CLIENT ----
+    async submitClient() {
+      const f = this.formClient;
+      if (!f.name || !f.email || !f.password || !f.confirmPassword) { alert("Please fill required fields."); return; }
+      if (!this.validateEmail(f.email)) { alert("Invalid email."); return; }
+      if (f.password !== f.confirmPassword) { alert("Passwords do not match."); return; }
+      if (!this.validatePhone(f.phone)) { alert("Phone must contain digits only."); return; }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, f.email, f.password);
+        const user = userCredential.user;
+
+        // Save only the form data (without password) to Firestore
+        const payload = {
+          uid: user.uid,
+          name: f.name,
+          email: f.email,
+          phone: f.phone,
+          address: f.address,
+          city: f.city,
+          userType: "client",
+          status: "active",
+          createdAt: new Date().toISOString()
+        };
+
+        await setDoc(doc(db, "clients", user.uid), payload);
+             await setDoc(doc(db, "users", user.uid), {
+  uid: user.uid,
+  name: f.name,
+  email: f.email,
+  userType: "client",
+  createdAt: new Date().toISOString()
+});
+
+        this.successMessageClient = "Client registered successfully!";
+        // clear
+        Object.keys(f).forEach(k => (f[k] = ""));
+        setTimeout(() => (this.successMessageClient = ""), 3000);
+      } catch (err) {
+        console.error("Client signup error:", err);
+        alert(err.message || "Signup failed.");
+      }
+    },
+
+    // ---- TECHNICIAN ----
+    async submitTechnician() {
+      const f = this.formTechnician;
+      if (!f.name || !f.email || !f.password || !f.confirmPassword) { alert("Please fill required fields."); return; }
+      if (!this.validateEmail(f.email)) { alert("Invalid email."); return; }
+      if (f.password !== f.confirmPassword) { alert("Passwords do not match."); return; }
+      if (!this.validatePhone(f.phone)) { alert("Phone must contain digits only."); return; }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, f.email, f.password);
+        const user = userCredential.user;
+
+        // upload images if present
+        let profileUrl = "";
+        let idCardUrl = "";
+
+        if (f.profileImage) {
+          const pRef = storageRef(storage, `technicians/${user.uid}/profile.jpg`);
+          await uploadBytes(pRef, f.profileImage);
+          profileUrl = await getDownloadURL(pRef);
+        }
+        if (f.idCardImage) {
+          const idRef = storageRef(storage, `technicians/${user.uid}/idCard.jpg`);
+          await uploadBytes(idRef, f.idCardImage);
+          idCardUrl = await getDownloadURL(idRef);
+        }
+
+        const payload = {
+          uid: user.uid,
+          name: f.name,
+          email: f.email,
+          phone: f.phone,
+          address: f.address,
+          city: f.city,
+          experience: f.experience,
+          skill: f.skill,
+          description: f.description || "",
+          certification: f.certification || "",
+          availability: f.availability || "",
+          portfolio: f.portfolio || "",
+          profileImage: profileUrl,
+          idCardImage: idCardUrl,
+          userType: "technician",
+          status: "active",
+          createdAt: new Date().toISOString()
+        };
+
+        await setDoc(doc(db, "technicians", user.uid), payload);
+   
+
+        this.successMessageTechnician = "Technician registered successfully!";
+        // clear
+        Object.keys(f).forEach(k => (f[k] = ""));
+        this.profilePreview = null;
+        this.idCardPreview = null;
+        setTimeout(() => (this.successMessageTechnician = ""), 3000);
+      } catch (err) {
+        console.error("Technician signup error:", err);
+        alert(err.message || "Signup failed.");
+      }
+    },
+
+    // ---- COMPANY ----
+    async submitCompany() {
+      const f = this.formCompany;
+      if (!f.companyName || !f.email || !f.password || !f.confirmPassword) { alert("Please fill required fields."); return; }
+      if (!this.validateEmail(f.email)) { alert("Invalid email."); return; }
+      if (f.password !== f.confirmPassword) { alert("Passwords do not match."); return; }
+      if (!this.validatePhone(f.phone)) { alert("Phone must contain digits only."); return; }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, f.email, f.password);
+        const user = userCredential.user;
+
+        // upload images if present
+        let logoUrl = "";
+        let crnUrl = "";
+
+        if (f.logoImage) {
+          const lRef = storageRef(storage, `companies/${user.uid}/logo.jpg`);
+          await uploadBytes(lRef, f.logoImage);
+          logoUrl = await getDownloadURL(lRef);
+        }
+        if (f.crnImage) {
+          const cRef = storageRef(storage, `companies/${user.uid}/crn.jpg`);
+          await uploadBytes(cRef, f.crnImage);
+          crnUrl = await getDownloadURL(cRef);
+        }
+
+        const payload = {
+          uid: user.uid,
+          companyName: f.companyName,
+          email: f.email,
+          phone: f.phone,
+          address: f.address,
+          city: f.city,
+          website: f.website || "",
+          teamSize: f.teamSize || "",
+          crn: f.crn || "",
+          description: f.description || "",
+          portfolio: f.portfolio || "",
+          logo: logoUrl,
+          crnImage: crnUrl,
+          userType: "company",
+          status: "active",
+          createdAt: new Date().toISOString()
+        };
+
+        await setDoc(doc(db, "companies", user.uid), payload);
+
+        this.successMessageCompany = "Company registered successfully!";
+        Object.keys(f).forEach(k => (f[k] = ""));
+        this.logoPreview = null;
+        this.crnPreview = null;
+        setTimeout(() => (this.successMessageCompany = ""), 3000);
+      } catch (err) {
+        console.error("Company signup error:", err);
+        alert(err.message || "Signup failed.");
+      }
+    }
+  }
+};
+</script>
+
 <style>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
 .message-fade-enter-active, .message-fade-leave-active { transition: opacity 0.5s; }
-.message-fade-enter-from, .message-fade-leave-to { opacity: 0 }
+.message-fade-enter-from, .message-fade-leave-to { opacity: 0; }
 </style>
