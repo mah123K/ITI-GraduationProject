@@ -93,9 +93,13 @@
             :class="[ 'w-full p-4 text-left hover:bg-gray-100 transition-colors border-b border-gray-100', selectedUser?.id === chatUser.id ? 'bg-indigo-50' : '' ]"
           >
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full overflow-hidden">
-                <img :src="chatUser.avatar || defaultAvatar" alt="avatar" class="w-full h-full object-cover"/>
-              </div>
+              <div 
+  class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+  :style="{ backgroundColor: stringToColor(chatUser.email) }"
+>
+  {{ chatUser.email.charAt(0).toUpperCase() }}
+</div>
+
               <div class="flex-1 min-w-0">
                 <p class="font-medium text-gray-800 truncate">
                   {{ chatUser.email.split('@')[0] }}
@@ -148,8 +152,12 @@
           </div>
 
           <div v-else v-for="msg in messages" :key="msg.id" class="flex items-start gap-2" :class="msg.userId === user.uid ? 'justify-end' : 'justify-start'">
-            <!-- Avatar -->
-            <img v-if="msg.userId !== user.uid" :src="msg.userAvatar || defaultAvatar" alt="avatar" class="w-8 h-8 rounded-full object-cover"/>
+          <!-- Avatar -->
+<div v-if="msg.userId !== user.uid"
+     class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs"
+     :style="{ backgroundColor: stringToColor(msg.userEmail) }">
+  {{ msg.userEmail.charAt(0).toUpperCase() }}
+</div>
 
             <!-- Message Bubble -->
             <div :class="['max-w-xs lg:max-w-md px-4 py-3 rounded-2xl', msg.userId === user.uid ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white text-gray-800 rounded-bl-none shadow-md']">
@@ -189,7 +197,7 @@
 import { ref, onMounted, nextTick, onUnmounted } from 'vue'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, setDoc, doc } from 'firebase/firestore'
-import { auth, db } from '@/firebase/config'
+import { auth, db } from '@/firebase/firebase'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -230,7 +238,7 @@ const handleAuth = async () => {
     let userCredential
     if (isSignUp.value) {
       userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
+      await setDoc(doc(db, 'technicians', userCredential.user.uid), {
         email: userCredential.user.email,
         avatar: defaultAvatar,
         createdAt: serverTimestamp()
@@ -249,7 +257,7 @@ const handleAuth = async () => {
 const handleLogout = async () => { await signOut(auth) }
 
 const listenToUsers = () => {
-  const q = query(collection(db, 'users'), orderBy('email', 'asc'))
+  const q = query(collection(db, 'technicians'), orderBy('email', 'asc'))
   unsubscribeUsers = onSnapshot(q, snapshot => {
     let users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(u => u.id !== user.value?.uid)
     
@@ -319,4 +327,14 @@ onMounted(() => {
 })
 
 onUnmounted(() => { if (unsubscribeMessages) unsubscribeMessages(); if (unsubscribeUsers) unsubscribeUsers(); if (unsubscribeAuth) unsubscribeAuth() })
+
+
+const stringToColor = (str) => {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const c = (hash & 0x00FFFFFF).toString(16).toUpperCase()
+  return '#' + '00000'.substring(0, 6 - c.length) + c
+}
 </script>
