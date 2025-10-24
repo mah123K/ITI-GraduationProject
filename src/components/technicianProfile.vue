@@ -1,95 +1,99 @@
-<script>
-export default {
-  name: "technichionProfile",
-  data() {
-    return {
-      showPopup: false,
-      uploadedFiles: [],
-      selectedDay: "",
-      selectedTime: "",
-      availableDays: [],
-      currentIndex:0,
-      availableTimes: [
-        "12:00 PM",
-        "1:00 PM",
-        "2:00 PM",
-        "3:00 PM",
-        "4:00 PM",
-        "5:00 PM",
-        "6:00 PM",
-        "7:00 PM",
-        "8:00 PM",
-        "9:00 PM",
-      ],
-      serviceTitle: "",     
-      servicePrice: "",     
-      isPriceLocked: false, 
-      feedbacks: [
-      {
-        name: "manar morad",
-        image: new URL("../images/Ellipse 47.png", import.meta.url).href,
-        text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
-      },
-      {
-        name: "mohamed amir",
-        image: new URL("../images/Ellipse 46.png", import.meta.url).href,
-        text: "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!"
-      },
-      {
-        name: "samir khaled",
-        image: new URL("../images/Ellipse 46.png", import.meta.url).href,
-        text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
-      }
-    ]
-    };
-  },
-  methods: {
-    openPopup(service = null, price = null) {
-      this.showPopup = true;
-      this.generateDays();
+<script setup>
+  import { ref } from "vue"
 
-      if (service && price) {
-        this.serviceTitle = service;
-        this.servicePrice = price;
-        this.isPriceLocked = true;
-      } else {
-        this.serviceTitle = "";
-        this.servicePrice = "";
-        this.isPriceLocked = false;
-      }
-    },
-    closePopup() {
-      this.showPopup = false;
-      this.selectedDay = "";
-      this.selectedTime = "";
-    },
-    handleFileUpload(event) {
-      this.uploadedFiles = Array.from(event.target.files);
-    },
-    generateDays() {
-      const today = new Date();
-      this.availableDays = [];
+  const showPopup = ref(false)
+  const uploadedFiles = ref([])
+  const selectedDay = ref("")
+  const selectedTime = ref("")
+  const availableDays = ref([])
+  const currentIndex = ref(0)
 
-      for (let i = 0; i <= 5; i++) {
-        const date = new Date();
-        date.setDate(today.getDate() + i);
-        const formatted = date.toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "short",
-          day: "numeric",
-        });
-        this.availableDays.push(formatted);
-      }
+  const availableTimes = [
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+    "6:00 PM",
+    "7:00 PM",
+    "8:00 PM",
+    "9:00 PM",
+  ]
+
+  const serviceTitle = ref("")
+  const servicePrice = ref("")
+  const isPriceLocked = ref(false)
+
+  const feedbacks = ref([
+    {
+      name: "manar morad",
+      image: new URL("../images/Ellipse 47.png", import.meta.url).href,
+      text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service",
     },
-    nextFeedback() {
-      this.currentIndex = (this.currentIndex + 1) % this.feedbacks.length;
+    {
+      name: "mohamed amir",
+      image: new URL("../images/Ellipse 46.png", import.meta.url).href,
+      text: "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!",
     },
-    prevFeedback() {
-      this.currentIndex = (this.currentIndex - 1 + this.feedbacks.length) % this.feedbacks.length;
+    {
+      name: "samir khaled",
+      image: new URL("../images/Ellipse 46.png", import.meta.url).href,
+      text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!",
+    },
+  ])
+
+  const openPopup = (service = null, price = null) => {
+    showPopup.value = true
+    generateDays()
+
+    if (service && price) {
+      serviceTitle.value = service
+      servicePrice.value = price
+      isPriceLocked.value = true
+    } else {
+      serviceTitle.value = ""
+      servicePrice.value = ""
+      isPriceLocked.value = false
     }
-  },
-};
+  }
+
+  const closePopup = () => {
+    showPopup.value = false
+    selectedDay.value = ""
+    selectedTime.value = ""
+  }
+
+  const handleFileUpload = (event) => {
+    uploadedFiles.value = Array.from(event.target.files)
+  }
+
+  const generateDays = () => {
+    const today = new Date()
+    availableDays.value = []
+
+    for (let i = 0; i <= 5; i++) {
+      const date = new Date()
+      date.setDate(today.getDate() + i)
+      const formatted = date.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      })
+      availableDays.value.push(formatted)
+    }
+  }
+
+  const nextFeedback = () => {
+    currentIndex.value = (currentIndex.value + 1) % feedbacks.value.length
+  }
+
+  const prevFeedback = () => {
+    currentIndex.value =
+      (currentIndex.value - 1 + feedbacks.value.length) % feedbacks.value.length
+  }
 </script>
+
 
 
 <template>
@@ -181,7 +185,7 @@ export default {
 
         <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
           <div class="serviceImg">
-            <img src="../images/tab.png" class="w-[120px]" alt="">
+            <img src="/images/tab.png" class="w-[120px]" alt="">
           </div>
           <h2 class="font-semibold">fix tap leak</h2>
           <h2 class="font-bold text-accent-color">150 EGP</h2>
@@ -192,7 +196,7 @@ export default {
 
         <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
           <div class="serviceImg">
-            <img src="../images/sink.png" class="w-[120px]" alt="">
+            <img src="/images/sink.png" class="w-[120px]" alt="">
           </div>
           <h2 class="font-semibold">fix shower</h2>
           <h2 class="font-bold text-accent-color">250 EGP</h2>
@@ -203,7 +207,7 @@ export default {
 
         <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
           <div class="serviceImg">
-            <img src="../images/tab.png" class="w-[120px]" alt="">
+            <img src="/images/tab.png" class="w-[120px]" alt="">
           </div>
           <h2 class="font-semibold">fix tap leak</h2>
           <h2 class="font-bold text-accent-color">150 EGP</h2>
@@ -214,7 +218,7 @@ export default {
 
         <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
           <div class="serviceImg">
-            <img src="../images/filter.png" class="w-[120px]" alt="">
+            <img src="/images/filter.png" class="w-[120px]" alt="">
           </div>
           <h2 class="font-semibold">install water filter</h2>
           <h2 class="font-bold text-accent-color">200 EGP</h2>
@@ -225,7 +229,7 @@ export default {
 
         <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
           <div class="serviceImg">
-            <img src="../images/sink.png" class="w-[120px]" alt="">
+            <img src="/images/sink.png" class="w-[120px]" alt="">
           </div>
           <h2 class="font-semibold">fix shower</h2>
           <h2 class="font-bold text-accent-color">250 EGP</h2>
