@@ -1,15 +1,15 @@
 <script setup>
-import { defineProps, defineEmits } from "vue"
+  import { defineProps, defineEmits } from "vue"
 
-const props = defineProps({
-  active: { type: String, default: "requests" }
-})
+  const props = defineProps({
+    active: { type: String, default: "orders" } 
+  })
 
-const emit = defineEmits(["changeTab"])
+  const emit = defineEmits(["changeTab"])
 
-const handleTabClick = (tabName) => {
-  emit("changeTab", tabName)
-}
+  const handleTabClick = (tabName) => {
+    emit("changeTab", tabName)
+  }
 </script>
 
 <template>
@@ -30,26 +30,11 @@ const handleTabClick = (tabName) => {
       <ul class="flex flex-col items-center justify-between h-[350px] m-5">
         <li
           class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
-          :class="props.active === 'requests' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
-          @click="handleTabClick('requests')"
+          :class="['requests', 'upcoming', 'completed', 'orders'].includes(props.active) 
+            ? 'bg-[#1b5383]' : 'bg-[#133B5D]'" 
+          @click="handleTabClick('orders')"
         >
-          Orders requests
-        </li>
-
-        <li
-          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
-          :class="props.active === 'upcoming' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
-          @click="handleTabClick('upcoming')"
-        >
-          Upcoming Orders
-        </li>
-
-        <li
-          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
-          :class="props.active === 'completed' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
-          @click="handleTabClick('completed')"
-        >
-          Completed Orders
+          Orders
         </li>
         <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Appoientments</li>
         <li

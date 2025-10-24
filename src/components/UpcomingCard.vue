@@ -15,7 +15,7 @@ const handleMarkCompleted = () => {
     class="order rounded-2xl shadow-md p-5 w-[31%] bg-white m-2 relative transition duration-200"
   >
     <button
-      class="absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+      class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
     >
       Details
     </button>
@@ -30,7 +30,7 @@ const handleMarkCompleted = () => {
       </svg>
       <p class="mx-1">
         <span class="font-bold text-[#133B5D]">Order:</span>
-        {{ order.title }}
+        {{ order.descreption }}
       </p>
     </div>
     <div class="element flex m-1 text-lg">
