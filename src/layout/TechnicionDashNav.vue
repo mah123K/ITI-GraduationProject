@@ -53,7 +53,7 @@ const handleTabClick = (tabName) => {
         </li>
         <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Appoientments</li>
         <li
-          class="text-lg font-bold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
+          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
           :class="props.active === 'services' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
           @click="handleTabClick('services')"
         >

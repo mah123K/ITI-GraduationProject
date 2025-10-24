@@ -7,17 +7,32 @@
       required: true,
     },
   })
+  const emit = defineEmits(["editService"])
+
+  const handleEdit = () => {
+    emit("editService", props.service)
+  }
 </script>
 <template>
-    <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5">
-      <img
-        :src="service.image"
-        alt="service icon"
-        class="w-[120px] h-[120px] object-contain"
-      />
-      <h2 class="font-semibold">{{ service.descreption }}</h2>
-      <h2 class="font-bold text-accent-color">{{ service.price }}</h2>
-      
+  <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5 mx-2">
+    <img
+      :src="service.image"
+      alt="service icon"
+      class="w-[120px] h-[120px] object-contain"
+    />
+    <h2 class="font-semibold">{{ service.descreption }}</h2>
+    <h2 class="font-bold text-accent-color">{{ service.price }}</h2>
+    <div class="buttonsContainer my-2">
+      <button
+      @click="handleEdit"
+      class="bg-[#133B5D] rounded-lg p-1 px-3 text-white mx-2 hover:bg-[#1b5383] cursor-pointer"
+      >
+        Edit
+      </button>
+      <button class="bg-[#ff0000] rounded-lg p-1 px-3 text-white mx-2 hover:bg-red-700 cursor-pointer">
+        Delete
+      </button>
+    </div>
   </div>
 </template>
 
