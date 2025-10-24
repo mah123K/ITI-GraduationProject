@@ -94,8 +94,6 @@
   }
 </script>
 
-
-
 <template>
   <div class="technichainProfile my-20 w-[80%] mx-auto flex justify-between">
 
@@ -106,7 +104,7 @@
         <div class="nameContainer flex">
           <h2 class="font-semibold text-[26px]">Mohsen Ali </h2>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 m-2 fill-current">
+            class="w-6 h-6 text-[#5984C6] shrink-0 m-2 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 
             18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
@@ -119,7 +117,7 @@
           <svg v-for="n in 5" :key="n" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="w-6 h-6 fill-current"> <path d="M316.9 18C311.6 7 300.4 0 288 0s-23.6 7-28.9 18L195 150.3 47.9 171.5c-12.2 1.8-22.3 10.3-26.2 21.9s-.7 24.4 7.9 32.9L150 357.4 129.1 504.6c-1.8 12.2 3 24.5 12.6 32s22.4 9 33.2 4.2L288 439.6l113.1 61.2c10.8 4.8 23.6 3.3 33.2-4.2s14.4-19.8 12.6-32L426 357.4l120.4-131.1c8.6-8.5 11.7-21.3 7.9-32.9s-14-20.1-26.2-21.9L381 150.3 316.9 18z" /> </svg>
         </div>
         <p class="text-[18px] mb-2">(1k+ reviews)</p>
-        <div class="line w-[100%] h-[2px] bg-black"></div>
+        <div class="line w-full h-0.5 bg-black"></div>
       </div>
 
       <div class="dataContainer flex items-center justify-between m-6 text-[18px] font-semibold">
