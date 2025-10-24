@@ -2,10 +2,13 @@
 import { ref, computed } from "vue"
 import ordersCard from "../components/ordersCard.vue"
 import UpcomingCard from "../components/UpcomingCard.vue"
+import ServiceCard from "../components/ServiceCard.vue"
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue"
 import { orders as initialOrders } from "../data/orders.js"
+import { services as initialServices } from "../data/services.js"
 
 const orders = ref([...initialOrders])
+const services = ref([...initialServices])
 const activeTab = ref("requests") 
 
 const handleAcceptOrder = (id) => {
@@ -87,6 +90,13 @@ const filteredOrders = computed(() =>
             <p>Client: {{ order.customer }}</p>
             <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
           </div>
+        </template>
+        <template v-else-if="activeTab === 'services'">
+          <ServiceCard
+            v-for="service in services"
+            :key="service.id"
+            :service="service"
+          />
         </template>
       </div>
     </div>
