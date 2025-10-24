@@ -1,4 +1,4 @@
-export const orders = [
+export let orders = [
   {
     id: 1,
     title: "Fix tap leak",
@@ -30,40 +30,3 @@ export const orders = [
     status: "new",
   },
 ]
-
-
-/*
-export const orders = [
-  {
-    id: 1,
-    title: "Fix tap leak",
-    price: 200,
-    date: "25-August",
-    time: "2:00 PM",
-    location: "Dokki, Giza",
-    customer: "Ahmed Gomaa",
-    status: "new", 
-  },
-  {
-    id: 2,
-    title: "Pipe leakage repair",
-    price: 250,
-    date: "26-August",
-    time: "4:30 PM",
-    location: "6th of October, Giza",
-    customer: "Mahmoud Soliman",
-    status: "new",
-  },
-  {
-    id: 3,
-    title: "Install water filter",
-    price: 300,
-    date: "28-August",
-    time: "11:00 AM",
-    location: "Nasr City, Cairo",
-    customer: "Youssef Adel",
-    status: "new",
-  },
-]
-
-*/ 
