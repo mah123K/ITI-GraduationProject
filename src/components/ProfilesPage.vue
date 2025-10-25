@@ -1,7 +1,15 @@
 <template>
   <div class="profiles-page">
     <h1 class="main-header mt-20">{{ serviceName }} Profiles</h1>
-    <TopBar @view-changed="currentView = $event" />
+
+    <TopBar
+      @view-changed="currentView = $event"
+      @filters-changed="applyFilters"
+      @sort-changed="sortProfiles"
+      :displayedCount="filteredProfiles.length"
+      :totalCount="profiles.length"
+    />
+
     <div
       :class="[
         'px-4 sm:px-8 max-w-7xl mx-auto mb-12 gap-6',
@@ -29,96 +37,120 @@ export default {
     return {
       currentView: "grid",
       serviceName: "",
+      searchKeyword: "",
+      selectedLocations: [],
+      ratingFilter: "",
+      sortOption: "default",
+
       profiles: [
         {
           name: "Anas Adel",
           location: "Giza",
           rating: 4.5,
-          bio: "Experienced plumber with 5 years in residential and commercial plumbing.",
+          bio: "Experienced plumber",
           service: "Plumbing",
-          image: "../images/plumber.png",
         },
         {
           name: "Mona Sami",
           location: "Suez",
           rating: 4.8,
-          bio: "Certified electrician specializing in home and office electrical systems.",
+          bio: "Certified electrician",
           service: "Electrical",
-          image: "../images/electrician.png",
         },
         {
           name: "Omar Khaled",
           location: "Aswan",
           rating: 4.2,
-          bio: "Professional carpenter offering custom furniture and cabinetry services.",
+          bio: "Professional carpenter",
           service: "Carpentry",
-          image: "../images/carpenter.png",
         },
         {
           name: "Laila Hassan",
           location: "Cairo",
           rating: 4.7,
-          bio: "Skilled finishing contractor with expertise in interior and exterior finishes.",
+          bio: "Skilled finisher",
           service: "Finishing",
-          image: "../images/finishing.png",
         },
         {
           name: "Ahmed Ali",
           location: "Alexandria",
           rating: 4.9,
-          bio: "Experienced painter specializing in residential and commercial painting services.",
+          bio: "Experienced painter",
           service: "Finishing",
-          image: "../images/painter.png",
         },
         {
           name: "Sara Ahmed",
           location: "Giza",
           rating: 4.6,
-          bio: "Skilled carpenter offering custom furniture and cabinetry services.",
+          bio: "Skilled carpenter",
           service: "Carpentry",
-          image: "../images/carpenter.png",
         },
         {
-          name: "Ahmed Ali",
-          location: "Alexandria",
-          rating: 4.9,
-          bio: "Experienced painter specializing in residential and commercial painting services.",
+          name: "Youssef Nabil",
+          location: "Luxor",
+          rating: 4.3,
+          bio: "Certified plumber",
+          service: "Plumbing",
+        },
+        {
+          name: "Nadia Fathy",
+          location: "Red Sea",
+          rating: 4.4,
+          bio: "Professional electrician",
+          service: "Electrical",
+        },
+        {
+          name: "Ahmed Mohamed",
+          location: "Suez",
+          rating: 4.5,
+          bio: "Skilled finisher",
           service: "Finishing",
-          image: "../images/painter.png",
-        },
-        {
-          name: "Sara Ahmed",
-          location: "Giza",
-          rating: 4.6,
-          bio: "Skilled carpenter offering custom furniture and cabinetry services.",
-          service: "Carpentry",
-          image: "../images/carpenter.png",
-        },
-        {
-          name: "Ahmed Ali",
-          location: "Alexandria",
-          rating: 4.9,
-          bio: "Experienced painter specializing in residential and commercial painting services.",
-          service: "plumbing",
-          image: "../images/painter.png",
-        },
-        {
-          name: "Sara Ahmed",
-          location: "Giza",
-          rating: 4.6,
-          bio: "Skilled carpenter offering custom furniture and cabinetry services.",
-          service: "Carpentry",
-          image: "../images/carpenter.png",
         },
       ],
-      
     };
   },
   computed: {
     filteredProfiles() {
-      return this.profiles.filter(
-        (p) => p.service.toLowerCase() === this.serviceName.toLowerCase()
-      );
+      let results = this.profiles;
+
+      if (this.serviceName && this.serviceName !== "All") {
+        results = results.filter((p) => p.service.toLowerCase() === this.serviceName.toLowerCase());
+      }
+
+      if (this.searchKeyword.trim()) {
+        const kw = this.searchKeyword.toLowerCase();
+        results = results.filter(
+          (p) => p.name.toLowerCase().includes(kw) || p.bio.toLowerCase().includes(kw)
+        );
+      }
+
+      if (this.selectedLocations.length) {
+        results = results.filter((p) => this.selectedLocations.includes(p.location));
+      }
+
+      if (this.ratingFilter === "4stars") {
+        results = results.filter((p) => p.rating >= 4);
+      } else if (this.ratingFilter === "3stars") {
+        results = results.filter((p) => p.rating >= 3);
+      }
+
+      if (this.sortOption === "rating") {
+        results = [...results].sort((a, b) => b.rating - a.rating);
+      } else if (this.sortOption === "location") {
+        results = [...results].sort((a, b) => a.location.localeCompare(b.location));
+      }
+
+      return results;
+    },
+  },
+  methods: {
+    applyFilters({ search, locations, rating }) {
+      this.searchKeyword = search;
+      this.selectedLocations = locations;
+      this.ratingFilter = rating;
+    },
+    sortProfiles(sortValue) {
+      this.sortOption = sortValue;
     },
   },
   mounted() {
@@ -131,9 +163,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-svg {
-  height: 100%;
-}
-</style>
