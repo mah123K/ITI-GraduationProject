@@ -28,7 +28,7 @@
         <tr
           v-for="payment in payments"
           :key="payment.id"
-          class="border-t hover:bg-gray-50 transition"
+           class="border-t hover:bg-[#f3f9fc] transition"
         >
           <td class="py-3 px-4">{{ payment.id }}</td>
           <td class="py-3 px-4">{{ payment.customer }}</td>
