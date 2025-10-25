@@ -201,7 +201,7 @@ import { auth, db } from '@/firebase/firebase'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const technicianId = route.query.technicianId || null
+const technicianId = route.query.uid || null
 
 // State
 const user = ref(null)

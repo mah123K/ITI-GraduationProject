@@ -223,11 +223,7 @@
 </template>
 
 <script>
-/*
-  Assumptions:
-  - You have src/firebase.js that exports: auth, db, storage
-  - firebase.js should initialize firebase app and export Firestore & Storage instances.
-*/
+
 import { auth, db, storage } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -314,15 +310,9 @@ export default {
         };
 
         await setDoc(doc(db, "clients", user.uid), payload);
-             await setDoc(doc(db, "users", user.uid), {
-  uid: user.uid,
-  name: f.name,
-  email: f.email,
-  userType: "client",
-  createdAt: new Date().toISOString()
-});
+     
 
-        this.successMessageClient = "Client registered successfully!";
+        
         // clear
         Object.keys(f).forEach(k => (f[k] = ""));
         setTimeout(() => (this.successMessageClient = ""), 3000);
@@ -382,7 +372,7 @@ export default {
         await setDoc(doc(db, "technicians", user.uid), payload);
    
 
-        this.successMessageTechnician = "Technician registered successfully!";
+        
         // clear
         Object.keys(f).forEach(k => (f[k] = ""));
         this.profilePreview = null;
@@ -442,7 +432,7 @@ export default {
 
         await setDoc(doc(db, "companies", user.uid), payload);
 
-        this.successMessageCompany = "Company registered successfully!";
+      
         Object.keys(f).forEach(k => (f[k] = ""));
         this.logoPreview = null;
         this.crnPreview = null;
