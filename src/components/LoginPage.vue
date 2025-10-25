@@ -64,7 +64,7 @@
                 placeholder="Enter your email"
                 required
                 class="block w-full pl-10 pr-3 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
+                      focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
               />
             </div>
           </div>
@@ -166,8 +166,8 @@ const handleSignIn = async () => {
     const collections = [
       { name: "admin", route: "/dashboard" },
       { name: "clients", route: "/" },
-      { name: "technicians", route: "/provider-dashboard" },
-      { name: "companies", route: "/provider-dashboard" },
+      { name: "technicians", route: "/TechncionDashboard" },
+      { name: "companies", route: "/TechncionDashboard" },
     ];
 
     let found = false;
