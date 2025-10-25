@@ -29,7 +29,7 @@
         <tr
           v-for="order in orders"
           :key="order.id"
-          class="border-t hover:bg-gray-50 transition"
+          class="border-t hover:bg-[#f3f9fc] transition"
         >
           <td class="py-3 px-4">{{ order.id }}</td>
           <td class="py-3 px-4">{{ order.customer }}</td>
