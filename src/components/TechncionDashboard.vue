@@ -6,6 +6,7 @@ import ordersCard from "../components/ordersCard.vue";
 import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
+import MyAppointments from "../components/MyAppointments.vue"
 import { orders as initialOrders } from "../data/orders.js";
 import { services as initialServices } from "../data/services.js";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
@@ -313,6 +314,10 @@ watch(mainTab, (newTab) => {
           </div>
         </div>
       </template>
+      <template v-else-if="mainTab === 'appointments'">
+        <MyAppointments />
+      </template>
+
     </div>
 
     <div
