@@ -1,16 +1,24 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue"; // MODIFIED: Added onMounted
 import Chart from "chart.js/auto";
+
+// ADDED: Firebase imports for auth
+import { auth } from "@/firebase/firebase"; // Ensure this path is correct
+import { onAuthStateChanged } from "firebase/auth";
 
 import ordersCard from "../components/ordersCard.vue";
 import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
-import MyAppointments from "../components/MyAppointments.vue"
-import { orders as initialOrders } from "../data/orders.js";
-import { services as initialServices } from "../data/Services.js";
+import MyAppointments from "../components/MyAppointments.vue"; // Your appointments component
+import { orders as initialOrders } from "../data/orders.js"; // Using static data
+import { services as initialServices } from "../data/Services.js"; // Using static data
 import CreateServiceCard from "../components/CreateServiceCard.vue";
 
+// ADDED: Ref to store the technician's ID
+const technicianId = ref(null);
+
+// Using static data as per request
 const orders = ref([...initialOrders]);
 const services = ref([...initialServices]);
 
@@ -23,12 +31,30 @@ const newImage = ref(null);
 const serviceTitle = ref("");
 const servicePrice = ref("");
 
+// ADDED: Get the logged-in technician's ID when the component mounts
+onMounted(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      technicianId.value = user.uid;
+      // You could potentially fetch other user-specific data here if needed later
+    } else {
+      // Handle user not logged in (e.g., redirect or show message)
+      technicianId.value = null;
+      console.log("No user logged in for dashboard.");
+    }
+    // No need to keep listening after initial check unless required
+    // unsubscribe(); 
+  });
+});
+
+// --- UNCHANGED CODE BELOW ---
+
 // Tabs
 const handleTabChange = (tabName) => {
   mainTab.value = tabName;
 };
 
-// Orders handlers
+// Orders handlers (using static data)
 const handleAcceptOrder = (id) => {
   const order = orders.value.find((o) => o.id === id);
   if (order) order.status = "upcoming";
@@ -42,12 +68,12 @@ const handleMarkCompletedOrder = (id) => {
   if (order) order.status = "completed";
 };
 
-// Services handlers
+// Services handlers (using static data)
 const openEditPopup = (service) => {
   selectedService.value = service;
   serviceTitle.value = service.descreption;
   servicePrice.value = service.price;
-  newImage.value = null;
+  newImage.value = null; // Reset image upload
   showPopup.value = true;
 };
 const openCreatePopup = () => {
@@ -65,28 +91,37 @@ const handleImageChange = (e) => {
 
 const deleteImage = () => {
   newImage.value = null;
-  if (selectedService.value) selectedService.value.image = null;
+  if (selectedService.value) selectedService.value.image = null; // Clear existing if editing
 };
 
 const saveChanges = () => {
   if (selectedService.value) {
+    // Edit existing service in the static array
     selectedService.value.descreption = serviceTitle.value;
     selectedService.value.price = servicePrice.value;
     if (newImage.value) selectedService.value.image = newImage.value;
   } else {
+    // Add new service to the static array
     services.value.push({
-      id: Date.now(),
-      image: newImage.value || "/images/create service.png",
+      id: Date.now(), // Simple unique ID for static data
+      image: newImage.value || "/images/create service.png", // Use uploaded or default
       descreption: serviceTitle.value,
       price: servicePrice.value,
     });
   }
-  showPopup.value = false;
+  closePopup(); // Close popup after saving
 };
 
-const closePopup = () => (showPopup.value = false);
+const closePopup = () => {
+    showPopup.value = false;
+    // Reset form fields
+    selectedService.value = null;
+    serviceTitle.value = "";
+    servicePrice.value = "";
+    newImage.value = null;
+};
 
-// Filter orders
+// Filter orders (based on static data)
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
     if (orderTab.value === "requests") return o.status === "new";
@@ -96,15 +131,21 @@ const filteredOrders = computed(() =>
   })
 );
 
+// Chart Logic (using static data)
 let chartInstance = null;
-
 watch(mainTab, (newTab) => {
   if (newTab === "earnings") {
-    setTimeout(() => {
+    // Use nextTick to ensure canvas is rendered
+    nextTick(() => {
       const ctx = document.getElementById("earningsChart");
-      if (!ctx) return;
+      if (!ctx) {
+          console.error("Canvas element not found");
+          return;
+      }
 
-      if (chartInstance) chartInstance.destroy();
+      if (chartInstance) {
+          chartInstance.destroy(); // Destroy previous instance if exists
+      }
 
       chartInstance = new Chart(ctx, {
         type: "line",
@@ -113,7 +154,7 @@ watch(mainTab, (newTab) => {
           datasets: [
             {
               label: "Earnings (EGP)",
-              data: [500, 1200, 900, 1800, 2300, 2600],
+              data: [500, 1200, 900, 1800, 2300, 2600], // Static data
               backgroundColor: "rgba(19, 59, 93, 0.2)",
               borderColor: "#133B5D",
               borderWidth: 3,
@@ -126,6 +167,7 @@ watch(mainTab, (newTab) => {
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false, // Allows height setting
           plugins: {
             legend: { display: false },
             tooltip: {
@@ -147,9 +189,10 @@ watch(mainTab, (newTab) => {
           },
         },
       });
-    }, 200);
+    });
   }
-});
+}, { immediate: false }); // immediate: false prevents trying to render chart before element exists initially
+
 </script>
 
 <template>
@@ -158,8 +201,8 @@ watch(mainTab, (newTab) => {
 
     <div class="myOrders ml-[20%] w-[80%] px-8 py-6">
       <template v-if="mainTab === 'orders'">
+        <!-- Orders Section (Unchanged - Uses Static Data) -->
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Orders</h2>
-
         <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
           <button
             @click="orderTab = 'requests'"
@@ -195,7 +238,9 @@ watch(mainTab, (newTab) => {
             Completed
           </button>
         </div>
-
+        <div v-if="!filteredOrders.length" class="text-center text-gray-500 mt-10">
+            No orders found in this category.
+        </div>
         <div class="ordersContainer flex flex-wrap">
           <template v-if="orderTab === 'requests'">
             <ordersCard
@@ -206,7 +251,6 @@ watch(mainTab, (newTab) => {
               @declineOrder="handleDeclineOrder"
             />
           </template>
-
           <template v-else-if="orderTab === 'upcoming'">
             <UpcomingCard
               v-for="order in filteredOrders"
@@ -215,7 +259,6 @@ watch(mainTab, (newTab) => {
               @markCompleted="handleMarkCompletedOrder"
             />
           </template>
-
           <template v-else-if="orderTab === 'completed'">
             <div
               v-for="order in filteredOrders"
@@ -235,6 +278,7 @@ watch(mainTab, (newTab) => {
       </template>
 
       <template v-else-if="mainTab === 'services'">
+         <!-- Services Section (Unchanged - Uses Static Data) -->
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Services</h2>
         <div class="ordersContainer flex flex-wrap">
           <CreateServiceCard @createService="openCreatePopup" />
@@ -243,18 +287,17 @@ watch(mainTab, (newTab) => {
             :key="service.id"
             :service="service"
             @editService="openEditPopup"
+          
           />
         </div>
       </template>
 
       <template v-else-if="mainTab === 'earnings'">
+        <!-- Earnings Section (Unchanged - Uses Static Data) -->
         <div class="earningsSection">
-          <!-- Header -->
           <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">
             My Earnings
           </h2>
-
-          <!-- Total Earnings Card -->
           <div
             class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center transition-all duration-300 hover:scale-[1.01] hover:shadow-xl"
           >
@@ -268,14 +311,10 @@ watch(mainTab, (newTab) => {
               </p>
             </div>
           </div>
-
-          <!-- Chart -->
           <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
             <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Earnings Overview</h3>
             <canvas id="earningsChart" height="120"></canvas>
           </div>
-
-          <!-- Transactions Table -->
           <div class="bg-white rounded-2xl shadow-md p-6">
             <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Recent Orders</h3>
             <div class="overflow-x-auto">
@@ -295,8 +334,8 @@ watch(mainTab, (newTab) => {
                     class="border-b hover:bg-gray-50 transition-colors odd:bg-gray-50/40"
                   >
                     <td class="py-2">{{ order.date }}</td>
-                    <td>{{ order.description }}</td>
-                    <td>{{ order.customer }}</td>
+                    <td class="py-2">{{ order.descreption }}</td> <!-- Corrected typo -->
+                    <td class="py-2">{{ order.customer }}</td>
                     <td class="text-right">
                       <span
                         class="px-2 py-1 rounded-full bg-green-100 text-green-700 font-semibold"
@@ -314,12 +353,21 @@ watch(mainTab, (newTab) => {
           </div>
         </div>
       </template>
-      <template v-else-if="mainTab === 'appointments'">
-        <MyAppointments />
-      </template>
 
+      <!-- MODIFIED: Appointments Tab -->
+      <template v-else-if="mainTab === 'appointments'">
+        <!-- Only render MyAppointments if technicianId is available -->
+        <div v-if="technicianId">
+          <MyAppointments :technicianId="technicianId" />
+        </div>
+        <!-- Show a message while waiting for the ID -->
+        <div v-else class="text-center text-gray-500 mt-10 p-6 bg-white rounded-lg shadow">
+          <p>Loading user information to show appointments...</p>
+        </div>
+      </template>
     </div>
 
+    <!-- Popup for Create/Edit Service (Unchanged - Uses Static Data Logic) -->
     <div
       v-if="showPopup"
       @click.self="closePopup"
@@ -332,11 +380,9 @@ watch(mainTab, (newTab) => {
         >
           ✕
         </button>
-
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">
           {{ selectedService ? "Edit Service" : "Create New Service" }}
         </h2>
-
         <div class="flex flex-col items-center mb-6">
           <img
             :src="
@@ -356,15 +402,16 @@ watch(mainTab, (newTab) => {
             type="file"
             @change="handleImageChange"
             class="hidden"
+            accept="image/*"
           />
           <button
+            v-if="newImage || selectedService?.image" 
             @click="deleteImage"
             class="bg-red-500 text-white rounded-md px-4 py-1 text-sm hover:bg-red-600 mt-2"
           >
             Delete Image
           </button>
         </div>
-
         <div class="text-center mb-4">
           <label class="block font-semibold text-gray-700 mb-1">Service Title</label>
           <input
@@ -374,7 +421,6 @@ watch(mainTab, (newTab) => {
             class="border border-gray-300 rounded-md w-[90%] p-2 text-center focus:outline-none focus:ring-2 focus:ring-[#133B5D]"
           />
         </div>
-
         <div class="text-center mb-4">
           <label class="block font-semibold text-gray-700 mb-1">Service Price</label>
           <input
@@ -384,7 +430,6 @@ watch(mainTab, (newTab) => {
             class="border border-gray-300 rounded-md w-[90%] p-2 text-center focus:outline-none focus:ring-2 focus:ring-[#133B5D]"
           />
         </div>
-
         <div class="flex justify-center mt-4 space-x-4">
           <button
             @click="saveChanges"

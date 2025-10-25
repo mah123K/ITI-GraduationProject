@@ -26,11 +26,11 @@ export default {
 };
 </script>
 <template>   
-  <nav-bar v-if="!hideLayout" />
+  <!-- <nav-bar v-if="!hideLayout" />
   <router-view />
-  <footer-layout v-if="!hideLayout" />
-  <!-- <TechnicionDashNav/>
-  <TechncionDashboard /> -->
+  <footer-layout v-if="!hideLayout" /> -->
+  <TechnicionDashNav/>
+  <TechncionDashboard /> 
   <!-- <MannageUserProfile/> -->
 </template>
 
