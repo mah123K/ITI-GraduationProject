@@ -67,10 +67,10 @@
       </div>
 
       <div class="navbar-end space-x-3">
-        <i class="fa-solid fa-globe cursor-pointer text-xl text-white"></i>
+        <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color"></i>
         <button @click="toggleDarkMode" class="cursor-pointer">
           <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-          <i v-else class="fa-solid fa-moon text-white text-xl"></i>
+          <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
         </button>
         <router-link
           to="/SignUp"
@@ -87,7 +87,29 @@
           <i class="fa-solid fa-bars text-2xl"></i>
         </button>
       </div>
-
+      <!-- Profile Dropdown -->
+      <div class="hidden bg-white w-60 h-fit rounded-2xl fixed top-19 right-2 z-50">
+        <div class="flex flex-col">
+          <!-- Content for the dropdown can be added here -->
+            <div class="border-2 w-20 h-20 mx-auto m-3 rounded-full border-accent-color">
+              <img src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002539_lkf3tb.png" alt="" class="w-19 h-19 rounded-full"/>
+            </div>
+        <div id="content" class="px-4 pb-4">
+              <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
+              <i class="fa-solid fa-user text-accent-color"></i>
+              <router-link to="/ClientProfile"><h4 class="cursor-pointer text-accent-color">Mange your Profile</h4></router-link>
+              </div>
+              <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
+              <i class="fa-solid fa-repeat text-accent-color"></i>
+              <router-link to="/login"><h4 class="cursor-pointer text-accent-color">Switch Account</h4></router-link>
+              </div>
+              <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
+              <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
+              <router-link to="/"><h4 class="cursor-pointer text-accent-color">Log out</h4></router-link>
+              </div>
+        </div>
+        </div>
+      </div>
       <div
         v-if="isSidebarOpen"
         class="fixed inset-0 bg-black/50 z-40"
