@@ -36,7 +36,7 @@ import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
 //Technicion Dashboard
 import TechncionDashboard from "./components/TechncionDashboard.vue";
-import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
+// import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./components/CreateServiceCard.vue";
 import MyAppointments from "./components/MyAppointments.vue";
 import ordersCard from "./components/ordersCard.vue";
@@ -66,7 +66,7 @@ const routes = [
   { path: "/signup", component: SignUp },
   { path: "/about", component: AboutUs },
   { path: "/profiles/:service", name: "ProfilesPage", component: ProfilesPage },
-  { path: "/technicianProfile", component: TechnicianProfile },
+  { path: "/profile/:id", component: TechnicianProfile },
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
@@ -107,51 +107,60 @@ const router = createRouter({
 });
 
 // ✅ Navigation Guard (حماية صفحات الأدمن)
+// ✅ Navigation Guard (auth protection + redirect logic)
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
-  const requiresAdmin = to.meta.requiresAdmin;
 
+  // Wait for Firebase to finish initializing (auth might be null for a moment)
+  if (user === undefined) {
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      unsubscribe();
+      next(to.fullPath);
+    });
+    return;
+  }
+
+  const requiresAdmin = to.meta.requiresAdmin;
+  const requiresTechnician = to.meta.requiresTechnician;
+
+  // 🧩 Protect admin routes
   if (requiresAdmin && !user) return next("/login");
 
- if (requiresAdmin && user) {
+  if (requiresAdmin && user) {
     try {
-      // 🧩 نبحث في كل المجموعات عن المستخدم
       const collections = ["admin", "clients", "technicians", "companies"];
-      let userDoc = null;
       let userType = null;
 
       for (const c of collections) {
-        const docRef = doc(getFirestore(), c, user.uid);
+        const docRef = doc(db, c, user.uid);
         const snap = await getDoc(docRef);
         if (snap.exists()) {
-          userDoc = snap;
-          userType = snap.data().userType;
+          userType = snap.data().userType || c; // fallback to collection name
           break;
         }
       }
 
-      // ✅ لو المستخدم أدمن فعلاً
-      if (userType === "admin") {
-        return next(); // يدخل صفحة الأدمن عادي
-      }
+      if (userType === "admin") return next();
+      if (userType === "client") return next("/");
+      if (userType === "technicians" || userType === "companies")
+        return next("/technician-dashboard");
 
-      // ❌ المستخدم مش أدمن — رجعه حسب نوعه
-      if (userType === "client") {
-        return next("/");
-      } else if (userType === "technicians" || userType === "companies") {
-        return next("/provider-dashboard");
-      } else {
-        return next("/login");
-      }
-
+      return next("/login");
     } catch (err) {
       console.error("Navigation guard error:", err);
       return next("/login");
     }
   }
 
+  // 🚫 If already logged in and trying to go to login/signup — redirect to home
+  if ((to.path === "/login" || to.path === "/signup") && user) {
+    return next("/");
+  }
+
+  // ✅ Default allow
   next();
 });
+
 
 // ✅ Create and Mount App
 const app = createApp(App);
