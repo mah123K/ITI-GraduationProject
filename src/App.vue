@@ -23,11 +23,11 @@
   }
 </script>
 <template>
-  <!-- <nav-bar/>
+  <nav-bar/>
   <router-view/>
-  <footer-layout/>  -->
-  <TechnicionDashNav/>
-  <TechncionDashboard />
+  <footer-layout/> 
+  <!-- <TechnicionDashNav/>
+  <TechncionDashboard /> -->
   <!-- <MannageUserProfile/> -->
 </template>
 
