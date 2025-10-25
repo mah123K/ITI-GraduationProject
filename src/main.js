@@ -22,8 +22,9 @@ import AboutUs from "./components/AboutUs.vue";
 import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
-
+import ManageUserProfile from "./components/MannageUserProfile.vue";
 // ✅ Dashboard Components (inside AdminDashboard folder)
+
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
 import Dashboard from "./components/AdminDashboard/Dashboard.vue"
 import Users from "./components/AdminDashboard/UsersTable.vue";
@@ -68,6 +69,7 @@ const routes = [
   { path: "/technicianProfile", component: TechnicianProfile },
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
+  { path: "/mannageuserprofile", component: ManageUserProfile },
 
   // ✅ Dashboard (Admin only)
   {
@@ -100,16 +102,39 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresAdmin && !user) return next("/login");
 
-  if (requiresAdmin && user) {
+ if (requiresAdmin && user) {
     try {
-      const userDoc = await getDoc(doc(getFirestore(), "admin", user.uid));
-      if (userDoc.exists() && userDoc.data().userType === "admin") {
-        return next();
-      } else {
-        return next("/");
+      // 🧩 نبحث في كل المجموعات عن المستخدم
+      const collections = ["admin", "clients", "technicians", "companies"];
+      let userDoc = null;
+      let userType = null;
+
+      for (const c of collections) {
+        const docRef = doc(getFirestore(), c, user.uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          userDoc = snap;
+          userType = snap.data().userType;
+          break;
+        }
       }
+
+      // ✅ لو المستخدم أدمن فعلاً
+      if (userType === "admin") {
+        return next(); // يدخل صفحة الأدمن عادي
+      }
+
+      // ❌ المستخدم مش أدمن — رجعه حسب نوعه
+      if (userType === "client") {
+        return next("/");
+      } else if (userType === "technicians" || userType === "companies") {
+        return next("/provider-dashboard");
+      } else {
+        return next("/login");
+      }
+
     } catch (err) {
-      console.error(err);
+      console.error("Navigation guard error:", err);
       return next("/login");
     }
   }

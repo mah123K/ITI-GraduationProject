@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-25">
+  <div class="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden pt-10">
     <h1 class="text-4xl font-bold text-accent-color mb-2">Sign Up</h1>
     <p class="text-gray-600 mb-8 text-lg">Create your account and get started today</p>
 
