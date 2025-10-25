@@ -18,12 +18,12 @@
         alt="Worker"
         class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[80vh] object-contain z-10"
       />
+<div
+  class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2"
+>
+  Your home,<br>our care
+</div>
 
-      <div
-        class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-snug z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2"
-      >
-        Your home,<br />our care
-      </div>
     </div>
 
     <!-- Right Section -->
@@ -70,29 +70,44 @@
           </div>
 
           <!-- Password -->
-          <div>
-            <label
-              for="password"
-              class="block text-sm font-medium text-black mb-2"
-              >Password</label
-            >
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <i class="fas fa-lock text-gray-400"></i>
-              </div>
-              <input
-                type="password"
-                id="password"
-                v-model="password"
-                placeholder="Enter your password"
-                required
-                class="block w-full pl-10 pr-3 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400 
-                       focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
-              />
-            </div>
-          </div>
+    <div>
+  <label
+    for="password"
+    class="block text-sm font-medium text-black mb-2"
+  >
+    Password
+  </label>
+
+  <div class="relative">
+    <!-- Lock Icon -->
+    <div
+      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+    >
+      <i class="fas fa-lock text-gray-400"></i>
+    </div>
+
+    <!-- Password Input -->
+    <input
+      :type="showPassword ? 'text' : 'password'"
+      id="password"
+      v-model="password"
+      placeholder="Enter your password"
+      required
+      class="block w-full pl-10 pr-10 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400 
+             focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
+    />
+
+    <!-- Eye Icon  -->
+    <button
+      type="button"
+      @click="togglePassword"
+      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#5984C6] focus:outline-none"
+    >
+      <i :class="showPassword ? 'fas fa-eye-slash text-[#5984C6]' : 'fas fa-eye'"></i>
+    </button>
+  </div>
+</div>
+
 
           <!-- Forgot password -->
           <div class="flex justify-end mb-4 lg:mb-6">
@@ -151,8 +166,8 @@ const handleSignIn = async () => {
     const collections = [
       { name: "admin", route: "/dashboard" },
       { name: "clients", route: "/" },
-      { name: "technicians", route: "/technician-dashboard" },
-      { name: "companies", route: "/company-dashboard" },
+      { name: "technicians", route: "/provider-dashboard" },
+      { name: "companies", route: "/provider-dashboard" },
     ];
 
     let found = false;
@@ -182,6 +197,15 @@ const handleSignIn = async () => {
     }
   }
 };
+
+
+
+
+const showPassword = ref(false)
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
 </script>
 
 <style scoped>

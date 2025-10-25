@@ -51,7 +51,8 @@
           <tr
             v-for="client in filteredClients"
             :key="client.uid"
-            class="border-t hover:bg-gray-50 transition"
+        class="border-t hover:bg-[#f3f9fc] transition"
+
           >
             <td class="py-3 px-4">{{ client.name || "No name" }}</td>
             <td class="py-3 px-4">{{ client.phone || "-" }}</td>
