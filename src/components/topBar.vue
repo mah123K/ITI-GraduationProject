@@ -39,7 +39,6 @@
             <div class="flex justify-between items-center mb-2">
               <h6 class="text-sm font-medium text-gray-800">Filters</h6>
               <div class="flex gap-3 text-xs">
-                <button class="text-blue-500 hover:underline">Save view</button>
                 <button class="text-gray-400 hover:text-red-500 transition" @click="clearAll">
                   Clear all
                 </button>
@@ -51,6 +50,7 @@
               type="text"
               placeholder="Search keywords..."
               class="w-full px-3 py-2 mb-3 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400"
+              @input="emitFilters"
             />
 
             <div class="space-y-2 text-sm text-gray-700 max-h-64 overflow-y-auto">
@@ -61,7 +61,7 @@
                     <input
                       type="checkbox"
                       :id="cat.id"
-                      :value="cat.id"
+                      :value="cat.label"
                       v-model="selectedFilters"
                       @change="emitFilters"
                       class="rounded text-blue-600 focus:ring-blue-400"
@@ -76,44 +76,60 @@
               <details class="rounded-md p-2">
                 <summary class="cursor-pointer font-medium text-gray-800">Price</summary>
                 <div class="mt-2 space-y-1 pl-2">
-                  <label
-                    ><input
+                  <label>
+                    <input
                       type="checkbox"
                       v-model="selectedFilters"
                       value="low"
                       class="mr-2"
-                    />Under $50</label
-                  ><br />
-                  <label
-                    ><input
+                      @change="emitFilters"
+                    />Under $50
+                  </label>
+                  <br />
+                  <label>
+                    <input
                       type="checkbox"
                       v-model="selectedFilters"
                       value="medium"
                       class="mr-2"
-                    />$50–$200</label
-                  ><br />
-                  <label
-                    ><input
+                      @change="emitFilters"
+                    />$50–$200
+                  </label>
+                  <br />
+                  <label>
+                    <input
                       type="checkbox"
                       v-model="selectedFilters"
                       value="high"
                       class="mr-2"
-                    />Over $200</label
-                  >
+                      @change="emitFilters"
+                    />Over $200
+                  </label>
                 </div>
               </details>
 
               <details class="rounded-md p-2">
                 <summary class="cursor-pointer font-medium text-gray-800">Rating</summary>
                 <div class="mt-2 space-y-1 pl-2">
-                  <label
-                    ><input type="radio" v-model="selectedFilters" value="4stars" class="mr-2" />4
-                    stars & up</label
-                  ><br />
-                  <label
-                    ><input type="radio" v-model="selectedFilters" value="3stars" class="mr-2" />3
-                    stars & up</label
-                  >
+                  <label>
+                    <input
+                      type="radio"
+                      v-model="ratingFilter"
+                      value="4stars"
+                      class="mr-2"
+                      @change="emitFilters"
+                    />4 stars & up
+                  </label>
+                  <br />
+                  <label>
+                    <input
+                      type="radio"
+                      v-model="ratingFilter"
+                      value="3stars"
+                      class="mr-2"
+                      @change="emitFilters"
+                    />3 stars & up
+                  </label>
                 </div>
               </details>
             </div>
@@ -121,7 +137,7 @@
         </div>
 
         <div class="text-[#0B161B]/90 font-medium text-sm md:text-base whitespace-nowrap">
-          Showing 1–9 of 11 results
+          Showing {{ displayedCount }} of {{ totalCount }} results
         </div>
       </div>
 
@@ -130,11 +146,13 @@
         class="flex flex-row flex-wrap items-center gap-3 w-full md:w-auto justify-start md:justify-end"
       >
         <select
-          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition "
+          v-model="sortOption"
+          @change="emitSort"
+          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition"
         >
-          <option >Default sort</option>
-          <option>Rating</option>
-          <option>Location</option>
+          <option value="default">Default sort</option>
+          <option value="rating">Rating</option>
+          <option value="location">Location</option>
         </select>
 
         <!-- grid view icon -->
@@ -189,16 +207,22 @@
 <script>
 export default {
   name: "TopBar",
+  props: {
+    displayedCount: { type: [String, Number], default: "0" },
+    totalCount: { type: Number, default: 0 },
+  },
+
   data() {
     return {
       showDropdown: false,
       searchKeyword: "",
       selectedFilters: [],
+      ratingFilter: "",
+      sortOption: "default",
       currentView: "grid",
       categories: [
-        { id: "All Governments", label: "All Governments" },
         { id: "Cairo", label: "Cairo" },
-        { id: "Alex", label: "Alex" },
+        { id: "Alex", label: "Alexandria" },
         { id: "Giza", label: "Giza" },
         { id: "Suez", label: "Suez" },
         { id: "Aswan", label: "Aswan" },
@@ -214,7 +238,22 @@ export default {
     changeView(view) {
       this.currentView = view;
       this.$emit("view-changed", view);
-      this.showDropdown = false;
+    },
+    emitFilters() {
+      this.$emit("filters-changed", {
+        search: this.searchKeyword,
+        locations: this.selectedFilters,
+        rating: this.ratingFilter,
+      });
+    },
+    emitSort() {
+      this.$emit("sort-changed", this.sortOption);
+    },
+    clearAll() {
+      this.searchKeyword = "";
+      this.selectedFilters = [];
+      this.ratingFilter = "";
+      this.emitFilters();
     },
     handleDocumentClick(e) {
       const wrapper = this.$refs.wrapper;
@@ -231,5 +270,3 @@ export default {
   },
 };
 </script>
-
-<style scoped></style>
