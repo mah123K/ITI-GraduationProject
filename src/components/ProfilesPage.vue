@@ -29,6 +29,9 @@
 <script>
 import ProfileCard from "./ProfileCard.vue";
 import TopBar from "./topBar.vue";
+// ADD: Import Firebase Firestore functions
+import { db } from "@/firebase/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default {
   name: "ProfilesPage",
@@ -41,91 +44,36 @@ export default {
       selectedLocations: [],
       ratingFilter: "",
       sortOption: "default",
+      isLoading: false, // ADD: For loading indicator
 
-      profiles: [
-        {
-          name: "Anas Adel",
-          location: "Giza",
-          rating: 4.5,
-          bio: "Experienced plumber",
-          service: "Plumbing",
-        },
-        {
-          name: "Mona Sami",
-          location: "Suez",
-          rating: 4.8,
-          bio: "Certified electrician",
-          service: "Electrical",
-        },
-        {
-          name: "Omar Khaled",
-          location: "Aswan",
-          rating: 4.2,
-          bio: "Professional carpenter",
-          service: "Carpentry",
-        },
-        {
-          name: "Laila Hassan",
-          location: "Cairo",
-          rating: 4.7,
-          bio: "Skilled finisher",
-          service: "Finishing",
-        },
-        {
-          name: "Ahmed Ali",
-          location: "Alexandria",
-          rating: 4.9,
-          bio: "Experienced painter",
-          service: "Finishing",
-        },
-        {
-          name: "Sara Ahmed",
-          location: "Giza",
-          rating: 4.6,
-          bio: "Skilled carpenter",
-          service: "Carpentry",
-        },
-        {
-          name: "Youssef Nabil",
-          location: "Luxor",
-          rating: 4.3,
-          bio: "Certified plumber",
-          service: "Plumbing",
-        },
-        {
-          name: "Nadia Fathy",
-          location: "Red Sea",
-          rating: 4.4,
-          bio: "Professional electrician",
-          service: "Electrical",
-        },
-        {
-          name: "Ahmed Mohamed",
-          location: "Suez",
-          rating: 4.5,
-          bio: "Skilled finisher",
-          service: "Finishing",
-        },
-      ],
+      // MODIFIED: Start with an empty array
+      profiles: [],
     };
   },
   computed: {
     filteredProfiles() {
       let results = this.profiles;
 
+      // This filter now works dynamically with Firebase data
       if (this.serviceName && this.serviceName !== "All") {
-        results = results.filter((p) => p.service.toLowerCase() === this.serviceName.toLowerCase());
+        results = results.filter(
+          (p) => p.service.toLowerCase() === this.serviceName.toLowerCase()
+        );
       }
 
       if (this.searchKeyword.trim()) {
         const kw = this.searchKeyword.toLowerCase();
         results = results.filter(
-          (p) => p.name.toLowerCase().includes(kw) || p.bio.toLowerCase().includes(kw)
+          (p) =>
+            p.name.toLowerCase().includes(kw) ||
+            p.bio.toLowerCase().includes(kw)
         );
       }
 
       if (this.selectedLocations.length) {
-        results = results.filter((p) => this.selectedLocations.includes(p.location));
+        results = results.filter((p) =>
+          this.selectedLocations.includes(p.location)
+        );
       }
 
       if (this.ratingFilter === "4stars") {
@@ -152,14 +100,53 @@ export default {
     sortProfiles(sortValue) {
       this.sortOption = sortValue;
     },
+
+    // ADD: New method to fetch data from Firebase
+    async fetchProfiles() {
+      this.isLoading = true;
+      this.profiles = []; // Clear existing profiles
+      
+      try {
+        const techniciansCol = collection(db, "technicians");
+        const snapshot = await getDocs(techniciansCol);
+        
+        const fetchedProfiles = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          
+          // Map your Firebase data to the structure your component expects
+          fetchedProfiles.push({
+            id: doc.id, // Good to have a unique ID
+            name: data.name, // Fetched from Firebase
+            service: data.skill, // This is the "work type" (skill) from Firebase
+            location: data.city || "Not specified", // Map 'city' to 'location'
+            rating: data.rating || 0, // Use existing rating or default to 0
+            bio: data.description || "No bio provided.", // Map 'description' to 'bio'
+            profileImage: data.profileImage || null // Pass profile image URL
+          });
+        });
+        
+        this.profiles = fetchedProfiles;
+
+      } catch (error) {
+        console.error("Error fetching profiles: ", error);
+        alert("Failed to load profiles. Please try again.");
+      }
+      this.isLoading = false;
+    },
   },
   mounted() {
     this.serviceName = this.$route.params.service || "All";
+    // ADD: Call the fetch method when the component is mounted
+    this.fetchProfiles();
   },
   watch: {
     $route(to) {
       this.serviceName = to.params.service || "All";
+      // The computed property 'filteredProfiles' will automatically re-filter
+      // when serviceName changes, so you don't need to re-fetch here.
     },
   },
 };
 </script>
+
