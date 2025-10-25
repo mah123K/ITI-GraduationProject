@@ -69,7 +69,7 @@ const routes = [
   { path: "/profile/:id", component: TechnicianProfile },
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
-  { path: "/mannageuserprofile", component: ManageUserProfile },
+  { path: "/manageUserProfile", component: ManageUserProfile },
 
   // ✅ Dashboard (Admin only)
   {
