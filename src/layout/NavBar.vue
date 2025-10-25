@@ -76,7 +76,7 @@
                 <div id="content" class="px-4 pb-4">
                   <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
                     <i class="fa-solid fa-user text-accent-color"></i>
-                    <router-link to="/ClientProfile" @click="closeMenu">
+                    <router-link to="/manageuserprofile" @click="closeMenu">
                       <h4 class="cursor-pointer text-accent-color">Manage your Profile</h4>
                     </router-link>
                   </div>

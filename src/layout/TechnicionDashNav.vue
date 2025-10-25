@@ -1,4 +1,8 @@
 <script setup>
+import { ref, onMounted } from "vue";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -10,6 +14,23 @@ const emit = defineEmits(["changeTab"]);
 const handleTabClick = (tabName) => {
   emit("changeTab", tabName);
 };
+
+// ✅ Get technician name dynamically from Firestore
+const technicianName = ref("Technician");
+
+onMounted(() => {
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "technicians", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        technicianName.value = docSnap.data().name || "Technician";
+      }
+    }
+  });
+});
 </script>
 
 <template>
@@ -22,7 +43,7 @@ const handleTabClick = (tabName) => {
 
     <div class="profileImgContainer flex flex-col items-center mb-2">
       <img src="../images/Ellipse 56.png" class="w-[90px]" alt="Technician photo" />
-      <p class="text-lg">Adel Morad</p>
+      <p class="text-lg">{{ technicianName }}</p>
     </div>
 
     <p class="text-2xl font-semibold">My Earnings:</p>
