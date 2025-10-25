@@ -217,20 +217,76 @@ watch(mainTab, (newTab) => {
           </template>
 
           <template v-else-if="orderTab === 'completed'">
-            <div
-              v-for="order in filteredOrders"
-              :key="order.id"
-              class="order rounded-2xl shadow-md p-5 w-[31%] bg-green-50 m-2 border border-green-300"
-            >
-              <p class="text-[#133B5D] font-semibold text-lg mb-2">
-                {{ order.descreption }}
-              </p>
-              <p>Price: {{ order.price }} EGP</p>
-              <p>Date: {{ order.date }}</p>
-              <p>Client: {{ order.customer }}</p>
-              <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
-            </div>
-          </template>
+  <div
+    v-for="order in filteredOrders"
+    :key="order.id"
+    class="order rounded-2xl shadow-md p-5 w-[31%] bg-green-50 m-2 border border-green-300 relative"
+  >
+    <!-- ✅ Details Button -->
+    <button
+      @click="order.showDetails = true"
+      class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+    >
+      Details
+    </button>
+
+    <!-- ✅ Short Description -->
+    <p class="text-[#133B5D] font-semibold text-lg mb-2 break-words">
+      <span class="font-bold">Order:</span>
+      {{
+        (order.descreption || "")
+          .split(/\s+/)
+          .slice(0, 15)
+          .join(" ") +
+        ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
+      }}
+    </p>
+
+    <p><span class="font-semibold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+    <p><span class="font-semibold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+    <p><span class="font-semibold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+    <p><span class="font-semibold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+    <p><span class="font-semibold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+
+    <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
+
+    <!-- ✅ Pop-up for Full Details -->
+    <div
+      v-if="order.showDetails"
+      @click.self="order.showDetails = false"
+      class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
+    >
+      <div
+        class="bg-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+      >
+        <button
+          @click="order.showDetails = false"
+          class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
+        >
+          ✕
+        </button>
+
+        <h2 class="text-2xl font-semibold text-[#133B5D] mb-4 text-center">
+          Completed Order Details
+        </h2>
+
+        <div class="mt-4 space-y-2 text-lg">
+          <textarea
+            disabled
+            class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px]"
+          >{{ order.descreption }}</textarea>
+          <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+          <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+          <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+          <p><span class="font-bold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+          <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+          <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
         </div>
       </template>
 
