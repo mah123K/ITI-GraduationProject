@@ -44,7 +44,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="ticket in filteredTickets" :key="ticket.id" class="border-t hover:bg-gray-50 transition">
+          <tr v-for="ticket in filteredTickets" :key="ticket.id" class="border-t hover:bg-[#f3f9fc] transition">
             <td class="py-3 px-4">{{ ticket.name }}</td>
             <td class="py-3 px-4">{{ ticket.email }}</td>
             <td class="py-3 px-4">{{ ticket.phone }}</td>

@@ -75,7 +75,7 @@
           <tr
             v-for="company in filteredCompanies"
             :key="company.id"
-            class="border-t hover:bg-gray-50 transition"
+             class="border-t hover:bg-[#f3f9fc] transition"
           >
             <td class="py-3 px-4">{{ company.name }}</td>
             <td class="py-3 px-4">{{ company.email }}</td>
@@ -148,7 +148,7 @@
           <tr
             v-for="craft in filteredCraftsmen"
             :key="craft.id"
-            class="border-t hover:bg-gray-50 transition"
+             class="border-t hover:bg-[#f3f9fc] transition"
           >
             <td class="py-3 px-4">{{ craft.name }}</td>
             <td class="py-3 px-4">{{ craft.email }}</td>

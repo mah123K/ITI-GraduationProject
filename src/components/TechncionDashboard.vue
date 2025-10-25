@@ -7,7 +7,7 @@ import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import { orders as initialOrders } from "../data/orders.js";
-import { services as initialServices } from "../data/services.js";
+import { services as initialServices } from "../data/Services.js";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
 
 const orders = ref([...initialOrders]);
