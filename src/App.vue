@@ -30,7 +30,7 @@ export default {
   <router-view />
   <footer-layout v-if="!hideLayout" />
   <!-- <TechnicionDashNav/>
-  <TechncionDashboard /> -->
+  <TechncionDashboard />  -->
   <!-- <MannageUserProfile/> -->
 </template>
 
