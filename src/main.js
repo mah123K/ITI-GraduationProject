@@ -22,6 +22,7 @@ import AboutUs from "./components/AboutUs.vue";
 import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
+import MannageUserProfile from "./components/MannageUserProfile.vue";
 
 // ✅ Dashboard Components (inside AdminDashboard folder)
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
@@ -68,6 +69,7 @@ const routes = [
   { path: "/technicianProfile", component: TechnicianProfile },
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
+{ path: "/manageuserprofile", name: "ManageUserProfile", component: MannageUserProfile },
 
   // ✅ Dashboard (Admin only)
   {
@@ -133,9 +135,29 @@ const app = createApp(App);
 app.use(router);
 app.mount("#app");
 
-// ✅ Redirect to Home if already logged in
-auth.onAuthStateChanged((user) => {
-  if (user && router.currentRoute.value.path === "/login") {
-    router.push("/");
+// ✅ Redirect based on user role after login
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    const dbRef = getFirestore();
+
+    // Check if admin
+    const adminDoc = await getDoc(doc(dbRef, "admin", user.uid));
+    if (adminDoc.exists() && adminDoc.data().userType === "admin") {
+      router.push("/dashboard");
+      return;
+    }
+
+    // Check if technician
+    const technicianDoc = await getDoc(doc(dbRef, "technicians", user.uid));
+    if (technicianDoc.exists() && technicianDoc.data().userType === "technician") {
+      router.push("/technician-dashboard");
+      return;
+    }
+
+    // Default → regular user
+    if (router.currentRoute.value.path === "/login") {
+      router.push("/");
+    }
   }
 });
+
