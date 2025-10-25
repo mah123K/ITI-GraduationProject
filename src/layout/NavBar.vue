@@ -30,43 +30,48 @@
       </div>
      
       <!-- 🌙 Right Side (User Area) -->
-      <div class="navbar-end space-x-3" >
-        <!-- ✅ Logged In User -->
-         <div v-if="!loadingUser">
-        <div v-if="user" class="relative flex items-center">
-           <div class="flex items-center mr-4"> 
-          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i> 
-          <button @click="toggleDarkMode" class="cursor-pointer"> 
-            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i> 
-            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i> 
-          </button>
-              </div>
-          
-          
-              <span class="font-medium text-black hidden sm:block mr-5">Hello, {{ firstName }}</span>
-          <!-- 👤 Profile Icon -->
+      <!-- 🌙 Right Side (User Area) -->
+<div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
+  <!-- 🌐 Dark Mode + Globe (always visible) -->
+  <div class="flex items-center mr-4">
+    <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i>
+    <button @click="toggleDarkMode" class="cursor-pointer">
+      <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+      <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
+    </button>
+  </div>
+
+  <!-- 🔄 While user is loading -->
+  <div v-if="loadingUser" class="flex items-center space-x-3 animate-pulse">
+    <div class="h-5 w-20 bg-gray-200 rounded"></div>
+    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+  </div>
+
+  <!-- 👤 Logged In -->
+  <div v-else-if="user" class="relative flex items-center">
+    <span class="font-medium text-black hidden sm:block mr-5">Hello, {{ firstName }}</span>
+
+    <div
+      ref="profileButton"
+      class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
+      @click="toggleUserMenu"
+    >
+      <i class="bi bi-person text-gray-500 text-xl"></i>
+    </div>
+
+    <!-- 🔽 Profile Dropdown -->
+    <transition name="fade-slide">
+      <div
+        v-if="isUserMenuOpen"
+        ref="dropdown"
+        class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
+      >
+        <div class="flex flex-col">
           <div
-            ref="profileButton"
-            class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
-            @click="toggleUserMenu"
+            class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
           >
             <i class="bi bi-person text-gray-500 text-xl"></i>
           </div>
-
-          <!-- 🔽 Profile Dropdown -->
-          <transition name="fade-slide">
-            <div
-              v-if="isUserMenuOpen"
-              ref="dropdown"
-              class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
-            >
-              <div class="flex flex-col">
-                <div
-                  
-                  class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
-                >
-                  <i class="bi bi-person text-gray-500 text-xl"></i>
-                </div>
 
                 <div id="content" class="px-4 pb-4">
                   <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
@@ -76,26 +81,26 @@
                     </router-link>
                   </div>
 
-                  <div
-                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-                    @click="switchAccount"
-                  >
-                    <i class="fa-solid fa-repeat text-accent-color"></i>
-                    <h4 class="text-accent-color">Switch Account</h4>
-                  </div>
-
-                  <div
-                    @click="handleLogout"
-                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-                  >
-                    <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
-                    <h4 class="text-accent-color">Log out</h4>
-                  </div>
-                </div>
-              </div>
+            <div
+              class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+              @click="switchAccount"
+            >
+              <i class="fa-solid fa-repeat text-accent-color"></i>
+              <h4 class="text-accent-color">Switch Account</h4>
             </div>
-          </transition>
+
+            <div
+              @click="handleLogout"
+              class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+            >
+              <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
+              <h4 class="text-accent-color">Log out</h4>
+            </div>
+          </div>
         </div>
+      </div>
+    </transition>
+  </div>
 
         <!-- 🚫 Not Logged In -->
         <div v-else class="flex items-center space-x-3">
@@ -162,7 +167,7 @@
       </aside>
     </div>
     </div>
-  </div>
+  
 </template>
 
 <script>

@@ -22,9 +22,9 @@ import AboutUs from "./components/AboutUs.vue";
 import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
-import MannageUserProfile from "./components/MannageUserProfile.vue";
-
+import ManageUserProfile from "./components/MannageUserProfile.vue";
 // ✅ Dashboard Components (inside AdminDashboard folder)
+
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
 import Dashboard from "./components/AdminDashboard/Dashboard.vue"
 import Users from "./components/AdminDashboard/UsersTable.vue";
@@ -36,7 +36,7 @@ import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
 //Technicion Dashboard
 import TechncionDashboard from "./components/TechncionDashboard.vue";
-import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
+// import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./components/CreateServiceCard.vue";
 import MyAppointments from "./components/MyAppointments.vue";
 import ordersCard from "./components/ordersCard.vue";
@@ -66,10 +66,10 @@ const routes = [
   { path: "/signup", component: SignUp },
   { path: "/about", component: AboutUs },
   { path: "/profiles/:service", name: "ProfilesPage", component: ProfilesPage },
-  { path: "/technicianProfile", component: TechnicianProfile },
+  { path: "/profile/:id", component: TechnicianProfile },
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
-{ path: "/manageuserprofile", name: "ManageUserProfile", component: MannageUserProfile },
+  { path: "/manageUserProfile", component: ManageUserProfile },
 
   // ✅ Dashboard (Admin only)
   {
@@ -107,28 +107,60 @@ const router = createRouter({
 });
 
 // ✅ Navigation Guard (حماية صفحات الأدمن)
+// ✅ Navigation Guard (auth protection + redirect logic)
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
-  const requiresAdmin = to.meta.requiresAdmin;
 
+  // Wait for Firebase to finish initializing (auth might be null for a moment)
+  if (user === undefined) {
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      unsubscribe();
+      next(to.fullPath);
+    });
+    return;
+  }
+
+  const requiresAdmin = to.meta.requiresAdmin;
+  const requiresTechnician = to.meta.requiresTechnician;
+
+  // 🧩 Protect admin routes
   if (requiresAdmin && !user) return next("/login");
 
   if (requiresAdmin && user) {
     try {
-      const userDoc = await getDoc(doc(getFirestore(), "admin", user.uid));
-      if (userDoc.exists() && userDoc.data().userType === "admin") {
-        return next();
-      } else {
-        return next("/");
+      const collections = ["admin", "clients", "technicians", "companies"];
+      let userType = null;
+
+      for (const c of collections) {
+        const docRef = doc(db, c, user.uid);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          userType = snap.data().userType || c; // fallback to collection name
+          break;
+        }
       }
+
+      if (userType === "admin") return next();
+      if (userType === "client") return next("/");
+      if (userType === "technicians" || userType === "companies")
+        return next("/technician-dashboard");
+
+      return next("/login");
     } catch (err) {
-      console.error(err);
+      console.error("Navigation guard error:", err);
       return next("/login");
     }
   }
 
+  // 🚫 If already logged in and trying to go to login/signup — redirect to home
+  if ((to.path === "/login" || to.path === "/signup") && user) {
+    return next("/");
+  }
+
+  // ✅ Default allow
   next();
 });
+
 
 // ✅ Create and Mount App
 const app = createApp(App);
