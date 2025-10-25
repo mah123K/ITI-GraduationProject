@@ -371,7 +371,7 @@ export default {
 
         await setDoc(doc(db, "technicians", user.uid), payload);
    
-
+        this.$route.push('/login');
         
         // clear
         Object.keys(f).forEach(k => (f[k] = ""));

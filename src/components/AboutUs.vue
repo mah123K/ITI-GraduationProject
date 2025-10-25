@@ -149,17 +149,17 @@
       <img 
         src="../images/Rectangle 18.png" 
         alt="electrician working"
-        class=" object-cover w-80  shadow-lg absolute top-60 left-50 z-10"
+        class=" object-cover w-70  shadow-lg absolute top-60 left-60 z-10"
       />
     </div>
 
-    <div class="textContainer lg:w-xl gap-5 flex flex-col w-96 md:w-2xl justify-center">
-      <h2 class="text-xl font-semibold my-4 ">Our special features</h2>
-      <h1 class="text-4xl font-semibold my-4 text-accent-color">We don't just fix homes, we deliver an experience.</h1>
+    <div class="textContainer lg:w-xl gap-3 flex flex-col w-96 md:w-2xl justify-center">
+      <h2 class="text-xl font-semibold my-2 ">Our special features</h2>
+      <h1 class="text-4xl font-semibold text-accent-color">We don't just fix homes, we deliver an experience.</h1>
       <ul>
-        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">Certified Technicians</h2>Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.</li>
-        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">24/7 Priority Support</h2>Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.</li>
-        <li class="text-sm my-2"><h2 class="text-3xl my-2 text-accent-color">Transparent Pricing Policy</h2>No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for.</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">Certified Technicians</h2>Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">24/7 Priority Support</h2>Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">Transparent Pricing Policy</h2>No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for.</li>
       </ul>
     </div>
     </div>
@@ -205,7 +205,7 @@
 
     <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
       <h2 class="text-3xl font-semibold">Why choose us?</h2>
-      <p class="md:text-md text-sm">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
+      <p class="md:text-md text-md">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
       
       <ul class="space-y-4">
       <li class="flex items-start gap-3 text-xl text-gray-800">
