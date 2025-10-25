@@ -73,13 +73,13 @@
             <i class="bi bi-person text-gray-500 text-xl"></i>
           </div>
 
-          <div id="content" class="px-4 pb-4">
-            <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
-              <i class="fa-solid fa-user text-accent-color"></i>
-              <router-link to="/mannageuserprofile" @click="closeMenu">
-                <h4 class="cursor-pointer text-accent-color">Manage your Profile</h4>
-              </router-link>
-            </div>
+                <div id="content" class="px-4 pb-4">
+                  <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
+                    <i class="fa-solid fa-user text-accent-color"></i>
+                    <router-link to="/ClientProfile" @click="closeMenu">
+                      <h4 class="cursor-pointer text-accent-color">Manage your Profile</h4>
+                    </router-link>
+                  </div>
 
             <div
               class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
@@ -102,21 +102,28 @@
     </transition>
   </div>
 
-  <!-- 🚫 Not Logged In -->
-  <div v-else class="flex items-center space-x-3">
-    <router-link
-      to="/SignUp"
-      class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
-    >
-      Sign Up
-    </router-link>
-    <router-link
-      to="/login"
-      class="btn btn-outline btn-sm text-accent-color rounded-[10px] hover:bg-white"
-    >
-      Login
-    </router-link>
-  </div>
+        <!-- 🚫 Not Logged In -->
+        <div v-else class="flex items-center space-x-3">
+          <div class="flex items-center mr-4"> 
+          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i> 
+          <button @click="toggleDarkMode" class="cursor-pointer"> 
+            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i> 
+            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i> 
+          </button>
+              </div>
+          <router-link
+            to="/SignUp"
+            class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
+          >
+            Sign Up
+          </router-link>
+          <router-link
+            to="/login"
+            class="btn btn-outline btn-sm text-accent-color rounded-[10px] hover:bg-white"
+          >
+            Login
+          </router-link>
+        </div>
 </div>
 
 
