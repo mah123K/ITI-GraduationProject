@@ -41,8 +41,12 @@ const handleTabClick = (tabName) => {
         >
           Orders
         </li>
-        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">
-          Appoientments
+        <li
+          class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer transition-colors"
+          :class="props.active === 'appointments' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
+          @click="handleTabClick('appointments')"
+        >
+          Appointments
         </li>
         <li
           class="text-lg font-semibold p-1 rounded-xl my-1 w-[180px] cursor-pointer"
@@ -60,7 +64,7 @@ const handleTabClick = (tabName) => {
           My Earnings
         </li>
 
-        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px]">Settings</li>
+        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px] cursor-pointer">Settings</li>
         <button class="border rounded-xl px-3 mt-4">Log Out</button>
       </ul>
     </div>
