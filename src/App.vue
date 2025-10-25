@@ -3,6 +3,7 @@
   import NavBar from './layout/NavBar.vue'
   import TechncionDashboard from './components/TechncionDashboard.vue';
   import TechnicionDashNav from './layout/TechnicionDashNav.vue';
+  import MannageUserProfile from './components/MannageUserProfile.vue';
 
   export default 
   {
@@ -16,7 +17,8 @@
       NavBar,
       TechncionDashboard,
       FooterLayout,
-      TechnicionDashNav
+      TechnicionDashNav,
+      MannageUserProfile
     }
   }
 </script>
@@ -26,6 +28,7 @@
   <footer-layout/>  -->
   <TechnicionDashNav/>
   <TechncionDashboard />
+  <!-- <MannageUserProfile/> -->
 </template>
 
 <style scoped>
