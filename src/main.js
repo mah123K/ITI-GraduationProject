@@ -44,7 +44,7 @@ import ServiceCard from "./components/ServiceCard.vue";
 
 // ✅ Firebase Config
 const firebaseConfig = {
- apiKey: "AIzaSyCoEkOce-LY7cXvtJHzvyVaygMAjPIzU3k",
+  apiKey: "AIzaSyCoEkOce-LY7cXvtJHzvyVaygMAjPIzU3k",
   authDomain: "tashteb-36a40.firebaseapp.com",
   projectId: "tashteb-36a40",
   storageBucket: "tashteb-36a40.firebasestorage.app",
@@ -85,6 +85,17 @@ const routes = [
       { path: "payments", name: "Payments", component: Payments },
       { path: "support", name: "Support", component: Support },
       { path: "settings", name: "Settings", component: Settings },
+    ],
+  },
+    {
+    path: "/technician-dashboard",
+    component: TechncionDashboard,
+    meta: { requiresTechnician: true },
+    children: [
+      { path: "", name: "TechnicianOrders", component: ordersCard },
+      { path: "services", name: "TechnicianServices", component: ServiceCard },
+      { path: "appointments", name: "TechnicianAppointments", component: MyAppointments },
+      { path: "create-service", name: "CreateServiceCard", component: CreateServiceCard },
     ],
   },
 ];
