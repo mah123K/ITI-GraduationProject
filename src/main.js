@@ -33,6 +33,13 @@ import Orders from "./components/AdminDashboard/Orders.vue";
 import Payments from "./components/AdminDashboard/Payments.vue";
 import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
+//Technicion Dashboard
+import TechncionDashboard from "./components/TechncionDashboard.vue";
+import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
+import CreateServiceCard from "./components/CreateServiceCard.vue";
+import MyAppointments from "./components/MyAppointments.vue";
+import ordersCard from "./components/ordersCard.vue";
+import ServiceCard from "./components/ServiceCard.vue";
 
 // ✅ Firebase Config
 const firebaseConfig = {
