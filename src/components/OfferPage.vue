@@ -3,11 +3,11 @@
     <div>
           <div class="w-full mt-15">
     <!-- ====== SIGNUP & REFER CARDS ====== -->
-    <div class="flex justify-center w-full">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div class="flex justify-center w-3xl mx-50">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <!-- SIGNUP CARD -->
         <div
-          class="relative mt-10 w-96 mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
+          class="relative col-span-2 mt-10 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
         >
           <div
             class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"

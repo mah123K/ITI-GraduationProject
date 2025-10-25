@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 // ✅ Vue
 import { createApp } from "vue";
