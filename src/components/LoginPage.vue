@@ -4,7 +4,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <div class="min-h-screen flex flex-col lg:flex-row bg-white  mt-16">
+  <div class="min-h-screen flex flex-col lg:flex-row bg-white  mt-2">
     <!-- Left Section -->
     <div
       class="relative lg:w-1/2 w-full flex items-center justify-center overflow-hidden min-h-[45vh] md:min-h-[50vh] lg:min-h-screen"

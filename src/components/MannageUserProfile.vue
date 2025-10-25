@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white-100 flex">
+  <div class="min-h-screen bg-white-100 flex mt-15">
     <!-- Sidebar -->
     <aside
       class="w-full md:w-1/4 bg-[#ffffff] shadow-2xl p-6 flex flex-col items-center relative border border-gray-300"
@@ -8,7 +8,7 @@
       <div class="relative group">
         <img
           :src="tempClient.image"
-          alt="Profile"
+          
           class="w-40 h-40 rounded-full object-cover border-4 border-[#5984C6] shadow-xl transition-transform duration-300"
           :class="{ 'group-hover:scale-105 cursor-pointer': isEditing }"
           @click="isEditing && triggerImageUpload"
@@ -20,7 +20,7 @@
           class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
           @click="triggerImageUpload"
         >
-          <i class="fa-solid fa-camera text-white text-2xl"></i>
+          <i class="fa-solid fa-camera text-white"></i>
         </div>
 
         <input
@@ -43,7 +43,7 @@
         <button
           v-if="!isEditing"
           @click="startEdit"
-          class="bg-accent-color w-88 text-white font-semibold py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
+          class="bg-accent-color w-full text-white font-semibold py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
         >
           <i class="fa-solid fa-pen-to-square"></i> Edit Profile
         </button>
@@ -68,7 +68,7 @@
       <!-- My Recent Orders -->
       <button
         @click="toggleOrders"
-        class="mt-6 w-88 bg-[#5984c6] text-white font-semibold py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
+        class="mt-6 w-full bg-[#5984c6] text-white font-semibold py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
       >
         <i class="fa-solid fa-box"></i>
         {{ showOrders ? "Back to Profile" : "My Recent Orders" }}
@@ -77,7 +77,7 @@
       <!-- Back Button -->
       <button
         @click="goBack"
-        class="mt-6 w-88 bg-[#5984c6] text-[#ffffff] font-semibold py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
+        class="mt-6 w-full bg-[#5984c6] text-[#ffffff] font-semibold py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner"
       >
         <i class="fa-solid fa-arrow-left"></i> Back
       </button>
