@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- test -->
     <!--hero section-->
     <section class="hero relative w-full ">
       <img
