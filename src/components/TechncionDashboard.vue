@@ -22,7 +22,7 @@ import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
-
+import ManageTechnicianProfile from './MannageTechnicionProfile.vue';
 // 🟦 Refs & states
 const technicianId = ref(null);
 const orders = ref([]);           // live from Firestore
