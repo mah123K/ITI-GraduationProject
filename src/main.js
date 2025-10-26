@@ -145,6 +145,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if ((to.path === "/login" || to.path === "/signup") && user) {
+    const lastRoute = localStorage.getItem("lastDashboardRoute");
+    if (lastRoute?.startsWith("/dashboard")) return next(lastRoute);
+    if (lastRoute?.startsWith("/technician-dashboard")) return next(lastRoute);
     return next("/");
   }
 
@@ -164,32 +167,60 @@ onAuthStateChanged(auth, async (user) => {
     appInitialized = true;
   }
 
-  const currentPath = router.currentRoute.value.path;
-  const lastRoute = localStorage.getItem("lastDashboardRoute");
-
-  if (user) {
-    const adminDoc = await getDoc(doc(db, "admin", user.uid));
-    const techDoc = await getDoc(doc(db, "technicians", user.uid));
-
-    // ✅ لو المستخدم في صفحة login أو signup
-    if (currentPath === "/login" || currentPath === "/signup") {
-      if (adminDoc.exists()) {
-        router.push(lastRoute?.startsWith("/dashboard") ? lastRoute : "/dashboard");
-      } else if (techDoc.exists()) {
-        router.push(
-          lastRoute?.startsWith("/technician-dashboard")
-            ? lastRoute
-            : "/technician-dashboard"
-        );
-      } else {
-        router.push("/");
-      }
-    }
-  } else {
-    // ✅ المستخدم خرج
+  // ننتظر Firebase تبعت الحالة بالكامل
+  if (!user) {
     localStorage.removeItem("lastDashboardRoute");
-    if (router.currentRoute.value.meta.requiresAdmin || router.currentRoute.value.meta.requiresTechnician) {
+    if (
+      router.currentRoute.value.meta.requiresAdmin ||
+      router.currentRoute.value.meta.requiresTechnician
+    ) {
       router.push("/login");
     }
+    return;
+  }
+
+  try {
+    const [adminDoc, techDoc] = await Promise.all([
+      getDoc(doc(db, "admin", user.uid)),
+      getDoc(doc(db, "technicians", user.uid)),
+    ]);
+
+    const currentPath = router.currentRoute.value.path;
+    let lastRoute = localStorage.getItem("lastDashboardRoute");
+
+    // ✅ لو المستخدم فني
+    if (techDoc.exists()) {
+      // لو مفيش route متخزنة، نحفظ الحالية كـ default
+      if (!lastRoute || !lastRoute.startsWith("/technician-dashboard")) {
+        localStorage.setItem("lastDashboardRoute", "/technician-dashboard");
+        lastRoute = "/technician-dashboard";
+      }
+
+      // لو المستخدم في login أو signup أو /
+      if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
+        router.replace(lastRoute);
+      }
+    }
+
+    // ✅ لو المستخدم أدمن
+    else if (adminDoc.exists()) {
+      if (!lastRoute || !lastRoute.startsWith("/dashboard")) {
+        localStorage.setItem("lastDashboardRoute", "/dashboard");
+        lastRoute = "/dashboard";
+      }
+
+      if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
+        router.replace(lastRoute);
+      }
+    }
+
+    // ✅ لو مستخدم عادي (مش فني ولا أدمن)
+    else {
+      if (currentPath === "/login" || currentPath === "/signup") {
+        router.replace("/");
+      }
+    }
+  } catch (error) {
+    console.error("Error restoring dashboard route:", error);
   }
 });
