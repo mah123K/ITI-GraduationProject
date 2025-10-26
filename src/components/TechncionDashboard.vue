@@ -4,35 +4,21 @@ import Chart from "chart.js/auto";
 
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 
 import ordersCard from "../components/ordersCard.vue";
 import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import { orders as initialOrders } from "../data/orders.js";
-import { services as initialServices } from "../data/Services.js";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
 import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
 
 const technicianId = ref(null);
-const orders = ref([]); // Start as empty
-const services = ref([]); // Start as empty
-
-// --- CHANGE 1: Read from sessionStorage on load ---
-// If 'dashboardMainTab' exists in storage, use it. Otherwise, default to 'orders'.
-const mainTab = ref(sessionStorage.getItem('dashboardMainTab') || 'orders');
-// ---------------------------------------------------
-
+const orders = ref([...initialOrders]);
+const services = ref([]); // 🔄 now dynamic from Firestore
+const mainTab = ref("orders");
 const orderTab = ref("requests");
-
-// --- NEW LOADING STATES ---
-const isAuthLoading = ref(true); // For the initial page/auth load
-const ordersLoading = ref(true);
-const servicesLoading = ref(true);
-const earningsLoading = ref(true);
-const availabilityLoading = ref(true); // You already had this one
-// --------------------------
 
 const showPopup = ref(false);
 const selectedService = ref(null);
@@ -40,6 +26,7 @@ const newImage = ref(null);
 const serviceTitle = ref("");
 const servicePrice = ref("");
 
+const availabilityLoading = ref(true);
 const availabilitySaving = ref(false);
 const days = ref([
   { name: 'Monday', active: false, start: '09:00', end: '17:00' },
@@ -63,62 +50,28 @@ const showNotification = ref(false);
 const notificationMessage = ref("");
 const notificationType = ref("success");
 
-// --- UPDATED ONMOUNTED ---
 onMounted(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
     if (user) {
       technicianId.value = user.uid;
-      // Load all data in parallel
-      await Promise.all([
-        loadOrders(),
-        loadServices(),
-        loadEarnings(),
-        loadAvailability()
-      ]);
+      loadAvailability();
+      fetchServices(); // 🟩 load Firestore services when logged in
     } else {
-      // No user, set all loading to false
       technicianId.value = null;
-      ordersLoading.value = false;
-      servicesLoading.value = false;
-      earningsLoading.value = false;
+      services.value = [];
+      days.value.forEach(day => day.active = false);
       availabilityLoading.value = false;
     }
-    // Auth check is done, hide initial page skeleton
-    isAuthLoading.value = false;
   });
 });
-// -------------------------
-
-// --- NEW SIMULATED LOAD FUNCTIONS ---
-const loadOrders = async () => {
-  ordersLoading.value = true;
-  await new Promise(r => setTimeout(r, 1500)); // Simulate network delay
-  orders.value = [...initialOrders];
-  ordersLoading.value = false;
-};
-
-const loadServices = async () => {
-  servicesLoading.value = true;
-  await new Promise(r => setTimeout(r, 1000)); // Simulate network delay
-  services.value = [...initialServices];
-  servicesLoading.value = false;
-};
-
-const loadEarnings = async () => {
-  earningsLoading.value = true;
-  await new Promise(r => setTimeout(r, 1200)); // Simulate network delay
-  // In a real app, you'd fetch chart data and stats here
-  earningsLoading.value = false;
-};
-// ---------------------------------
 
 const displayNotification = (message, type = "success", duration = 3000) => {
-    notificationMessage.value = message;
-    notificationType.value = type;
-    showNotification.value = true;
-    setTimeout(() => {
-        showNotification.value = false;
-    }, duration);
+  notificationMessage.value = message;
+  notificationType.value = type;
+  showNotification.value = true;
+  setTimeout(() => {
+    showNotification.value = false;
+  }, duration);
 };
 
 const loadAvailability = async () => {
@@ -160,7 +113,67 @@ const saveAvailability = async () => {
   availabilitySaving.value = false;
 };
 
-// ... (all other functions remain the same) ...
+// ===================== 🟩 FIRESTORE SERVICE CRUD =====================
+
+// Fetch all services for this technician
+const fetchServices = async () => {
+  if (!technicianId.value) return;
+  try {
+    const servicesRef = collection(db, "technicians", technicianId.value, "services");
+    const snapshot = await getDocs(servicesRef);
+    services.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error loading services:", error);
+  }
+};
+
+// Create or Update Service
+const saveChanges = async () => {
+  if (!technicianId.value) return;
+  try {
+    const servicesRef = collection(db, "technicians", technicianId.value, "services");
+
+    if (selectedService.value) {
+      const serviceRef = doc(db, "technicians", technicianId.value, "services", selectedService.value.id);
+      await updateDoc(serviceRef, {
+        descreption: serviceTitle.value,
+        price: servicePrice.value,
+        image: newImage.value || selectedService.value.image || "/images/create service.png",
+      });
+      displayNotification("Service updated successfully!", "success");
+    } else {
+      await addDoc(servicesRef, {
+        descreption: serviceTitle.value,
+        price: servicePrice.value,
+        image: newImage.value || "/images/create service.png",
+      });
+      displayNotification("Service added successfully!", "success");
+    }
+
+    await fetchServices();
+  } catch (error) {
+    console.error("Error saving service:", error);
+    displayNotification("Failed to save service.", "error");
+  }
+  closePopup();
+};
+
+// Delete a service
+const handleDeleteService = async (serviceId) => {
+  if (!technicianId.value) return;
+  try {
+    const serviceRef = doc(db, "technicians", technicianId.value, "services", serviceId);
+    await deleteDoc(serviceRef);
+    displayNotification("Service deleted successfully!", "success");
+    await fetchServices();
+  } catch (error) {
+    console.error("Error deleting service:", error);
+    displayNotification("Failed to delete service.", "error");
+  }
+};
+
+// =====================================================================
+
 const handleTabChange = (tabName) => { mainTab.value = tabName; };
 
 const handleAcceptOrder = (id) => {
@@ -198,27 +211,12 @@ const deleteImage = () => {
   newImage.value = null;
   if (selectedService.value) selectedService.value.image = null;
 };
-const saveChanges = () => {
-  if (selectedService.value) {
-    selectedService.value.descreption = serviceTitle.value;
-    selectedService.value.price = servicePrice.value;
-    if (newImage.value) selectedService.value.image = newImage.value;
-  } else {
-    services.value.push({
-      id: Date.now(),
-      image: newImage.value || "/images/create service.png",
-      descreption: serviceTitle.value,
-      price: servicePrice.value,
-    });
-  }
-  closePopup();
-};
 const closePopup = () => {
-    showPopup.value = false;
-    selectedService.value = null;
-    serviceTitle.value = "";
-    servicePrice.value = "";
-    newImage.value = null;
+  showPopup.value = false;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
 };
 
 const filteredOrders = computed(() =>
@@ -232,18 +230,13 @@ const filteredOrders = computed(() =>
 
 let chartInstance = null;
 watch(mainTab, (newTab) => {
-  
-  // --- CHANGE 2: Save to sessionStorage on change ---
-  sessionStorage.setItem('dashboardMainTab', newTab);
-  // --------------------------------------------------
-
-  if (newTab === "earnings" && !earningsLoading.value) { // Don't draw chart if loading
+  if (newTab === "earnings") {
     nextTick(() => {
       const ctx = document.getElementById("earningsChart");
       if (!ctx) return;
       if (chartInstance) chartInstance.destroy();
       chartInstance = new Chart(ctx, {
-       type: "line",
+        type: "line",
         data: {
           labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
           datasets: [
@@ -287,15 +280,16 @@ watch(mainTab, (newTab) => {
     });
   }
 }, { immediate: false });
-
 </script>
+
+
 <template>
   <div class="min-h-screen bg-gray-100 flex">
     <TechnicionDashNav :active="mainTab" @changeTab="handleTabChange" />
 
     <div class="myOrders ml-[20%] w-[80%] px-8 py-6 relative">
 
-      <transition name="fade">
+     <transition name="fade">
         <div
           v-if="showNotification"
           class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 bg-opacity-40 p-4"
@@ -310,13 +304,15 @@ watch(mainTab, (newTab) => {
               notificationType === 'success' ? 'bg-green-600' : 'bg-red-600'
             ]"
           >
-            <h3 id="notification-title" class="text-lg font-semibold mb-2">
+             <h3 id="notification-title" class="text-lg font-semibold mb-2">
               {{ notificationType === 'success' ? 'Success' : 'Error' }}
             </h3> 
+            
             <p class="text-center">{{ notificationMessage }}</p>
+
             <button
               @click="showNotification = false"
-              class="absolute top-2 right-2 text-white hover:text-gray-200 text-xl font-bold"
+              class="absolute top-2 right-2 text-white  hover:text-gray-200 text-xl font-bold"
               aria-label="Close notification"
             >
               &times; 
@@ -325,299 +321,279 @@ watch(mainTab, (newTab) => {
         </div>
       </transition>
 
-      <div v-if="isAuthLoading" class="w-full">
-        <div class="h-8 w-1/4 bg-gray-300 rounded skeleton-pulse mb-4"></div>
-        <div class="flex space-x-6 mb-6 border-b border-gray-300">
-          <div class="pb-2 border-b-2 border-gray-400">
-             <div class="h-6 w-24 bg-gray-300 rounded skeleton-pulse"></div>
-          </div>
-          <div class="pb-2">
-             <div class="h-6 w-24 bg-gray-300 rounded opacity-50 skeleton-pulse"></div>
-          </div>
-          <div class="pb-2">
-             <div class="h-6 w-24 bg-gray-300 rounded opacity-50 skeleton-pulse"></div>
-          </div>
+      <template v-if="mainTab === 'orders'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Orders</h2>
+        <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
+          <button
+            @click="orderTab = 'requests'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200',
+              orderTab === 'requests'
+                ? 'border-[#133B5D] text-[#133B5D]'
+                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+            ]"
+          >
+            New Requests
+          </button>
+          <button
+            @click="orderTab = 'upcoming'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200',
+              orderTab === 'upcoming'
+                ? 'border-[#133B5D] text-[#133B5D]'
+                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+            ]"
+          >
+            Upcoming
+          </button>
+          <button
+            @click="orderTab = 'completed'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200',
+              orderTab === 'completed'
+                ? 'border-[#133B5D] text-[#133B5D]'
+                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+            ]"
+          >
+            Completed
+          </button>
+        </div>
+        <div v-if="!filteredOrders.length" class="text-center text-gray-500 mt-10">
+            No orders found in this category.
         </div>
         <div class="ordersContainer flex flex-wrap -mx-2">
-          <div v-for="i in 3" :key="i" class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-            <div class="bg-white rounded-2xl shadow-md p-5 skeleton-pulse">
-              <div class="h-5 bg-gray-300 rounded w-3/4 mb-3"></div>
-              <div class="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-              <div class="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
-              <div class="flex justify-between">
-                <div class="h-10 w-24 bg-gray-300 rounded-lg"></div>
-                <div class="h-10 w-24 bg-gray-300 rounded-lg"></div>
+          <template v-if="orderTab === 'requests'">
+            <ordersCard
+              v-for="order in filteredOrders"
+              :key="order.id"
+              :order="order"
+              @acceptOrder="handleAcceptOrder"
+              @declineOrder="handleDeclineOrder"
+              class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
+            />
+          </template>
+          <template v-else-if="orderTab === 'upcoming'">
+            <UpcomingCard
+              v-for="order in filteredOrders"
+              :key="order.id"
+              :order="order"
+              @markCompleted="handleMarkCompletedOrder"
+              class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
+            />
+          </template>
+          <template v-else-if="orderTab === 'completed'">
+          <div
+            v-for="order in filteredOrders"
+            :key="order.id"
+            class="order rounded-2xl shadow-md p-5 w-[31%] bg-green-50 m-2 border border-green-300 relative"
+          >
+            <!-- ✅ Details Button -->
+            <button
+              @click="order.showDetails = true"
+              class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+            >
+              Details
+            </button>
+
+            <!-- ✅ Short Description -->
+            <p class="text-[#133B5D] font-semibold text-lg mb-2 break-words">
+              <span class="font-bold">Order:</span>
+              {{
+                (order.descreption || "")
+                  .split(/\s+/)
+                  .slice(0, 15)
+                  .join(" ") +
+                ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
+              }}
+            </p>
+
+            <p><span class="font-semibold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+            <p><span class="font-semibold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+            <p><span class="font-semibold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+            <p><span class="font-semibold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+            <p><span class="font-semibold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+
+            <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
+
+            <!-- ✅ Pop-up for Full Details -->
+            <div
+              v-if="order.showDetails"
+              @click.self="order.showDetails = false"
+              class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
+            >
+              <div
+                class="bg-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+              >
+                <button
+                  @click="order.showDetails = false"
+                  class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl"
+                >
+                  ✕
+                </button>
+
+                <h2 class="text-2xl font-semibold text-[#133B5D] mb-4 text-center">
+                  Completed Order Details
+                </h2>
+
+                <div class="mt-4 space-y-2 text-lg">
+                  <textarea
+                    disabled
+                    class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px]"
+                  >{{ order.descreption }}</textarea>
+                  <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+                  <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+                  <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+                  <p><span class="font-bold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+                  <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+                  <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
+                </div>
               </div>
+            </div>
+          </div>
+        </template>
+
+        </div>
+      </template>
+
+      <template v-else-if="mainTab === 'services'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Services</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-8">
+          <CreateServiceCard @createService="openCreatePopup" />
+          <ServiceCard
+            v-for="service in services"
+            :key="service.id"
+            :service="service"
+            @editService="openEditPopup"
+            @deleteService="handleDeleteService"
+          />
+        </div>
+      </template>
+
+      <template v-else-if="mainTab === 'earnings'">
+        <div class="earningsSection">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">My Earnings</h2>
+          <div class="bg-gradient-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center">
+             <div>
+              <p class="text-lg opacity-90">Total Earnings</p>
+              <h1 class="text-5xl font-bold mt-2">4,530 EGP</h1>
+              <p class="text-sm text-gray-200 mt-2">Updated today</p>
+              <p class="text-sm mt-1 text-green-300 font-medium flex items-center">
+                <img src="../images/increase.png" class="w-5 h-5 mr-1" alt="" />
+                12% this month
+              </p>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Earnings Overview</h3>
+            <div class="h-[300px]">
+                <canvas id="earningsChart"></canvas>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl shadow-md p-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Recent Orders</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left border-collapse">
+                 <thead>
+                  <tr class="border-b text-gray-600">
+                    <th class="py-2 px-3">Date</th>
+                    <th class="py-2 px-3">Service</th>
+                    <th class="py-2 px-3">Client</th>
+                    <th class="py-2 px-3 text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="order in orders" :key="order.id" class="border-b hover:bg-gray-50 text-sm">
+                     <td class="py-3 px-3">{{ order.date }}</td>
+                    <td class="py-3 px-3">{{ order.descreption }}</td>
+                    <td class="py-3 px-3">{{ order.customer }}</td>
+                    <td class="py-3 px-3 text-right">
+                      <span class="px-2 py-1 rounded text-xs bg-green-100 text-green-700 font-semibold">
+                        {{ order.price }} EGP
+                      </span>
+                    </td>
+                  </tr>
+                  <tr v-if="!orders.length">
+                    <td colspan="4" class="text-center py-4 text-gray-500">No recent orders yet</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </div>
+      </template>
 
-      <div v-else>
-        <template v-if="mainTab === 'orders'">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Orders</h2>
-          <div class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium">
-            <button
-              @click="orderTab = 'requests'"
-              :class="[
-                'pb-2 border-b-2 transition-colors duration-200',
-                orderTab === 'requests'
-                  ? 'border-[#133B5D] text-[#133B5D]'
-                  : 'border-transparent text-gray-500 hover:text-[#133B5D]',
-              ]"
-            >
-              New Requests
-            </button>
-            <button
-              @click="orderTab = 'upcoming'"
-              :class="[
-                'pb-2 border-b-2 transition-colors duration-200',
-                orderTab === 'upcoming'
-                  ? 'border-[#133B5D] text-[#133B5D]'
-                  : 'border-transparent text-gray-500 hover:text-[#133B5D]',
-              ]"
-            >
-              Upcoming
-            </button>
-            <button
-              @click="orderTab = 'completed'"
-              :class="[
-                'pb-2 border-b-2 transition-colors duration-200',
-                orderTab === 'completed'
-                  ? 'border-[#133B5D] text-[#133B5D]'
-                  : 'border-transparent text-gray-500 hover:text-[#133B5D]',
-              ]"
-            >
-              Completed
-            </button>
+      <template v-else-if="mainTab === 'appointments'">
+        <div v-if="!technicianId" class="text-center text-gray-500 mt-10 p-6 bg-white rounded-lg shadow">
+           <p>Loading user information...</p>
+        </div>
+        <div v-else class="p-6 bg-white rounded-2xl shadow-md">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Availability</h2>
+
+          <div v-if="availabilityLoading" class="text-center text-gray-500 py-10">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
+            Loading availability...
           </div>
 
-          <div v-if="ordersLoading" class="ordersContainer flex flex-wrap -mx-2">
-            <div v-for="i in 3" :key="i" class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-              <div class="bg-white rounded-2xl shadow-md p-5 skeleton-pulse">
-                <div class="h-5 bg-gray-300 rounded w-3/4 mb-3"></div>
-                <div class="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-                <div class="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
-                <div class="flex justify-between">
-                  <div class="h-10 w-24 bg-gray-300 rounded-lg"></div>
-                  <div class="h-10 w-24 bg-gray-300 rounded-lg"></div>
-                </div>
+          <div v-else class="space-y-6">
+            <div v-for="day in days" :key="day.name" class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4">
+                <input
+                  type="checkbox"
+                  :id="`avail-${day.name}`"
+                  v-model="day.active"
+                  class="h-5 w-5 text-[#133B5D] rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
+                />
+                <label :for="`avail-${day.name}`" class="text-lg font-semibold text-gray-800 cursor-pointer">{{ day.name }}</label>
               </div>
-            </div>
-          </div>
-          
-          <div v-else-if="!filteredOrders.length" class="text-center text-gray-500 mt-10">
-            No orders found in this category.
-          </div>
 
-          <div v-else class="ordersContainer flex flex-wrap -mx-2">
-            <template v-if="orderTab === 'requests'">
-              <ordersCard
-                v-for="order in filteredOrders"
-                :key="order.id"
-                :order="order"
-                @acceptOrder="handleAcceptOrder"
-                @declineOrder="handleDeclineOrder"
-                class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
-              />
-            </template>
-            <template v-else-if="orderTab === 'upcoming'">
-              <UpcomingCard
-                v-for="order in filteredOrders"
-                :key="order.id"
-                :order="order"
-                @markCompleted="handleMarkCompletedOrder"
-                class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
-              />
-            </template>
-            <template v-else-if="orderTab === 'completed'">
-              <div
-                v-for="order in filteredOrders"
-                :key="order.id"
-                class="order rounded-2xl shadow-md p-5 w-full md:w-1/2 lg:w-1/3 px-2 mb-4 bg-green-50 border border-green-300"
-              >
-                <p class="text-[#133B5D] font-semibold text-lg mb-2 truncate">{{ order.descreption }}</p>
-                <p class="text-sm text-gray-600">Price: {{ order.price }} EGP</p>
-                <p class="text-sm text-gray-600">Date: {{ order.date }}</p>
-                <p class="text-sm text-gray-600">Client: {{ order.customer }}</p>
-                <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
-              </div>
-            </template>
-          </div>
-        </template>
-
-        <template v-else-if="mainTab === 'services'">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Services</h2>
-
-          <div v-if="servicesLoading" class="ordersContainer flex flex-wrap -mx-2">
-            <div v-for="i in 3" :key="i" class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-              <div class="bg-white rounded-2xl shadow-md p-5 skeleton-pulse">
-                <div class="h-32 bg-gray-300 rounded w-full mb-3"></div>
-                <div class="h-5 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div class="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
-                <div class="h-10 w-full bg-gray-300 rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-          
-          <div v-else class="ordersContainer flex flex-wrap -mx-2">
-            <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-              <CreateServiceCard @createService="openCreatePopup" />
-            </div>
-            <ServiceCard
-              v-for="service in services"
-              :key="service.id"
-              :service="service"
-              @editService="openEditPopup"
-              class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
-            />
-          </div>
-        </template>
-
-        <template v-else-if="mainTab === 'earnings'">
-          <div v-if="earningsLoading">
-            <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">My Earnings</h2>
-            <div class="bg-gray-300 skeleton-pulse rounded-2xl p-8 mb-6 shadow-lg h-[200px]">
-            </div>
-            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-              <div class="h-6 w-1/3 bg-gray-300 skeleton-pulse rounded mb-4"></div>
-              <div class="h-[300px] bg-gray-300 skeleton-pulse rounded"></div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-md p-6">
-              <div class="h-6 w-1/3 bg-gray-300 skeleton-pulse rounded mb-4"></div>
-              <div class="space-y-3">
-                <div class="h-8 bg-gray-300 skeleton-pulse rounded w-full"></div>
-                <div class="h-8 bg-gray-300 skeleton-pulse rounded w-full"></div>
-                <div class="h-8 bg-gray-300 skeleton-pulse rounded w-full"></div>
-              </div>
-            </div>
-          </div>
-          
-          <div v-else class="earningsSection">
-            <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">My Earnings</h2>
-            <div class="bg-gradient-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center">
-                <div>
-                <p class="text-lg opacity-90">Total Earnings</p>
-                <h1 class="text-5xl font-bold mt-2">4,530 EGP</h1>
-                <p class="text-sm text-gray-200 mt-2">Updated today</p>
-                <p class="text-sm mt-1 text-green-300 font-medium flex items-center">
-                  <img src="../images/increase.png" class="w-5 h-5 mr-1" alt="" />
-                  12% this month
-                </p>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-                <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Earnings Overview</h3>
-                <div class="h-[300px]">
-                  <canvas id="earningsChart"></canvas>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-md p-6">
-                <h3 class="text-xl font-semibold text-[#133B5D] mb-4">Recent Orders</h3>
-                <div class="overflow-x-auto">
-                <table class="min-w-full text-left border-collapse">
-                    <thead>
-                      <tr class="border-b text-gray-600">
-                        <th class="py-2 px-3">Date</th>
-                        <th class="py-2 px-3">Service</th>
-                        <th class="py-2 px-3">Client</th>
-                        <th class="py-2 px-3 text-right">Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="order in orders" :key="order.id" class="border-b hover:bg-gray-50 text-sm">
-                          <td class="py-3 px-3">{{ order.date }}</td>
-                        <td class="py-3 px-3">{{ order.descreption }}</td>
-                        <td class="py-3 px-3">{{ order.customer }}</td>
-                        <td class="py-3 px-3 text-right">
-                          <span class="px-2 py-1 rounded text-xs bg-green-100 text-green-700 font-semibold">
-                            {{ order.price }} EGP
-                          </span>
-                        </td>
-                      </tr>
-                      <tr v-if="!orders.length">
-                        <td colspan="4" class="text-center py-4 text-gray-500">No recent orders yet</td>
-                      </tr>
-                    </tbody>
-                </table>
-                </div>
-            </div>
-          </div>
-        </template>
-        
-        <template v-else-if="mainTab === 'appointments'">
-          <div v-if="!technicianId" class="text-center text-gray-500 mt-10 p-6 bg-white rounded-lg shadow">
-              <p>Loading user information...</p>
-          </div>
-          <div v-else class="p-6 bg-white rounded-2xl shadow-md">
-            <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Availability</h2>
-
-            <div v-if="availabilityLoading" class="text-center text-gray-500 py-10">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
-              Loading availability...
-            </div>
-
-            <div v-else class="space-y-6">
-              <div v-for="day in days" :key="day.name" class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors">
-                <div class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4">
-                  <input
-                    type="checkbox"
-                    :id="`avail-${day.name}`"
-                    v-model="day.active"
-                    class="h-5 w-5 text-[#133B5D] rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
-                  />
-                  <label :for="`avail-${day.name}`" class="text-lg font-semibold text-gray-800 cursor-pointer">{{ day.name }}</label>
-                </div>
-
-                <transition name="fade-fast">
-                  <div v-if="day.active" class="flex flex-col sm:flex-row items-center gap-4 flex-1 w-full md:w-3/4">
-                    <div class="flex-1 w-full sm:w-auto">
-                      <label :for="`start-${day.name}`" class="block text-sm font-medium text-gray-600 mb-1">Start Time</label>
-                      <select :id="`start-${day.name}`" v-model="day.start" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]">
-                        <option v-for="time in timeOptions" :key="`start-${time}`" :value="time">{{ time }}</option>
-                      </select>
-                    </div>
-                    <span class="text-gray-500 hidden sm:block pt-6">—</span>
-                    <div class="flex-1 w-full sm:w-auto">
-                      <label :for="`end-${day.name}`" class="block text-sm font-medium text-gray-600 mb-1">End Time</label>
-                      <select :id="`end-${day.name}`" v-model="day.end" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]">
-                        <option v-for="time in timeOptions" :key="`end-${time}`" :value="time">{{ time }}</option>
-                      </select>
-                    </div>
+              <transition name="fade-fast">
+                <div v-if="day.active" class="flex flex-col sm:flex-row items-center gap-4 flex-1 w-full md:w-3/4">
+                  <div class="flex-1 w-full sm:w-auto">
+                    <label :for="`start-${day.name}`" class="block text-sm font-medium text-gray-600 mb-1">Start Time</label>
+                    <select :id="`start-${day.name}`" v-model="day.start" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]">
+                      <option v-for="time in timeOptions" :key="`start-${time}`" :value="time">{{ time }}</option>
+                    </select>
                   </div>
-                </transition>
+                  <span class="text-gray-500 hidden sm:block pt-6">—</span>
+                  <div class="flex-1 w-full sm:w-auto">
+                    <label :for="`end-${day.name}`" class="block text-sm font-medium text-gray-600 mb-1">End Time</label>
+                    <select :id="`end-${day.name}`" v-model="day.end" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]">
+                      <option v-for="time in timeOptions" :key="`end-${time}`" :value="time">{{ time }}</option>
+                    </select>
+                  </div>
+                </div>
+              </transition>
 
-                <transition name="fade-fast">
-                    <div v-if="!day.active" class="flex-1 w-full md:w-3/4">
-                      <p class="text-gray-500 italic p-2 rounded bg-gray-200 text-center">Not available</p>
-                    </div>
-                </transition>
-              </div>
+              <transition name="fade-fast">
+                 <div v-if="!day.active" class="flex-1 w-full md:w-3/4">
+                   <p class="text-gray-500 italic p-2 rounded bg-gray-200 text-center">Not available</p>
+                 </div>
+              </transition>
+            </div>
 
-              <div class="mt-8 flex justify-end">
-                <button
-                  @click="saveAvailability"
-                  :disabled="availabilitySaving || !technicianId"
-                  class="bg-[#133B5D] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1b5383] transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  <svg v-if="availabilitySaving" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  {{ availabilitySaving ? 'Saving...' : 'Save Availability' }}
-                </button>
-              </div>
+            <div class="mt-8 flex justify-end">
+              <button
+                @click="saveAvailability"
+                :disabled="availabilitySaving || !technicianId"
+                class="bg-[#133B5D] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#1b5383] transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <svg v-if="availabilitySaving" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                {{ availabilitySaving ? 'Saving...' : 'Save Availability' }}
+              </button>
             </div>
           </div>
-        </template>
+        </div>
+      </template>
+      <template v-else-if="mainTab === 'Techsettings'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Settings</h2>
 
-        <template v-else-if="mainTab === 'Techsettings'">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Settings</h2>
-          <ManageTechnicianProfile @showNotification="displayNotification"/>
-        </template>
-      </div>
+        <ManageTechnicianProfile @showNotification="displayNotification"/>
 
+      </template>
     </div>
 
     <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
-      <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative">
+       <div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl text-center relative">
         <button @click="closePopup" class="absolute top-3 right-4 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">{{ selectedService ? "Edit Service" : "Create New Service" }}</h2>
         <div class="flex flex-col items-center mb-6">
@@ -646,21 +622,6 @@ watch(mainTab, (newTab) => {
 </template>
 
 <style scoped>
-/* --- ADD THIS CLASS --- */
-.skeleton-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-/* -------------------- */
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;

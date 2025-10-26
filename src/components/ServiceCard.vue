@@ -29,7 +29,10 @@
       >
         Edit
       </button>
-      <button class="bg-[#ff0000] rounded-lg p-1 px-3 text-white mx-2 hover:bg-red-700 cursor-pointer">
+      <button
+        @click="$emit('deleteService', service.id)"
+        class="bg-[#ff0000] rounded-lg p-1 px-3 text-white mx-2 hover:bg-red-700 cursor-pointer"
+      >
         Delete
       </button>
     </div>

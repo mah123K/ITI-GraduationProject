@@ -6,14 +6,17 @@ import {
   doc,
   getDoc,
   collection,
+  getDocs,
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
-// 🟩 New Imports for dynamic service rendering
+// 🟩 Import card component
 import UserServiceCard from "../components/UserServiceCard.vue";
-import { services } from "../data/Services.js";
+
+// 🟦 Dynamic service list from Firestore
+const serviceList = ref([]);
 
 const showPopup = ref(false);
 const uploadedFiles = ref([]);
@@ -39,10 +42,7 @@ const servicePrice = ref("");
 const isPriceLocked = ref(false);
 const orderDescription = ref("");
 
-// 🟦 Dynamic service list imported from global data
-const serviceList = ref(services);
-
-// --- Static Feedbacks (Can be fetched from Firebase later) ---
+// --- Static Feedbacks ---
 const feedbacks = ref([
   {
     name: "manar morad",
@@ -61,7 +61,7 @@ const feedbacks = ref([
   },
 ]);
 
-// --- Computed Properties for Display ---
+// --- Computed Properties ---
 const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
 const technicianLocation = computed(
@@ -220,8 +220,7 @@ const submitOrder = async () => {
       createdAt: serverTimestamp(),
     };
 
-    const docRef = await addDoc(collection(db, "orders"), orderData);
-    console.log("Order submitted with ID: ", docRef.id);
+    await addDoc(collection(db, "orders"), orderData);
     alert("Order submitted successfully!");
     closePopup();
   } catch (error) {
@@ -232,16 +231,20 @@ const submitOrder = async () => {
   }
 };
 
-// --- Feedback Slider ---
-const nextFeedback = () => {
-  currentIndex.value = (currentIndex.value + 1) % feedbacks.value.length;
-};
-const prevFeedback = () => {
-  currentIndex.value =
-    (currentIndex.value - 1 + feedbacks.value.length) % feedbacks.value.length;
+// --- Fetch Technician, Client, and Services ---
+const fetchTechnicianServices = async (technicianId) => {
+  try {
+    const servicesRef = collection(db, "technicians", technicianId, "services");
+    const snapshot = await getDocs(servicesRef);
+    serviceList.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error("Error fetching technician services:", error);
+  }
 };
 
-// --- Fetch Technician & Client Data ---
 onMounted(async () => {
   isLoading.value = true;
 
@@ -272,17 +275,19 @@ onMounted(async () => {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       technician.value = docSnap.data();
+
       if (
         technician.value.availability &&
         Array.isArray(technician.value.availability)
       ) {
         availabilitySchedule.value = technician.value.availability;
       } else {
-        console.warn("Technician availability data missing or not an array.");
         availabilitySchedule.value = [];
       }
+
+      // 🟩 Fetch technician services dynamically
+      await fetchTechnicianServices(technicianIdParam);
     } else {
-      console.error("No such technician found!");
       technician.value = null;
     }
   } catch (error) {
@@ -297,6 +302,7 @@ watch(selectedDayInfo, () => {
   selectedTime.value = "";
 });
 </script>
+
 
 
 <template>
@@ -777,70 +783,3 @@ watch(selectedDayInfo, () => {
 
 
 
-<!-- 
-<div
-            class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
-          >
-            <div class="serviceImg mb-4">
-              <img
-                src="/images/tab.png"
-                class="w-28 h-28 md:w-32 md:h-32 object-contain"
-                alt="Tap Leak"
-              />
-            </div>
-            <h2 class="font-semibold text-gray-700">Fix tap leak</h2>
-            <h2 class="font-bold text-accent-color text-lg md:text-xl">
-              150 EGP
-            </h2>
-            <button
-              @click="openPopup('fix tap leak', '150 EGP')"
-              class="w-full bg-accent-color text-white px-4 py-2 mt-auto rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"
-            >
-              Order Now
-            </button>
-          </div>
-
-          <div
-            class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
-          >
-            <div class="serviceImg mb-4">
-              <img
-                src="/images/sink.png"
-                class="w-28 h-28 md:w-32 md:h-32 object-contain"
-                alt="Shower Fix"
-              />
-            </div>
-            <h2 class="font-semibold text-gray-700">Fix shower</h2>
-            <h2 class="font-bold text-accent-color text-lg md:text-xl">
-              250 EGP
-            </h2>
-            <button
-              @click="openPopup('fix shower', '250 EGP')"
-              class="w-full bg-accent-color text-white px-4 py-2 mt-auto rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"
-            >
-              Order Now
-            </button>
-          </div>
-
-          <div
-            class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
-          >
-            <div class="serviceImg mb-4">
-              <img
-                src="/images/filter.png"
-                class="w-28 h-28 md:w-32 md:h-32 object-contain"
-                alt="Water Filter"
-              />
-            </div>
-            <h2 class="font-semibold text-gray-700">Install water filter</h2>
-            <h2 class="font-bold text-accent-color text-lg md:text-xl">
-              200 EGP
-            </h2>
-            <button
-              @click="openPopup('install water filter', '200 EGP')"
-              class="w-full bg-accent-color text-white px-4 py-2 mt-auto rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"
-            >
-              Order Now
-            </button>
-          </div>
--->
