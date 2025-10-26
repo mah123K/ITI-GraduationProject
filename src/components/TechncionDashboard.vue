@@ -45,6 +45,23 @@ for (let h = 0; h < 24; h++) {
     timeOptions.value.push(`${hour}:${minute}`);
   }
 }
+// --- Prevent leaving the dashboard ---
+import { onBeforeRouteLeave, useRouter } from "vue-router";
+const router = useRouter();
+
+// --- Prevent leaving the dashboard ---
+
+onBeforeRouteLeave((to, from) => {
+  // Get the current user directly from Firebase auth
+  const user = auth.currentUser;
+
+  if (user) {
+    console.log("Navigation blocked: User is still logged in.");
+    return false;
+  }
+  return true;
+});
+
 
 const showNotification = ref(false);
 const notificationMessage = ref("");
