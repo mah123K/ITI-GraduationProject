@@ -1,15 +1,9 @@
-
 <template>
-    <div>
-          <div class="w-full mt-15">
-    <!-- ====== SIGNUP & REFER CARDS ====== -->
-    <div class="flex justify-center w-3xl mx-50">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <!-- SIGNUP CARD -->
+  <div class_alias="pb-16"> <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16"> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
         <div
-          class="relative col-span-2 mt-10 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
-        >
-          <div
+          class="relative lg:col-span-2 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
+        > <div
             class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
           >
             Limited Time
@@ -29,11 +23,9 @@
           </button>
         </div>
 
-        <!-- REFER CARD -->
         <div
-          class="bg-gradient-to-br mt-10 w-96 mx-auto from-purple-600 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:scale-105 transition duration-300"
-        >
-          <div class="flex flex-col items-center justify-between gap-6">
+          class="bg-gradient-to-br w-full mx-auto from-purple-600 to-pink-500 rounded-2xl p-8 text-white shadow-2xl hover:scale-105 transition duration-300"
+        > <div class="flex flex-col items-center justify-between gap-6">
             <div class="flex-1 text-center">
               <h2 class="text-2xl md:text-3xl font-bold mb-2">REFER A FRIEND</h2>
               <p class="text-lg opacity-90">
@@ -58,15 +50,12 @@
       </div>
     </div>
 
-    <!-- ====== OFFERS SECTION ====== -->
-    <div class="flex justify-center mt-14">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        <div
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center"> <div
           v-for="(offer, index) in offers"
           :key="index"
-          class="relative bg-secondary-blue rounded-2xl w-72 shadow-md hover:shadow-xl transition transform hover:scale-105"
-        >
-          <div class="absolute top-0 left-0">
+          class="relative bg-secondary-blue rounded-2xl w-full max-w-xs sm:max-w-none shadow-md hover:shadow-xl transition transform hover:scale-105"
+        > <div class="absolute top-0 left-0">
             <img
               src="../images/offerdisc.png"
               class="w-15"
@@ -77,7 +66,7 @@
           <img
             :src="offer.image"
             alt="offer image"
-            class="w-full rounded-t-2xl h-48 object-cover"
+            class="w-full rounded-t-2xl h-70 object-cover"
           />
 
           <div class="card-body mt-2 items-center text-center p-3">
@@ -85,7 +74,7 @@
             <p class="text-gray-700 text-sm">{{ offer.description }}</p>
             <div class="mt-4">
               <button
-                class="bg-accent-color text-white  font-semibold py-2 hover:bg-[#4a6ca6] transition rounded-[10px] px-3 text-lg"
+                class="bg-accent-color text-white font-semibold py-2 hover:bg-[#4a6ca6] transition rounded-[10px] px-3 text-lg"
               >
                 Claim Offer
               </button>
@@ -94,59 +83,94 @@
         </div>
       </div>
     </div>
+
   </div>
-    </div>
 </template>
 
 <script>
-    export default {
-            name:"OfferPage",
-    data(){
-    return{
-        offers:[
+export default {
+  name: "OfferPage",
+  data() {
+    return {
+              offers:[
+
   {
+
     title: "10% OFF",
+
     description: "on your First Service",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702375/image_5_qdnori.jpg",
+
   },
+
   {
+
     title: "15% OFF",
+
     description: "on Plumbing Services",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+
   },
+
   {
+
     title: "Free Check-up",
+
     description: "with every maintenance order",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702373/image_7_gacwsb.jpg",
+
   },
+
   {
+
     title: "10% OFF",
+
     description: "on your First Service",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702375/image_5_qdnori.jpg",
+
   },
+
   {
+
     title: "15% OFF",
+
     description: "on finishing home Services",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+
   },
+
   {
+
     title: "15% OFF",
+
     description: "on finishing home Services",
+
     image:
+
       "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+
   },
+
 ]
-    }
-}
-        
-    }
+    };
+  },
+};
 </script>
 
 <style scoped>
-
 </style>
