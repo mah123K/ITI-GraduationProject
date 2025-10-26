@@ -138,17 +138,7 @@ router.afterEach((to) => {
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
   const requiresAdmin = to.meta.requiresAdmin;
-  // const requiresTechnician = to.meta.requiresTechnician;
-
-  // Protect profile page - must be logged in and handle back navigation
-  if (to.path === '/manageUserProfile' && !user) {
-    return next('/login');
-  }
-
-  // Handle back navigation from profile page
-  if (from.path === '/manageUserProfile' && to.path === '/signup') {
-    return next('/');
-  }
+  const requiresTechnician = to.meta.requiresTechnician;
 
   if (!user && (requiresAdmin || requiresTechnician)) {
     return next("/login");
