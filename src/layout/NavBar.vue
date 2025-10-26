@@ -105,11 +105,7 @@
         <!-- 🚫 Not Logged In -->
         <div v-else class="flex items-center space-x-3">
           <div class="flex items-center mr-4"> 
-          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i> 
-          <button @click="toggleDarkMode" class="cursor-pointer"> 
-            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i> 
-            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i> 
-          </button>
+         
               </div>
           <router-link
             to="/SignUp"
