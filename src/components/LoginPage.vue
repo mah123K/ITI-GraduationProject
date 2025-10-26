@@ -227,8 +227,8 @@ const handleSignIn = async () => {
     const collections = [
       { name: "admin", route: "/dashboard" },
       { name: "clients", route: "/" },
-      { name: "technicians", route: "/TechncionDashboard" },
-      { name: "companies", route: "/TechncionDashboard" },
+      { name: "technicians", route: "/technician-dashboard" },
+      { name: "companies", route: "/technician-dashboard" },
     ];
 
     let found = false;
