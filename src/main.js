@@ -1,17 +1,17 @@
-// ✅ Firebase
+//  Firebase
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import '@fortawesome/fontawesome-free/css/all.min.css'
 
-// ✅ Vue
+//  Vue
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
-// ✅ CSS
+//  CSS
 import "./assets/main.css";
 
-// ✅ Components
+//  Components
 import App from "./App.vue";
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
@@ -23,7 +23,7 @@ import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
 import ManageUserProfile from "./components/MannageUserProfile.vue";
-// ✅ Dashboard Components (inside AdminDashboard folder)
+//  Dashboard Components (inside AdminDashboard folder)
 
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
 import Dashboard from "./components/AdminDashboard/Dashboard.vue"
@@ -34,6 +34,7 @@ import Orders from "./components/AdminDashboard/Orders.vue";
 import Payments from "./components/AdminDashboard/Payments.vue";
 import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
+import AdminProfile from "./components/AdminDashboard/AdminProfile.vue";
 //Technicion Dashboard
 import TechncionDashboard from "./components/TechncionDashboard.vue";
 // import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
@@ -42,7 +43,7 @@ import MyAppointments from "./components/MyAppointments.vue";
 import ordersCard from "./components/ordersCard.vue";
 import ServiceCard from "./components/ServiceCard.vue";
 
-// ✅ Firebase Config
+//  Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCoEkOce-LY7cXvtJHzvyVaygMAjPIzU3k",
   authDomain: "tashteb-36a40.firebaseapp.com",
@@ -53,7 +54,7 @@ const firebaseConfig = {
   measurementId: "G-S9GFQC17GB",
 };
 
-// ✅ Initialize Firebase
+// Initialize Firebase
 initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore();
@@ -71,7 +72,7 @@ const routes = [
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
 
-  // ✅ Dashboard (Admin only)
+  // Dashboard (Admin only)
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -85,8 +86,17 @@ const routes = [
       { path: "payments", name: "Payments", component: Payments },
       { path: "support", name: "Support", component: Support },
       { path: "settings", name: "Settings", component: Settings },
+       {
+  path: "adminprofile",
+  name: "AdminProfile",
+  component: () => import("./components/AdminDashboard/AdminProfile.vue"),
+  meta: { requiresAdmin: true },
+},
+      
     ],
   },
+ 
+
     {
     path: "/technician-dashboard",
     component: TechncionDashboard,
@@ -142,7 +152,9 @@ router.beforeEach(async (to, from, next) => {
 
       if (userType === "admin") return next();
       if (userType === "client") return next("/");
-      if (userType === "technicians" || userType === "companies")
+     if (userType === "technician" || userType === "company")
+      return next("/technician-dashboard");
+
         return next("/technician-dashboard");
 
       return next("/login");
@@ -162,12 +174,12 @@ router.beforeEach(async (to, from, next) => {
 });
 
 
-// ✅ Create and Mount App
+//  Create and Mount App
 const app = createApp(App);
 app.use(router);
 app.mount("#app");
 
-// ✅ Redirect based on user role after login
+// Redirect based on user role after login
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const dbRef = getFirestore();
