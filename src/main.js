@@ -39,7 +39,7 @@ import Payments from "./components/AdminDashboard/Payments.vue";
 import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
 import AdminProfile from "./components/AdminDashboard/AdminProfile.vue";
-
+import AddOffer from "./components/AdminDashboard/AddOffers.vue";
 // Technician Dashboard
 import TechncionDashboard from "./components/TechncionDashboard.vue";
 import CreateServiceCard from "./components/CreateServiceCard.vue";
@@ -94,6 +94,7 @@ const routes = [
       { path: "payments", name: "Payments", component: Payments },
       { path: "support", name: "Support", component: Support },
       { path: "settings", name: "Settings", component: Settings },
+      { path: "addoffer", name: "AddOffer", component: AddOffer },
       {
         path: "adminprofile",
         name: "AdminProfile",
