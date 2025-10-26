@@ -4,19 +4,18 @@ import Chart from "chart.js/auto";
 
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 
 import ordersCard from "../components/ordersCard.vue";
 import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import { orders as initialOrders } from "../data/orders.js";
-import { services as initialServices } from "../data/Services.js";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
 
 const technicianId = ref(null);
 const orders = ref([...initialOrders]);
-const services = ref([...initialServices]);
+const services = ref([]); // 🔄 now dynamic from Firestore
 const mainTab = ref("orders");
 const orderTab = ref("requests");
 
@@ -55,8 +54,10 @@ onMounted(() => {
     if (user) {
       technicianId.value = user.uid;
       loadAvailability();
+      fetchServices(); // 🟩 load Firestore services when logged in
     } else {
       technicianId.value = null;
+      services.value = [];
       days.value.forEach(day => day.active = false);
       availabilityLoading.value = false;
     }
@@ -64,12 +65,12 @@ onMounted(() => {
 });
 
 const displayNotification = (message, type = "success", duration = 3000) => {
-    notificationMessage.value = message;
-    notificationType.value = type;
-    showNotification.value = true;
-    setTimeout(() => {
-        showNotification.value = false;
-    }, duration);
+  notificationMessage.value = message;
+  notificationType.value = type;
+  showNotification.value = true;
+  setTimeout(() => {
+    showNotification.value = false;
+  }, duration);
 };
 
 const loadAvailability = async () => {
@@ -98,18 +99,11 @@ const saveAvailability = async () => {
   availabilitySaving.value = true;
   try {
     const docRef = doc(db, 'technicians', technicianId.value);
-
-    // **Check if any day is active**
     const anyDayActive = days.value.some(day => day.active);
-
-    // **Prepare the data to save**
-    const availabilityDataToSave = anyDayActive ? days.value : []; // Save empty array if no days are active
-
-    // Use updateDoc to save the prepared data
+    const availabilityDataToSave = anyDayActive ? days.value : [];
     await updateDoc(docRef, {
-      availability: availabilityDataToSave // Save either the days array or an empty array
+      availability: availabilityDataToSave
     });
-
     displayNotification('Availability saved successfully!', 'success');
   } catch (error) {
     console.error("Error saving availability:", error);
@@ -117,6 +111,67 @@ const saveAvailability = async () => {
   }
   availabilitySaving.value = false;
 };
+
+// ===================== 🟩 FIRESTORE SERVICE CRUD =====================
+
+// Fetch all services for this technician
+const fetchServices = async () => {
+  if (!technicianId.value) return;
+  try {
+    const servicesRef = collection(db, "technicians", technicianId.value, "services");
+    const snapshot = await getDocs(servicesRef);
+    services.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error loading services:", error);
+  }
+};
+
+// Create or Update Service
+const saveChanges = async () => {
+  if (!technicianId.value) return;
+  try {
+    const servicesRef = collection(db, "technicians", technicianId.value, "services");
+
+    if (selectedService.value) {
+      const serviceRef = doc(db, "technicians", technicianId.value, "services", selectedService.value.id);
+      await updateDoc(serviceRef, {
+        descreption: serviceTitle.value,
+        price: servicePrice.value,
+        image: newImage.value || selectedService.value.image || "/images/create service.png",
+      });
+      displayNotification("Service updated successfully!", "success");
+    } else {
+      await addDoc(servicesRef, {
+        descreption: serviceTitle.value,
+        price: servicePrice.value,
+        image: newImage.value || "/images/create service.png",
+      });
+      displayNotification("Service added successfully!", "success");
+    }
+
+    await fetchServices();
+  } catch (error) {
+    console.error("Error saving service:", error);
+    displayNotification("Failed to save service.", "error");
+  }
+  closePopup();
+};
+
+// Delete a service
+const handleDeleteService = async (serviceId) => {
+  if (!technicianId.value) return;
+  try {
+    const serviceRef = doc(db, "technicians", technicianId.value, "services", serviceId);
+    await deleteDoc(serviceRef);
+    displayNotification("Service deleted successfully!", "success");
+    await fetchServices();
+  } catch (error) {
+    console.error("Error deleting service:", error);
+    displayNotification("Failed to delete service.", "error");
+  }
+};
+
+// =====================================================================
 
 const handleTabChange = (tabName) => { mainTab.value = tabName; };
 
@@ -155,27 +210,12 @@ const deleteImage = () => {
   newImage.value = null;
   if (selectedService.value) selectedService.value.image = null;
 };
-const saveChanges = () => {
-  if (selectedService.value) {
-    selectedService.value.descreption = serviceTitle.value;
-    selectedService.value.price = servicePrice.value;
-    if (newImage.value) selectedService.value.image = newImage.value;
-  } else {
-    services.value.push({
-      id: Date.now(),
-      image: newImage.value || "/images/create service.png",
-      descreption: serviceTitle.value,
-      price: servicePrice.value,
-    });
-  }
-  closePopup();
-};
 const closePopup = () => {
-    showPopup.value = false;
-    selectedService.value = null;
-    serviceTitle.value = "";
-    servicePrice.value = "";
-    newImage.value = null;
+  showPopup.value = false;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
 };
 
 const filteredOrders = computed(() =>
@@ -195,7 +235,7 @@ watch(mainTab, (newTab) => {
       if (!ctx) return;
       if (chartInstance) chartInstance.destroy();
       chartInstance = new Chart(ctx, {
-       type: "line",
+        type: "line",
         data: {
           labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
           datasets: [
@@ -239,8 +279,8 @@ watch(mainTab, (newTab) => {
     });
   }
 }, { immediate: false });
-
 </script>
+
 
 <template>
   <div class="min-h-screen bg-gray-100 flex">
@@ -423,7 +463,7 @@ watch(mainTab, (newTab) => {
             :key="service.id"
             :service="service"
             @editService="openEditPopup"
-            class="w-full md:w-1/2 lg:w-full px-2 mb-4"
+            @deleteService="handleDeleteService"
           />
         </div>
       </template>
