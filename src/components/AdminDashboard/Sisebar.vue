@@ -77,6 +77,15 @@
           >
             <i class="bi bi-gear"></i><span>Settings</span>
           </router-link>
+
+          
+          <router-link
+            to="/dashboard/addoffer"
+            class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
+            :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/addoffer' }"
+          >
+            <i class="bi bi-gear"></i><span>Add Offers</span>
+          </router-link>
         </nav>
       </div>
 
