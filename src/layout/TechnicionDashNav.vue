@@ -1,37 +1,57 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "vue-router";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { defineProps, defineEmits } from "vue";
 
+// Props and Emits
 const props = defineProps({
   active: { type: String, default: "orders" },
 });
-
 const emit = defineEmits(["changeTab"]);
 
 const handleTabClick = (tabName) => {
   emit("changeTab", tabName);
 };
 
-// ✅ Get technician name dynamically from Firestore
+// ✅ Router instance (needed for navigation)
+const router = useRouter();
+
+// ✅ Technician name reactive variable
 const technicianName = ref("Technician");
 
+// ✅ Logout function
+const handleLogout = async () => {
+  const auth = getAuth();
+  try {
+    await signOut(auth);
+    router.push("/login");
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+};
+
+// ✅ Fetch technician name from Firestore on mount
 onMounted(() => {
   const auth = getAuth();
-
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const docRef = doc(db, "technicians", user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        technicianName.value = docSnap.data().name || "Technician";
+      try {
+        const docRef = doc(db, "technicians", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          technicianName.value = docSnap.data().name || "Technician";
+        }
+      } catch (error) {
+        console.error("Error fetching technician data:", error);
       }
     }
   });
 });
 </script>
+
 
 <template>
   <div
@@ -86,7 +106,7 @@ onMounted(() => {
         </li>
 
         <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px] cursor-pointer">Settings</li>
-        <button class="border rounded-xl px-3 mt-4">Log Out</button>
+        <button @click="handleLogout" class="border rounded-xl p-2 px-3 mt-4 cursor-pointer">Log Out</button>
       </ul>
     </div>
   </div>
