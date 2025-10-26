@@ -71,6 +71,7 @@ const routes = [
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
+  
 
   // Dashboard (Admin only)
   {
