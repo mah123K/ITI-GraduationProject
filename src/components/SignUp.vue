@@ -41,58 +41,147 @@
           <h2 class="text-3xl font-bold mb-3 text-center text-accent-color">
             Client Registration
           </h2>
+<!-- Client profile image selector (click anywhere to upload) -->
+<div 
+  class="flex flex-col justify-center items-center mb-4 space-y-2 cursor-pointer select-none"
+  @click="$refs.clientProfileInput.click()"
+>
+  <!-- الدائرة -->
+  <div
+    class="w-20 h-20 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center hover:border-[#5984c6] hover:border-2 relative transition"
+  >
+    <img
+      v-if="profileClientPreview"
+      :src="profileClientPreview"
+      alt="profile"
+      class="w-full h-full object-cover"
+    />
+    <svg
+      v-else
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 450 512"
+      class="w-10 h-10 text-[#5984c6]"
+    >
+      <path
+        fill="#5984c6"
+        d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zM195 304C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512h358.6c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3H195z"
+      />
+    </svg>
+  </div>
 
-          <div class="grid grid-cols-2 gap-8 max-w-6xl mx-auto w-full">
-            <div class="flex flex-col gap-5">
+  <!-- النص + الأيقونة -->
+  <p class="text-lg font-semibold text-gray-600 flex items-center gap-2">
+    <i class="fa-solid fa-cloud-arrow-up text-[#5984c6]"></i>
+    Profile Picture (Optional)
+  </p>
+
+  <!-- الملف -->
+  <input
+    ref="clientProfileInput"
+    type="file"
+    accept="image/*"
+    @change="previewClientProfile"
+    class="hidden"
+  />
+</div>
+
+          <div class="max-w-6xl mx-auto w-full space-y-6">
+          <div class="max-w-6xl mx-auto w-full space-y-6">
+  <!-- Name and Email Row -->
+  <div class="grid grid-cols-2 gap-8">
+    <input
+      v-model="formClient.name"
+      type="text"
+      placeholder="Full Name *"
+      required
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
+    />
+    <input
+      v-model="formClient.email"
+      type="email"
+      placeholder="Email *"
+      required
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
+    />
+  </div>
+<!-- Password Row -->
+<div class="grid grid-cols-2 gap-8">
+  <div class="relative">
+    <input
+      v-model="formClient.password"
+      :type="showPassword ? 'text' : 'password'"
+      placeholder="Password *"
+      required
+      minlength="6"
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none pr-12"
+    />
+    <button
+      type="button"
+      @click="togglePassword"
+      class="absolute inset-y-0 right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
+      aria-label="Toggle password visibility"
+    >
+      <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+    </button>
+  </div>
+
+  <div class="relative">
+    <input
+      v-model="formClient.confirmPassword"
+      :type="showConfirmPassword ? 'text' : 'password'"
+      placeholder="Confirm Password *"
+      required
+      minlength="6"
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none pr-12"
+    />
+    <button
+      type="button"
+      @click="toggleConfirmPassword"
+      class="absolute inset-y-0 right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
+      aria-label="Toggle confirm password visibility"
+    >
+      <i :class="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+    </button>
+  </div>
+</div>
+
+
+  <!-- Phone and Country Row -->
+  <div class="grid grid-cols-2 gap-8">
+    <input
+      v-model="formClient.phone"
+      type="tel"
+      placeholder="Phone Number *"
+      required
+      pattern="[0-9]*"
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
+    />
+    <input
+      v-model="formClient.address.country"
+      type="text"
+      placeholder="Country *"
+      required
+      class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
+    />
+  </div>
+</div>
+
+       
+            <!-- Address Row -->
+            <div class="grid grid-cols-2 gap-8">
               <input
-                v-model="formClient.name"
+                v-model="formClient.address.street"
                 type="text"
-                placeholder="Full Name"
-                class="p-4 border border-gray-300 rounded-xl"
+                placeholder="Street Address *"
+                required
+                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
               />
               <input
-                v-model="formClient.username"
+                v-model="formClient.address.city"
                 type="text"
-                placeholder="Username"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-              <input
-                v-model="formClient.email"
-                type="email"
-                placeholder="Email"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-              <input
-                v-model="formClient.password"
-                type="password"
-                placeholder="Password"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-              <input
-                v-model="formClient.confirmPassword"
-                type="password"
-                placeholder="Confirm Password"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-            </div>
-            <div class="flex flex-col gap-5">
-              <input
-                v-model="formClient.phone"
-                type="text"
-                placeholder="Phone Number"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-              <input
-                v-model="formClient.address"
-                type="text"
-                placeholder="Address"
-                class="p-4 border border-gray-300 rounded-xl"
-              />
-              <input
-                v-model="formClient.city"
-                type="text"
-                placeholder="City"
-                class="p-4 border border-gray-300 rounded-xl"
+                placeholder="City *"
+                required
+                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none"
               />
             </div>
           </div>
@@ -487,20 +576,30 @@ export default {
       activeTab: "Client",
       loginRoute: "/login",
 
+      // ✅ new state for password visibility
+      showPassword: false,
+      showConfirmPassword: false,
+
       // forms
       formClient: {
         name: "",
-        username: "", // ADDED
+        username: "",
         email: "",
         password: "",
         confirmPassword: "",
         phone: "",
-        address: "",
-        city: "",
+        address: {
+          street: "",
+          city: "",
+          country: "Egypt",
+          lat: 30.0444,
+          lng: 31.2357,
+        },
+        profileImage: null,
       },
       formTechnician: {
         name: "",
-        username: "", // ADDED
+        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -518,7 +617,7 @@ export default {
       },
       formCompany: {
         companyName: "",
-        username: "", // ADDED
+        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -540,12 +639,13 @@ export default {
       successMessageCompany: "",
 
       profilePreview: null,
+      profileClientPreview: null,
       idCardPreview: null,
       logoPreview: null,
       crnPreview: null,
     };
   },
-  // ADDED WATCHER for dynamic username
+
   watch: {
     "formTechnician.name"(newName) {
       this.updateTechnicianUsername(newName, this.formTechnician.skill);
@@ -554,7 +654,16 @@ export default {
       this.updateTechnicianUsername(this.formTechnician.name, newSkill);
     },
   },
+
   methods: {
+    // ✅ new methods to toggle password visibility
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+    toggleConfirmPassword() {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    },
+
     toggleTab(tab) {
       this.activeTab = tab;
     },
@@ -565,6 +674,17 @@ export default {
       if (file) {
         this.formTechnician.profileImage = file;
         this.profilePreview = URL.createObjectURL(file);
+      }
+    },
+    previewClientProfile(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Image should be less than 5MB");
+          return;
+        }
+        this.formClient.profileImage = file;
+        this.profileClientPreview = URL.createObjectURL(file);
       }
     },
     previewIdCard(e) {
@@ -596,13 +716,9 @@ export default {
       return phone === "" || /^\d+$/.test(phone);
     },
 
-    // ADDED HELPER METHODS for username
     generateUsernameBase(text) {
       if (!text) return "";
-      return text
-        .toString()
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, ""); // Keep only lowercase letters and numbers
+      return text.toString().toLowerCase().replace(/[^a-z0-9]/g, "");
     },
     updateTechnicianUsername(name, skill) {
       const nameBase = this.generateUsernameBase(name);
@@ -619,21 +735,33 @@ export default {
     // ---- CLIENT ----
     async submitClient() {
       const f = this.formClient;
-      // MODIFIED: Added username check
-      if (!f.name || !f.username || !f.email || !f.password || !f.confirmPassword) {
-        alert("Please fill required fields.");
+      if (
+        !f.name ||
+        !f.email ||
+        !f.password ||
+        !f.confirmPassword ||
+        !f.phone ||
+        !f.address.street ||
+        !f.address.city
+      ) {
+        alert("جميع الحقول مطلوبة");
         return;
       }
+
+      if (!f.username) {
+        f.username = f.name.toLowerCase().replace(/\s+/g, "_");
+      }
+
       if (!this.validateEmail(f.email)) {
-        alert("Invalid email.");
+        alert("البريد الإلكتروني غير صالح");
         return;
       }
       if (f.password !== f.confirmPassword) {
-        alert("Passwords do not match.");
+        alert("كلمات المرور غير متطابقة");
         return;
       }
       if (!this.validatePhone(f.phone)) {
-        alert("Phone must contain digits only.");
+        alert("رقم الهاتف يجب أن يحتوي على أرقام فقط");
         return;
       }
 
@@ -645,25 +773,49 @@ export default {
         );
         const user = userCredential.user;
 
-        // Save only the form data (without password) to Firestore
+        let profileUrl = "";
+        if (f.profileImage) {
+          try {
+            const pRef = storageRef(storage, `clients/${user.uid}/profile.jpg`);
+            await uploadBytes(pRef, f.profileImage);
+            profileUrl = await getDownloadURL(pRef);
+          } catch (imgErr) {
+            console.error("Profile image upload failed:", imgErr);
+          }
+        }
+
         const payload = {
           uid: user.uid,
           name: f.name,
-          username: f.username, // ADDED
+          username: f.username,
           email: f.email,
           phone: f.phone,
-          address: f.address,
-          city: f.city,
+          address: {
+            street: f.address.street,
+            city: f.address.city,
+            country: f.address.country || "Egypt",
+            lat: f.address.lat,
+            lng: f.address.lng,
+          },
+          image: profileUrl || "https://via.placeholder.com/150",
           userType: "client",
           status: "active",
           createdAt: new Date().toISOString(),
+          orders: [],
+          lastLogin: new Date().toISOString(),
+          notifications: [],
+          settings: {
+            emailNotifications: true,
+            language: "ar",
+          },
         };
 
         await setDoc(doc(db, "clients", user.uid), payload);
 
-        // clear
         Object.keys(f).forEach((k) => (f[k] = ""));
-        setTimeout(() => (this.successMessageClient = ""), 3000);
+        this.profileClientPreview = null;
+        this.successMessageClient = "تم التسجيل بنجاح";
+        this.$router.push("/login");
       } catch (err) {
         console.error("Client signup error:", err);
         alert(err.message || "Signup failed.");
@@ -673,7 +825,6 @@ export default {
     // ---- TECHNICIAN ----
     async submitTechnician() {
       const f = this.formTechnician;
-      // MODIFIED: Added username check
       if (
         !f.name ||
         !f.username ||
@@ -705,23 +856,16 @@ export default {
         );
         const user = userCredential.user;
 
-        // upload images if present
         let profileUrl = "";
         let idCardUrl = "";
 
         if (f.profileImage) {
-          const pRef = storageRef(
-            storage,
-            `technicians/${user.uid}/profile.jpg`
-          );
+          const pRef = storageRef(storage, `technicians/${user.uid}/profile.jpg`);
           await uploadBytes(pRef, f.profileImage);
           profileUrl = await getDownloadURL(pRef);
         }
         if (f.idCardImage) {
-          const idRef = storageRef(
-            storage,
-            `technicians/${user.uid}/idCard.jpg`
-          );
+          const idRef = storageRef(storage, `technicians/${user.uid}/idCard.jpg`);
           await uploadBytes(idRef, f.idCardImage);
           idCardUrl = await getDownloadURL(idRef);
         }
@@ -729,7 +873,7 @@ export default {
         const payload = {
           uid: user.uid,
           name: f.name,
-          username: f.username, // ADDED
+          username: f.username,
           email: f.email,
           phone: f.phone,
           address: f.address,
@@ -751,7 +895,6 @@ export default {
 
         this.$router.push("/technician-dashboard");
 
-        // clear
         Object.keys(f).forEach((k) => (f[k] = ""));
         this.profilePreview = null;
         this.idCardPreview = null;
@@ -765,7 +908,6 @@ export default {
     // ---- COMPANY ----
     async submitCompany() {
       const f = this.formCompany;
-      // MODIFIED: Added username check
       if (
         !f.companyName ||
         !f.username ||
@@ -797,7 +939,6 @@ export default {
         );
         const user = userCredential.user;
 
-        // upload images if present
         let logoUrl = "";
         let crnUrl = "";
 
@@ -815,7 +956,7 @@ export default {
         const payload = {
           uid: user.uid,
           companyName: f.companyName,
-          username: f.username, // ADDED
+          username: f.username,
           email: f.email,
           phone: f.phone,
           address: f.address,
@@ -865,4 +1006,4 @@ export default {
 .message-fade-leave-to {
   opacity: 0;
 }
-</style>
+</style>   
