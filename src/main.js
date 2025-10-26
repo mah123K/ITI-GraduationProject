@@ -40,6 +40,7 @@ import TechncionDashboard from "./components/TechncionDashboard.vue";
 // import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./components/CreateServiceCard.vue";
 import MyAppointments from "./components/MyAppointments.vue";
+import ManageTechnicianProfile from "./components/MannageTechnicionProfile.vue";
 import ordersCard from "./components/ordersCard.vue";
 import ServiceCard from "./components/ServiceCard.vue";
 
@@ -106,6 +107,7 @@ const routes = [
       { path: "", name: "TechnicianOrders", component: ordersCard },
       { path: "services", name: "TechnicianServices", component: ServiceCard },
       { path: "appointments", name: "TechnicianAppointments", component: MyAppointments },
+      { path: "Techsettings", name: "TechnicianSettings", component: ManageTechnicianProfile },
       { path: "create-service", name: "CreateServiceCard", component: CreateServiceCard },
     ],
   },
