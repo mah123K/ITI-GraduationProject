@@ -261,7 +261,7 @@ const selectedOrder = ref({});
         return {
           id: doc.id,
           customer: data.clientName,
-          service: data.serviceTitle,
+          service: data.description,
           provider: data.technicianName,
           amount: data.price,
           date: data.appointmentDate.toDate().toLocaleDateString(),
