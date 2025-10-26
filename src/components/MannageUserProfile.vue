@@ -216,33 +216,64 @@
         <div
           class="bg-white/30 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
         >
-          <div class="flex-1 space-y-2">
-            <h3 class="text-xl font-semibold text-[#5984C6]">Address</h3>
-            <label class="block text-gray-700 font-medium mb-1">Street</label>
-            <input
-              v-model="tempClient.address.street"
-              type="text"
-              :disabled="!isEditing"
-              class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
-            />
-            <label class="block text-gray-700 font-medium mb-1">City</label>
-            <input
-              v-model="tempClient.address.city"
-              type="text"
-              :disabled="!isEditing"
-              class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
-            />
-            <label class="block text-gray-700 font-medium mb-1">Country</label>
-            <input
-              v-model="tempClient.address.country"
-              type="text"
-              :disabled="!isEditing"
-              class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
-            />
+          <div class="flex-1 space-y-4">
+            <h3 class="text-xl font-semibold text-[#5984C6] mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-location-dot"></i> Address
+            </h3>
+            
+            <div class="space-y-4">
+              <div class="relative">
+                <label class="block text-gray-700 font-medium mb-2">
+                  <i class="fa-solid fa-road text-[#5984C6] mr-2"></i>Street
+                </label>
+                <input
+                  v-model="tempClient.address.street"
+                  type="text"
+                  :disabled="!isEditing"
+                  placeholder="Enter your street address"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
+                />
+              </div>
+
+              <div class="relative">
+                <label class="block text-gray-700 font-medium mb-2">
+                  <i class="fa-solid fa-city text-[#5984C6] mr-2"></i>City
+                </label>
+                <input
+                  v-model="tempClient.address.city"
+                  type="text"
+                  :disabled="!isEditing"
+                  placeholder="Enter your city"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
+                />
+              </div>
+
+              <div class="relative">
+                <label class="block text-gray-700 font-medium mb-2">
+                  <i class="fa-solid fa-globe text-[#5984C6] mr-2"></i>Country
+                </label>
+                <input
+                  v-model="tempClient.address.country"
+                  type="text"
+                  :disabled="!isEditing"
+                  placeholder="Enter your country"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div v-if="isEditing" class="text-sm text-gray-500 mt-2">
+              <i class="fa-solid fa-info-circle mr-1"></i>
+              Address will automatically update the map location
+            </div>
           </div>
-          <div
-            class="flex-1 h-64 w-full rounded-2xl overflow-hidden border border-white/20 shadow-md"
-          >
+          <div class="flex-1 h-64 w-full rounded-2xl overflow-hidden border border-white/20 shadow-md relative">
+            <div v-if="isUpdatingMap" class="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+              <div class="text-[#5984C6] flex flex-col items-center">
+                <i class="fa-solid fa-map-location-dot animate-bounce text-2xl"></i>
+                <span class="mt-2 text-sm font-medium">Updating map location...</span>
+              </div>
+            </div>
             <iframe
               :src="mapSrc"
               width="100%"
@@ -337,16 +368,26 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from 'vue-router';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const isEditing = ref(false);
 const showOrders = ref(false);
 const selectedOrder = ref(null);
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+const client = ref(null);
+const tempClient = ref(null);
+const isUpdatingMap = ref(false);
+let geocodeTimeout = null;
 
 const togglePassword = () => (showPassword.value = !showPassword.value);
 const toggleConfirmPassword = () => (showConfirmPassword.value = !showConfirmPassword.value);
+// router for navigation (used by Back button)
+const router = useRouter();
 
 // عرض البروفايل أو الأوردرز
 const openEditProfile = () => {
@@ -360,46 +401,124 @@ const openOrders = () => {
 };
 
 const goBack = () => {
-  showOrders.value = false;
-  isEditing.value = false;
+  // Navigate back to home page from the profile sidebar
+  router.push('/');
 };
 
-// البيانات
-const storedClient = localStorage.getItem("clientData");
-const client = ref(
-  storedClient
-    ? JSON.parse(storedClient)
-    : {
-        name: "Ahmed El Sharkawi",
-        email: "ahmed@example.com",
-        phone: "+20 123 456 789",
-        image: "https://via.placeholder.com/150",
-        address: {
-          street: "123 Nile St.",
-          city: "Cairo",
-          country: "Egypt",
-          lat: 30.0444,
-          lng: 31.2357,
-        },
-        orders: [
-          { id: 1020, date: "2025-09-01", status: "Delivered", total: 120 },
-          { id: 1021, date: "2025-09-03", status: "Pending", total: 210 },
-          { id: 1022, date: "2025-09-05", status: "Cancelled", total: 99 },
-          { id: 1023, date: "2025-09-07", status: "Delivered", total: 340 },
-        ],
+// جلب بيانات المستخدم من Firebase
+const fetchUserData = async (uid) => {
+  try {
+    const docRef = doc(db, "clients", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+
+      // تحضير بيانات العنوان
+      const address = {
+        ...defaultClient.address,
+        street: userData.address?.street || "",
+        city: userData.address?.city || "",
+        country: userData.address?.country || "",
+        lat: userData.address?.lat || 30.0444,
+        lng: userData.address?.lng || 31.2357
+      };
+
+      // Merge all data
+      client.value = {
+        name: userData.name || "",
+        email: userData.email || "",
+        phone: userData.phone || "",
+        image: userData.image || defaultClient.image,
+        address: address,
+        orders: userData.orders || []
+      };
+
+      // Update tempClient with the merged data
+      tempClient.value = JSON.parse(JSON.stringify(client.value));
+      console.log("Fetched user data:", client.value); // Debug log
+      console.log("Address data:", client.value.address); // Debug log for address
+
+      // If address exists but coordinates are missing or default, try to geocode and update map
+      // This will update tempClient.address.lat/lng which mapSrc uses
+      try {
+        await updateMapCoordinates();
+        // ensure client reflects any updated coordinates
+        client.value.address.lat = tempClient.value.address.lat;
+        client.value.address.lng = tempClient.value.address.lng;
+      } catch (err) {
+        console.warn("Geocoding after fetch failed:", err);
       }
-);
+    } else {
+      console.log("No user document found for ID:", uid); // Debug log
+      client.value = { ...defaultClient };
+      tempClient.value = { ...defaultClient };
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    console.error("Error details:", error.message);
+    client.value = { ...defaultClient };
+    tempClient.value = { ...defaultClient };
+  }
+};
 
-const tempClient = ref(JSON.parse(JSON.stringify(client.value)));
+// تحميل بيانات المستخدم عند تحميل المكون
+onMounted(() => {
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      fetchUserData(user.uid);
+    }
+  });
+});
 
-const saveChanges = () => {
+const saveChanges = async () => {
   if (tempClient.value.password !== tempClient.value.confirmPassword) {
     alert("Passwords do not match!");
     return;
   }
-  client.value = JSON.parse(JSON.stringify(tempClient.value));
-  localStorage.setItem("clientData", JSON.stringify(client.value));
-  isEditing.value = false;
+
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const docRef = doc(db, "clients", user.uid);
+
+      // ensure coordinates are updated from address before saving
+      try {
+        await updateMapCoordinates();
+      } catch (e) {
+        console.warn("Geocode before save failed:", e);
+      }
+
+      // تحضير البيانات للحفظ
+      const updateData = {
+        name: tempClient.value.name,
+        email: tempClient.value.email,
+        phone: tempClient.value.phone,
+        image: tempClient.value.image,
+        address: {
+          street: tempClient.value.address.street || "",
+          city: tempClient.value.address.city || "",
+          country: tempClient.value.address.country || "",
+          lat: tempClient.value.address.lat || 30.0444,
+          lng: tempClient.value.address.lng || 31.2357
+        }
+      };
+
+      console.log("Saving data:", updateData); // Debug log
+
+      await updateDoc(docRef, updateData);
+      client.value = JSON.parse(JSON.stringify(tempClient.value));
+      isEditing.value = false;
+      alert("Changes saved successfully!"); // إضافة رسالة نجاح
+    }
+  } catch (error) {
+    console.error("Error saving changes:", error);
+    console.error("Error details:", error.message);
+    alert("Failed to save changes. Please try again.");
+  }
 };
 
 const cancelEdit = () => {
@@ -407,13 +526,38 @@ const cancelEdit = () => {
   isEditing.value = false;
 };
 
+// Default values for client
+const defaultClient = {
+  name: "",
+  email: "",
+  phone: "",
+  image: "https://via.placeholder.com/150",
+  address: {
+    street: "",
+    city: "",
+    country: "",
+    lat: 30.0444,
+    lng: 31.2357,
+  },
+  orders: []
+};
+
+// Initialize client and tempClient with default values
+client.value = { ...defaultClient };
+tempClient.value = { ...defaultClient };
+
 // orders
-const sortedOrders = computed(() =>
-  [...client.value.orders].sort((a, b) => new Date(b.date) - new Date(a.date))
-);
-const totalSales = computed(() =>
-  client.value.orders.filter((o) => o.status === "Delivered").reduce((sum, o) => sum + o.total, 0)
-);
+const sortedOrders = computed(() => {
+  if (!client.value?.orders) return [];
+  return [...client.value.orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+});
+
+const totalSales = computed(() => {
+  if (!client.value?.orders) return 0;
+  return client.value.orders
+    .filter((o) => o.status === "Delivered")
+    .reduce((sum, o) => sum + o.total, 0);
+});
 const statusClass = (status) => {
   if (status === "Delivered") return "bg-green-100 text-green-700";
   if (status === "Pending") return "bg-yellow-100 text-yellow-700";
@@ -445,16 +589,91 @@ const triggerImageUpload = () => imageInput.value.click();
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (!file) return;
+
+  // Check file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Image size should be less than 5MB");
+    return;
+  }
+
   const reader = new FileReader();
-  reader.onload = (e) => (tempClient.value.image = e.target.result);
+  reader.onload = (e) => {
+    tempClient.value.image = e.target.result;
+  };
   reader.readAsDataURL(file);
 };
 
-// الخريطة
-const mapSrc = computed(
-  () =>
-    `https://www.google.com/maps?q=${tempClient.value.address.lat},${tempClient.value.address.lng}&hl=en&z=14&output=embed`
+// تحديث الإحداثيات عند تغيير العنوان
+watch(
+  () => [
+    tempClient.value?.address?.street,
+    tempClient.value?.address?.city,
+    tempClient.value?.address?.country
+  ],
+  async () => {
+    if (isEditing.value) {
+      // debounce geocoding to avoid too many requests while typing
+      if (typeof geocodeTimeout !== 'undefined' && geocodeTimeout) clearTimeout(geocodeTimeout);
+      geocodeTimeout = setTimeout(async () => {
+        await updateMapCoordinates();
+      }, 700);
+    }
+  }
 );
+
+// الخريطة
+const updateMapCoordinates = async () => {
+  if (!tempClient.value || !tempClient.value.address) return;
+
+  const { street, city, country } = tempClient.value.address;
+  if (!street || !city) return;
+
+  isUpdatingMap.value = true;
+
+  try {
+    // Build complete address string
+    const address = [street, city, country].filter(Boolean).join(", ");
+    
+    // Add delay to respect OpenStreetMap usage policy
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+      {
+        headers: {
+          'Accept-Language': 'en', // Prefer English results
+          'User-Agent': 'TashtebApp/1.0' // Identify our application
+        }
+      }
+    );
+
+    if (!response.ok) throw new Error('Geocoding request failed');
+    
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      // Update coordinates
+      tempClient.value.address.lat = parseFloat(data[0].lat);
+      tempClient.value.address.lng = parseFloat(data[0].lon);
+      console.log('Updated coordinates:', { lat: data[0].lat, lng: data[0].lon });
+    } else {
+      console.warn('No location found for address:', address);
+    }
+  } catch (error) {
+    console.error("Error updating coordinates:", error);
+  } finally {
+    // Add a small delay before hiding the loading indicator to ensure
+    // the map has time to update
+    setTimeout(() => {
+      isUpdatingMap.value = false;
+    }, 500);
+  }
+};
+
+const mapSrc = computed(() => {
+  if (!tempClient.value?.address) return '';
+  const lat = tempClient.value.address.lat || defaultClient.address.lat;
+  const lng = tempClient.value.address.lng || defaultClient.address.lng;
+  return `https://www.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`;
+});
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
-<template >
-  <div >
+<template>
+  <div>
     <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
       <!-- 🏠 Logo -->
       <div class="navbar-start">
@@ -28,50 +28,50 @@
           <li><router-link to="/ContactUs" active-class="font-semibold text-black">Contact Us</router-link></li>
         </ul>
       </div>
-     
-      <!-- 🌙 Right Side (User Area) -->
-      <!-- 🌙 Right Side (User Area) -->
-<div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
-  <!-- 🌐 Dark Mode + Globe (always visible) -->
-  <div class="flex items-center mr-4">
-    <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i>
-    <button @click="toggleDarkMode" class="cursor-pointer">
-      <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-      <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
-    </button>
-  </div>
 
-  <!-- 🔄 While user is loading -->
-  <div v-if="loadingUser" class="flex items-center space-x-3 animate-pulse">
-    <div class="h-5 w-20 bg-gray-200 rounded"></div>
-    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
-  </div>
+      <!-- 🌙 Right Side (User Area + Theme) -->
+      <div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
 
-  <!-- 👤 Logged In -->
-  <div v-else-if="user" class="relative flex items-center">
-    <span class="font-medium text-black hidden sm:block mr-5">Hello, {{ firstName }}</span>
+        <!-- 🌐 Globe + Dark Mode (Always visible) -->
+        <div class="flex items-center mr-4">
+          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i>
+          <button @click="toggleDarkMode" class="cursor-pointer">
+            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
+          </button>
+        </div>
 
-    <div
-      ref="profileButton"
-      class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
-      @click="toggleUserMenu"
-    >
-      <i class="bi bi-person text-gray-500 text-xl"></i>
-    </div>
+        <!-- 🔄 Loading user -->
+        <div v-if="loadingUser" class="flex items-center space-x-3 animate-pulse">
+          <div class="h-5 w-20 bg-gray-200 rounded"></div>
+          <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+        </div>
 
-    <!-- 🔽 Profile Dropdown -->
-    <transition name="fade-slide">
-      <div
-        v-if="isUserMenuOpen"
-        ref="dropdown"
-        class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
-      >
-        <div class="flex flex-col">
+        <!-- 👤 Logged In -->
+        <div v-else-if="user" class="relative flex items-center">
+          <span class="font-medium text-black hidden sm:block mr-5">Hello, {{ firstName }}</span>
+
           <div
-            class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
+            ref="profileButton"
+            class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
+            @click="toggleUserMenu"
           >
             <i class="bi bi-person text-gray-500 text-xl"></i>
           </div>
+
+          <!-- 🔽 Profile Dropdown -->
+          <transition name="fade-slide">
+            <div
+              v-if="isUserMenuOpen"
+              ref="dropdown"
+              class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
+            >
+              <div class="flex flex-col">
+                <div
+                  class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
+                >
+                  <i class="bi bi-person text-gray-500 text-xl"></i>
+                </div>
 
                 <div id="content" class="px-4 pb-4">
                   <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
@@ -81,38 +81,31 @@
                     </router-link>
                   </div>
 
-            <div
-              class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-              @click="switchAccount"
-            >
-              <i class="fa-solid fa-repeat text-accent-color"></i>
-              <h4 class="text-accent-color">Switch Account</h4>
-            </div>
+                  <div
+                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+                    @click="switchAccount"
+                  >
+                    <i class="fa-solid fa-repeat text-accent-color"></i>
+                    <h4 class="text-accent-color">Switch Account</h4>
+                  </div>
 
-            <div
-              @click="handleLogout"
-              class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-            >
-              <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
-              <h4 class="text-accent-color">Log out</h4>
+                  <div
+                    @click="handleLogout"
+                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+                  >
+                    <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
+                    <h4 class="text-accent-color">Log out</h4>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          </transition>
         </div>
-      </div>
-    </transition>
-  </div>
 
         <!-- 🚫 Not Logged In -->
         <div v-else class="flex items-center space-x-3">
-          <div class="flex items-center mr-4"> 
-          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i> 
-          <button @click="toggleDarkMode" class="cursor-pointer"> 
-            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i> 
-            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i> 
-          </button>
-              </div>
           <router-link
-            to="/SignUp"
+            to="/signup"
             class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
           >
             Sign Up
@@ -124,11 +117,9 @@
             Login
           </router-link>
         </div>
-</div>
+      </div>
 
-
-
-      <!-- 🕶️ Sidebar Overlay -->
+      <!-- 🕶 Sidebar Overlay -->
       <div
         v-if="isSidebarOpen"
         class="fixed inset-0 bg-black/50 z-40"
@@ -166,8 +157,7 @@
         </ul>
       </aside>
     </div>
-    </div>
-  
+  </div>
 </template>
 
 <script>
@@ -204,7 +194,6 @@ export default {
       this.$router.push("/login");
     },
     async switchAccount() {
-      // Logout and go to login page to switch accounts
       const auth = getAuth();
       await signOut(auth);
       this.user = null;
@@ -212,12 +201,14 @@ export default {
       this.isUserMenuOpen = false;
       this.$router.push("/login");
     },
+    toggleDarkMode() {
+      this.isDark = !this.isDark;
+    },
   },
 
   mounted() {
     const auth = getAuth();
 
-    // 👤 Detect Auth State
     onAuthStateChanged(auth, async (currentUser) => {
       this.loadingUser = true;
       if (currentUser) {
@@ -240,7 +231,6 @@ export default {
       this.loadingUser = false;
     });
 
-    // 🖱️ Close dropdown on outside click
     document.addEventListener("click", (e) => {
       const profileButton = this.$refs.profileButton;
       const dropdown = this.$refs.dropdown;
@@ -258,11 +248,6 @@ export default {
 </script>
 
 <style scoped>
-nav {
-  z-index: 50;
-}
-
-/* ✨ Smooth Dropdown Animation */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
