@@ -14,7 +14,7 @@
   }
 </script>
 <template>
-  <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5 mx-2">
+  <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] flex flex-col items-center justify-between w-full h-full transition-transform hover:scale-[1.02]">
     <img
       :src="service.image"
       alt="service icon"

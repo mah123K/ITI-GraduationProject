@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     hideLayout() {
-      const hiddenRoutes = ["/login", "/signup", "/dashboard"];
+      const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard"];
       return hiddenRoutes.some((path) => this.$route.path.startsWith(path));
     },
   },
@@ -30,7 +30,7 @@ export default {
   <router-view />
   <footer-layout v-if="!hideLayout" />
   <!-- <TechnicionDashNav/>
-  <TechncionDashboard /> -->
+  <TechncionDashboard />  -->
   <!-- <MannageUserProfile/> -->
 </template>
 
