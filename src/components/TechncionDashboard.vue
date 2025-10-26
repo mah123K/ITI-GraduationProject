@@ -13,6 +13,7 @@ import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import { orders as initialOrders } from "../data/orders.js";
 import { services as initialServices } from "../data/Services.js";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
+import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
 
 const technicianId = ref(null);
 const orders = ref([...initialOrders]);
@@ -543,7 +544,12 @@ watch(mainTab, (newTab) => {
           </div>
         </div>
       </template>
+      <template v-else-if="mainTab === 'Techsettings'">
+        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Settings</h2>
 
+        <ManageTechnicianProfile @showNotification="displayNotification"/>
+
+      </template>
     </div>
 
     <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
