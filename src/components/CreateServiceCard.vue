@@ -8,7 +8,7 @@ const handleCreate = () => {
 <template>
   <div
     @click="handleCreate"
-    class="createServiceCard rounded-2xl shadow-lg text-center p-6 bg-[#e6eef6] hover:bg-[#d3e1f0] w-[30%] flex flex-col items-center justify-around my-5 mx-2 cursor-pointer transition transform hover:scale-[1.03]"
+    class="createServiceCard rounded-2xl shadow-lg text-center p-6 bg-[#e6eef6] h-full hover:bg-[#d3e1f0] w-full flex flex-col items-center justify-around  mx-2 cursor-pointer transition transform hover:scale-[1.03]"
   >
     <img
       src="/images/create service.png"

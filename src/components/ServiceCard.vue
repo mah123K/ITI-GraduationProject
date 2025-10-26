@@ -14,7 +14,7 @@
   }
 </script>
 <template>
-  <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] w-[30%] flex flex-col items-center my-5 mx-2">
+  <div class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-[#f7f7f7] flex flex-col items-center justify-between w-full h-full transition-transform hover:scale-[1.02]">
     <img
       :src="service.image"
       alt="service icon"
@@ -29,7 +29,10 @@
       >
         Edit
       </button>
-      <button class="bg-[#ff0000] rounded-lg p-1 px-3 text-white mx-2 hover:bg-red-700 cursor-pointer">
+      <button
+        @click="$emit('deleteService', service.id)"
+        class="bg-[#ff0000] rounded-lg p-1 px-3 text-white mx-2 hover:bg-red-700 cursor-pointer"
+      >
         Delete
       </button>
     </div>
