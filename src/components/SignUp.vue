@@ -749,7 +749,7 @@ export default {
 
         await setDoc(doc(db, "technicians", user.uid), payload);
 
-        this.$router.push("/login");
+        this.$router.push("/technician-dashboard");
 
         // clear
         Object.keys(f).forEach((k) => (f[k] = ""));
@@ -833,7 +833,7 @@ export default {
         };
 
         await setDoc(doc(db, "companies", user.uid), payload);
-
+          this.$router.push("/technician-dashboard");
         Object.keys(f).forEach((k) => (f[k] = ""));
         this.logoPreview = null;
         this.crnPreview = null;
