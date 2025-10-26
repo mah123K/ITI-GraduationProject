@@ -4,7 +4,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <div class="min-h-screen flex flex-col lg:flex-row bg-white  mt-2">
+  <div class="min-h-screen flex flex-col lg:flex-row bg-white mt-2">
     <!-- Left Section -->
     <div
       class="relative lg:w-1/2 w-full flex items-center justify-center overflow-hidden min-h-[45vh] md:min-h-[50vh] lg:min-h-screen"
@@ -18,12 +18,11 @@
         alt="Worker"
         class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[80vh] object-contain z-10"
       />
-<div
-  class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2"
->
-  Your home,<br>our care
-</div>
-
+      <div
+        class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2"
+      >
+        Your home,<br />our care
+      </div>
     </div>
 
     <!-- Right Section -->
@@ -70,50 +69,39 @@
           </div>
 
           <!-- Password -->
-    <div>
-  <label
-    for="password"
-    class="block text-sm font-medium text-black mb-2"
-  >
-    Password
-  </label>
+          <div>
+            <label for="password" class="block text-sm font-medium text-black mb-2">
+              Password
+            </label>
 
-  <div class="relative">
-    <!-- Lock Icon -->
-    <div
-      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-    >
-      <i class="fas fa-lock text-gray-400"></i>
-    </div>
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-lock text-gray-400"></i>
+              </div>
 
-    <!-- Password Input -->
-    <input
-      :type="showPassword ? 'text' : 'password'"
-      id="password"
-      v-model="password"
-      placeholder="Enter your password"
-      required
-      class="block w-full pl-10 pr-10 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400 
-             focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
-    />
-
-    <!-- Eye Icon  -->
-    <button
-      type="button"
-      @click="togglePassword"
-      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#5984C6] focus:outline-none"
-    >
-      <i :class="showPassword ? 'fas fa-eye-slash text-[#5984C6]' : 'fas fa-eye'"></i>
-    </button>
-  </div>
-</div>
-
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                placeholder="Enter your password"
+                required
+                class="block w-full pl-10 pr-10 py-3 border border-[#5984C6] rounded-lg shadow-sm placeholder-gray-400 
+                       focus:outline-none focus:ring-2 focus:ring-[#3d68b1] focus:border-[#3d68b1] transition duration-200"
+              />
+            </div>
+          </div>
 
           <!-- Forgot password -->
           <div class="flex justify-end mb-4 lg:mb-6">
-            <a href="#" class="text-sm text-[#5984C6] hover:text-blue-500"
-              >Forgot password?</a
+            <button
+              type="button"
+              @click="showForgotModal = true"
+              class="text-sm text-[#5984C6] hover:text-blue-500"
             >
+              Forgot password?
+            </button>
           </div>
 
           <!-- Submit -->
@@ -133,6 +121,58 @@
             >Sign up</router-link
           >
         </p>
+
+        <!-- Forgot Password Modal -->
+       <!-- Forgot Password Modal -->
+<transition name="fade">
+  <div
+    v-if="showForgotModal"
+    class="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
+    @click.self="showForgotModal = false"
+  >
+    <div
+      class="bg-white rounded-2xl p-6 w-96 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-105"
+    >
+      <h3 class="text-xl font-semibold mb-4 text-center text-[#5984C6]">
+        Reset Password
+      </h3>
+
+      <input
+        type="email"
+        v-model="forgotEmail"
+        placeholder="Enter your email"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
+      />
+
+      <div class="flex justify-end space-x-2">
+        <button
+          @click="showForgotModal = false"
+          class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+          :disabled="isSending"
+        >
+          Cancel
+        </button>
+        <button
+          @click="handleForgotPasswordModal"
+          class="px-4 py-2 rounded-lg bg-[#5984C6] text-white hover:bg-[#4a73b1] flex items-center justify-center min-w-[90px]"
+          :disabled="isSending"
+        >
+          <span v-if="!isSending">Send</span>
+          <span v-else><i class="fa fa-spinner fa-spin"></i> Sending...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</transition>
+
+
+        <!-- Toast -->
+        <div
+          v-if="showToast"
+          :class="[toastColor, 'fixed top-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300']"
+        >
+          {{ toastMessage }}
+        </div>
       </div>
     </div>
   </div>
@@ -141,7 +181,11 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
@@ -149,7 +193,25 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
+const showForgotModal = ref(false);
+const forgotEmail = ref("");
+const showPassword = ref(false);
+const isSending = ref(false);
+const toastMessage = ref("");
+const toastColor = ref("bg-green-500");
+const showToast = ref(false);
 
+// show toast function
+const showToastMessage = (message, type) => {
+  toastMessage.value = message;
+  toastColor.value = type === "success" ? "bg-green-500" : "bg-red-500";
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 5000);
+};
+
+// handle sign in
 const handleSignIn = async () => {
   errorMessage.value = "";
 
@@ -162,12 +224,11 @@ const handleSignIn = async () => {
     );
     const user = userCredential.user;
 
-    // Collections to check
     const collections = [
       { name: "admin", route: "/dashboard" },
       { name: "clients", route: "/" },
-      { name: "technicians", route: "/TechncionDashboard" },
-      { name: "companies", route: "/TechncionDashboard" },
+      { name: "technicians", route: "/technician-dashboard" },
+      { name: "companies", route: "/technician-dashboard" },
     ];
 
     let found = false;
@@ -198,15 +259,31 @@ const handleSignIn = async () => {
   }
 };
 
+// handle forgot password
+const handleForgotPasswordModal = async () => {
+  if (!forgotEmail.value.trim()) {
+    showToastMessage("Please enter your email.", "error");
+    return;
+  }
 
-
-
-const showPassword = ref(false)
-
-const togglePassword = () => {
-  showPassword.value = !showPassword.value
-}
+  try {
+    isSending.value = true;
+    const auth = getAuth();
+    await sendPasswordResetEmail(auth, forgotEmail.value);
+    showToastMessage("Password reset email sent! Check your inbox.", "success");
+    showForgotModal.value = false;
+    forgotEmail.value = "";
+  } catch (error) {
+    console.error(error);
+    if (error.code === "auth/user-not-found") {
+      showToastMessage("No account found with this email.", "error");
+    } else {
+      showToastMessage("Failed to send reset email.", "error");
+    }
+  } finally {
+    isSending.value = false;
+  }
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
