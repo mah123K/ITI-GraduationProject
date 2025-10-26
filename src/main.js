@@ -121,7 +121,17 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const requiresAdmin = to.meta.requiresAdmin;
-  const requiresTechnician = to.meta.requiresTechnician;
+  // const requiresTechnician = to.meta.requiresTechnician;
+
+  // Protect profile page - must be logged in and handle back navigation
+  if (to.path === '/manageUserProfile' && !user) {
+    return next('/login');
+  }
+
+  // Handle back navigation from profile page
+  if (from.path === '/manageUserProfile' && to.path === '/signup') {
+    return next('/');
+  }
 
   // 🧩 Protect admin routes
   if (requiresAdmin && !user) return next("/login");
