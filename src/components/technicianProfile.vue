@@ -194,42 +194,60 @@ const submitOrder = async () => {
     alert("Please select an available day and time.");
     return;
   }
+
   isSubmitting.value = true;
 
   try {
-    const selectedDate = selectedDayInfo.value.date;
+    // Convert selected day + time to a proper JS Date
+    const selectedDate = new Date(selectedDayInfo.value.date);
     const [time, period] = selectedTime.value.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
     if (period === "PM" && hours !== 12) hours += 12;
     if (period === "AM" && hours === 12) hours = 0;
     selectedDate.setHours(hours, minutes, 0, 0);
 
+    // Construct order data with all necessary fields
     const orderData = {
-      clientId: clientUser.value.uid,
-      clientName:
-        clientData.value?.name || clientUser.value.email.split("@")[0],
-      clientEmail: clientUser.value.email,
-      technicianId: route.params.id,
-      technicianName: technician.value.name,
-      technicianSkill: technician.value.skill,
-      serviceTitle: serviceTitle.value,
-      description: orderDescription.value,
-      price: servicePrice.value || "Pending Quote",
-      appointmentDate: selectedDate,
-      status: "new",
-      createdAt: serverTimestamp(),
-    };
+  // ✅ Existing fields (kept)
+  clientId: clientUser.value.uid,
+  clientName:
+    clientData.value?.name || clientUser.value.email.split("@")[0],
+  clientEmail: clientUser.value.email,
+  technicianId: route.params.id,
+  technicianName: technician.value.name || "Technician",
+  technicianSkill: technician.value.skill || "General",
+  serviceTitle: serviceTitle.value || "Custom Service Request",
+  description: orderDescription.value || serviceTitle.value || "",
+  price: servicePrice.value || "Pending Quote",
+  appointmentDate: selectedDate,
+  appointmentDay: selectedDayInfo.value.display,
+  appointmentTime: selectedTime.value,
+  status: "new",
+  createdAt: serverTimestamp(),
 
-    await addDoc(collection(db, "orders"), orderData);
+  // 🧩 New compatible aliases for dashboard display (non-breaking)
+  descreption: orderDescription.value || serviceTitle.value || "",
+  date: selectedDayInfo.value.display || "",
+  time: selectedTime.value || "",
+  location: clientData.value?.address || "Not Specified",
+  customer: clientData.value?.name || clientUser.value.email.split("@")[0],
+};
+
+
+    // Save to Firestore
+    const docRef = await addDoc(collection(db, "orders"), orderData);
+
+    console.log("Order submitted with ID:", docRef.id);
     alert("Order submitted successfully!");
     closePopup();
   } catch (error) {
-    console.error("Error submitting order: ", error);
+    console.error("Error submitting order:", error);
     alert("Failed to submit order. Please try again.");
   } finally {
     isSubmitting.value = false;
   }
 };
+
 
 // --- Fetch Technician, Client, and Services ---
 const fetchTechnicianServices = async (technicianId) => {
@@ -462,7 +480,7 @@ watch(selectedDayInfo, () => {
     <!-- Order Popup -->
     <div
       v-if="showPopup"
-      class="orderDetails fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
+      class="orderDetails fixed inset-0 bg-[#00000084] flex justify-center items-center z-50 p-4"
       @click.self="closePopup"
     >
       <div
