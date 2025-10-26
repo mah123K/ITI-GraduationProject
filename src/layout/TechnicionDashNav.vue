@@ -85,7 +85,11 @@ onMounted(() => {
           My Earnings
         </li>
 
-        <li class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px] cursor-pointer">Settings</li>
+        <li 
+        class="text-lg font-semibold bg-[#133B5D] p-1 rounded-xl my-1 w-[180px] cursor-pointer"
+        :class="props.active === 'Techsettings' ? 'bg-[#1b5383]' : 'bg-[#133B5D]'"
+          @click="handleTabClick('Techsettings')"
+        >Settings</li>
         <button class="border rounded-xl px-3 mt-4">Log Out</button>
       </ul>
     </div>
