@@ -1,18 +1,22 @@
-//  Firebase
+// ================================
+// 🔥 Firebase Imports
+// ================================
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import '@fortawesome/fontawesome-free/css/all.min.css'
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
-//  Vue
+// ================================
+// 🌐 Vue Imports
+// ================================
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
-
-//  CSS
+import App from "./App.vue";
 import "./assets/main.css";
 
-//  Components
-import App from "./App.vue";
+// ================================
+// 📦 Components Imports
+// ================================
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
 import LoginPage from "./components/LoginPage.vue";
@@ -23,10 +27,10 @@ import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
 import ManageUserProfile from "./components/MannageUserProfile.vue";
-//  Dashboard Components (inside AdminDashboard folder)
 
+// Admin Dashboard
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
-import Dashboard from "./components/AdminDashboard/Dashboard.vue"
+import Dashboard from "./components/AdminDashboard/Dashboard.vue";
 import Users from "./components/AdminDashboard/UsersTable.vue";
 import Providers from "./components/AdminDashboard/ProvidersTable.vue";
 import ServicesPage from "./components/AdminDashboard/ServicesPage.vue";
@@ -35,16 +39,18 @@ import Payments from "./components/AdminDashboard/Payments.vue";
 import Support from "./components/AdminDashboard/Support.vue";
 import Settings from "./components/AdminDashboard/Settings.vue";
 import AdminProfile from "./components/AdminDashboard/AdminProfile.vue";
-//Technicion Dashboard
+
+// Technician Dashboard
 import TechncionDashboard from "./components/TechncionDashboard.vue";
-// import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./components/CreateServiceCard.vue";
 import MyAppointments from "./components/MyAppointments.vue";
 import ManageTechnicianProfile from "./components/MannageTechnicionProfile.vue";
 import ordersCard from "./components/ordersCard.vue";
 import ServiceCard from "./components/ServiceCard.vue";
 
-//  Firebase Config
+// ================================
+// ⚙️ Firebase Config
+// ================================
 const firebaseConfig = {
   apiKey: "AIzaSyCoEkOce-LY7cXvtJHzvyVaygMAjPIzU3k",
   authDomain: "tashteb-36a40.firebaseapp.com",
@@ -55,12 +61,13 @@ const firebaseConfig = {
   measurementId: "G-S9GFQC17GB",
 };
 
-// Initialize Firebase
 initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore();
 
-
+// ================================
+// 🚦 Router Setup
+// ================================
 const routes = [
   { path: "/", component: HomePage },
   { path: "/offers", component: OfferPage },
@@ -72,9 +79,8 @@ const routes = [
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
-  
 
-  // Dashboard (Admin only)
+  // Admin Dashboard
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -88,18 +94,17 @@ const routes = [
       { path: "payments", name: "Payments", component: Payments },
       { path: "support", name: "Support", component: Support },
       { path: "settings", name: "Settings", component: Settings },
-       {
-  path: "adminprofile",
-  name: "AdminProfile",
-  component: () => import("./components/AdminDashboard/AdminProfile.vue"),
-  meta: { requiresAdmin: true },
-},
-      
+      {
+        path: "adminprofile",
+        name: "AdminProfile",
+        component: AdminProfile,
+        meta: { requiresAdmin: true },
+      },
     ],
   },
- 
 
-    {
+  // Technician Dashboard
+  {
     path: "/technician-dashboard",
     component: TechncionDashboard,
     meta: { requiresTechnician: true },
@@ -113,98 +118,78 @@ const routes = [
   },
 ];
 
-// ✅ Router
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
 
-// ✅ Navigation Guard (حماية صفحات الأدمن)
-// ✅ Navigation Guard (auth protection + redirect logic)
+// ================================
+// 🧭 Save last visited dashboard route
+// ================================
+router.afterEach((to) => {
+  if (to.path.startsWith("/dashboard") || to.path.startsWith("/technician-dashboard")) {
+    localStorage.setItem("lastDashboardRoute", to.fullPath);
+  }
+});
+
+// ================================
+// 🧱 Navigation Guard
+// ================================
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
-
-  // Wait for Firebase to finish initializing (auth might be null for a moment)
-  if (user === undefined) {
-    const unsubscribe = auth.onAuthStateChanged(() => {
-      unsubscribe();
-      next(to.fullPath);
-    });
-    return;
-  }
-
   const requiresAdmin = to.meta.requiresAdmin;
   const requiresTechnician = to.meta.requiresTechnician;
 
-  // 🧩 Protect admin routes
-  if (requiresAdmin && !user) return next("/login");
-
-  if (requiresAdmin && user) {
-    try {
-      const collections = ["admin", "clients", "technicians", "companies"];
-      let userType = null;
-
-      for (const c of collections) {
-        const docRef = doc(db, c, user.uid);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          userType = snap.data().userType || c; // fallback to collection name
-          break;
-        }
-      }
-
-      if (userType === "admin") return next();
-      if (userType === "client") return next("/");
-     if (userType === "technician" || userType === "company")
-      return next("/technician-dashboard");
-
-        return next("/technician-dashboard");
-
-      return next("/login");
-    } catch (err) {
-      console.error("Navigation guard error:", err);
-      return next("/login");
-    }
+  if (!user && (requiresAdmin || requiresTechnician)) {
+    return next("/login");
   }
 
-  // 🚫 If already logged in and trying to go to login/signup — redirect to home
   if ((to.path === "/login" || to.path === "/signup") && user) {
     return next("/");
   }
 
-  // ✅ Default allow
   next();
 });
 
+// ================================
+// 🚀 Mount Vue app *after* Firebase auth is ready
+// ================================
+let appInitialized = false;
 
-//  Create and Mount App
-const app = createApp(App);
-app.use(router);
-app.mount("#app");
+onAuthStateChanged(auth, async (user) => {
+  if (!appInitialized) {
+    const app = createApp(App);
+    app.use(router);
+    app.mount("#app");
+    appInitialized = true;
+  }
 
-// Redirect based on user role after login
-auth.onAuthStateChanged(async (user) => {
+  const currentPath = router.currentRoute.value.path;
+  const lastRoute = localStorage.getItem("lastDashboardRoute");
+
   if (user) {
-    const dbRef = getFirestore();
+    const adminDoc = await getDoc(doc(db, "admin", user.uid));
+    const techDoc = await getDoc(doc(db, "technicians", user.uid));
 
-    // Check if admin
-    const adminDoc = await getDoc(doc(dbRef, "admin", user.uid));
-    if (adminDoc.exists() && adminDoc.data().userType === "admin") {
-      router.push("/dashboard");
-      return;
+    // ✅ لو المستخدم في صفحة login أو signup
+    if (currentPath === "/login" || currentPath === "/signup") {
+      if (adminDoc.exists()) {
+        router.push(lastRoute?.startsWith("/dashboard") ? lastRoute : "/dashboard");
+      } else if (techDoc.exists()) {
+        router.push(
+          lastRoute?.startsWith("/technician-dashboard")
+            ? lastRoute
+            : "/technician-dashboard"
+        );
+      } else {
+        router.push("/");
+      }
     }
-
-    // Check if technician
-    const technicianDoc = await getDoc(doc(dbRef, "technicians", user.uid));
-    if (technicianDoc.exists() && technicianDoc.data().userType === "technician") {
-      router.push("/technician-dashboard");
-      return;
-    }
-
-    // Default → regular user
-    if (router.currentRoute.value.path === "/login") {
-      router.push("/");
+  } else {
+    // ✅ المستخدم خرج
+    localStorage.removeItem("lastDashboardRoute");
+    if (router.currentRoute.value.meta.requiresAdmin || router.currentRoute.value.meta.requiresTechnician) {
+      router.push("/login");
     }
   }
 });
-
