@@ -32,9 +32,50 @@
       <!-- 🌙 Right Side (User Area + Theme) -->
       <div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
 
-        <!-- 🌐 Globe + Dark Mode (Always visible) -->
-        <div class="flex items-center mr-4">
-          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color mr-3"></i>
+        <!-- 🌐 Globe + Notifications + Dark Mode -->
+        <div class="flex items-center mr-4 space-x-3">
+          <!-- 🔔 Notification Icon -->
+          <div class="relative" v-if="user">
+            <button @click="toggleNotifications" class="relative cursor-pointer">
+              <i class="fa-solid fa-bell text-xl text-accent-color"></i>
+              <span
+                v-if="unreadCount > 0"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
+              >
+                {{ unreadCount }}
+              </span>
+            </button>
+
+            <!-- 🔽 Notifications Dropdown -->
+            <transition name="fade-slide">
+              <div
+                v-if="showNotifications"
+                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50"
+              >
+                <div class="p-3 font-semibold text-[#133B5D] border-b">Notifications</div>
+                <ul class="max-h-64 overflow-y-auto">
+                  <li
+                    v-for="n in notifications"
+                    :key="n.id"
+                    class="p-3 border-b last:border-none text-sm hover:bg-gray-50"
+                  >
+                    <p class="text-gray-800">{{ n.message }}</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                      {{ n.timestamp?.toDate?.().toLocaleString?.() || "Just now" }}
+                    </p>
+                  </li>
+                  <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
+                    No notifications yet
+                  </li>
+                </ul>
+              </div>
+            </transition>
+          </div>
+
+          <!-- 🌐 Globe -->
+          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color"></i>
+
+          <!-- 🌙 Dark Mode -->
           <button @click="toggleDarkMode" class="cursor-pointer">
             <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
             <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
@@ -162,7 +203,7 @@
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 export default {
@@ -175,6 +216,11 @@ export default {
       user: null,
       firstName: "",
       loadingUser: true,
+
+      // 🔔 Notifications
+      notifications: [],
+      unreadCount: 0,
+      showNotifications: false,
     };
   },
 
@@ -204,6 +250,24 @@ export default {
     toggleDarkMode() {
       this.isDark = !this.isDark;
     },
+
+    // 🔔 Notifications
+    toggleNotifications() {
+      this.showNotifications = !this.showNotifications;
+      if (this.showNotifications) {
+        this.markNotificationsAsRead();
+      }
+    },
+
+    async markNotificationsAsRead() {
+      if (!this.user || !this.notifications.length) return;
+      for (const n of this.notifications) {
+        if (!n.isRead) {
+          const ref = doc(db, "users", this.user.uid, "notifications", n.id);
+          await updateDoc(ref, { isRead: true });
+        }
+      }
+    },
   },
 
   mounted() {
@@ -224,6 +288,14 @@ export default {
             break;
           }
         }
+
+        // 🟢 Listen for real-time notifications
+        const notifRef = collection(db, "users", currentUser.uid, "notifications");
+        const q = query(notifRef, orderBy("timestamp", "desc"));
+        onSnapshot(q, (snap) => {
+          this.notifications = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          this.unreadCount = this.notifications.filter((n) => !n.isRead).length;
+        });
       } else {
         this.user = null;
         this.firstName = "";

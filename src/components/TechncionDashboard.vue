@@ -167,11 +167,41 @@ const listenForServices = () => {
   });
 };
 
-// 🟩 Orders helpers
+// 🟩 ✅ Fixed Notification Sending Logic
 const updateOrderStatus = async (id, status) => {
   try {
     const orderRef = doc(db, "orders", id);
+    const orderSnap = await getDoc(orderRef);
+    const orderData = orderSnap.data();
+
+    // ✅ Update the order status
     await updateDoc(orderRef, { status });
+
+    // ✅ Send notification to the client
+    const clientId = orderData?.clientId || orderData?.userId;
+
+    if (clientId) {
+      const notifCol = collection(db, "users", clientId, "notifications");
+      const messages = {
+        upcoming: "✅ Technician accepted your order.",
+        declined: "❌ Technician declined your order.",
+        cancelled: "⚠️ Technician cancelled your order.",
+        completed: "🎉 Your order has been completed!",
+      };
+
+      await addDoc(notifCol, {
+        orderId: id,
+        message: messages[status] || `Order status updated to ${status}`,
+        status,
+        isRead: false,
+        timestamp: serverTimestamp(),
+      });
+
+      console.log("📩 Notification sent to client:", clientId);
+    } else {
+      console.warn("⚠️ No clientId found in this order document");
+    }
+
     displayNotification(`Order marked as ${status}`, "success");
   } catch (error) {
     console.error("Error updating order:", error);
@@ -293,35 +323,34 @@ watch(
     if (!ctx) return;
     if (chartInstance) chartInstance.destroy();
 
-    // 🟦 أسماء الشهور
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
-    // 🟩 استخراج الشهر الفعلي من أي نوع تاريخ
     const labels = orders.value.map((o) => {
       if (!o.date) return "N/A";
       try {
         let dateStr = "";
         let parsedDate;
 
-        // لو راجع timestamp من Firestore
         if (o.date?.seconds) {
           parsedDate = new Date(o.date.seconds * 1000);
-        }
-        // لو string
-        else if (typeof o.date === "string") {
+        } else if (typeof o.date === "string") {
           dateStr = o.date.trim();
-
-          // نحاول نضيف سنة افتراضية لو مش موجودة
-          if (!/\d{4}/.test(dateStr)) {
-            dateStr += " 2025";
-          }
-
-          // نجرب نحوله لتاريخ فعلي
+          if (!/\d{4}/.test(dateStr)) dateStr += " 2025";
           parsedDate = new Date(dateStr);
-
-          // fallback لو فشل التحويل
           if (isNaN(parsedDate)) {
-            // نحاول نكتشف الشهر من النص نفسه
             const found = monthNames.find((m) => dateStr.includes(m));
             return found || "N/A";
           }
@@ -335,10 +364,7 @@ watch(
       }
     });
 
-    // 🟩 المبالغ
     const dataValues = orders.value.map((o) => parseFloat(o.price) || 0);
-
-    // 🟩 لو كله N/A نعمل fallback
     const validLabels = labels.filter((l) => l !== "N/A");
     const finalLabels = validLabels.length ? validLabels : ["No Data"];
 
@@ -387,9 +413,8 @@ watch(
   },
   { immediate: false }
 );
-
-
 </script>
+
 
 
 
