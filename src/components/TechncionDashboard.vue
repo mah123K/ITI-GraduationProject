@@ -1,21 +1,20 @@
 <script setup>
 import { ref, computed, watch, onMounted, nextTick } from "vue";
 import Chart from "chart.js/auto";
-
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import ChatPage from "./ChatPage.vue";
 import {
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  serverTimestamp,
+  doc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import ordersCard from "../components/ordersCard.vue";
@@ -23,13 +22,13 @@ import UpcomingCard from "../components/UpcomingCard.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
-import ManageTechnicianProfile from './MannageTechnicionProfile.vue';
+import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
 
 // 🟦 Refs & states
 const technicianId = ref(null);
 const orders = ref([]);
 const services = ref([]);
-const unreadChatCount = ref(0); // 👈 1. تمت إضافة هذا المتغير
+const unreadChatCount = ref(0);
 const mainTab = ref("orders");
 const orderTab = ref("requests");
 
@@ -42,293 +41,357 @@ const servicePrice = ref("");
 const availabilityLoading = ref(true);
 const availabilitySaving = ref(false);
 const days = ref([
-  { name: 'Monday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Tuesday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Wednesday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Thursday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Friday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Saturday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Sunday', active: false, start: '09:00', end: '17:00' },
+  { name: "Monday", active: false, start: "09:00", end: "17:00" },
+  { name: "Tuesday", active: false, start: "09:00", end: "17:00" },
+  { name: "Wednesday", active: false, start: "09:00", end: "17:00" },
+  { name: "Thursday", active: false, start: "09:00", end: "17:00" },
+  { name: "Friday", active: false, start: "09:00", end: "17:00" },
+  { name: "Saturday", active: false, start: "09:00", end: "17:00" },
+  { name: "Sunday", active: false, start: "09:00", end: "17:00" },
 ]);
 const timeOptions = ref([]);
 for (let h = 0; h < 24; h++) {
-  for (let m = 0; m < 60; m += 30) {
-    const hour = h.toString().padStart(2, '0');
-    const minute = m.toString().padStart(2, '0');
-    timeOptions.value.push(`${hour}:${minute}`);
-  }
+  for (let m = 0; m < 60; m += 30) {
+    const hour = h.toString().padStart(2, "0");
+    const minute = m.toString().padStart(2, "0");
+    timeOptions.value.push(`${hour}:${minute}`);
+  }
 }
 
-// ⛔️ تم حذف أكواد الـ router الخاطئة من هنا ⛔️
-
+// 🟩 Notification system
 const showNotification = ref(false);
 const notificationMessage = ref("");
 const notificationType = ref("success");
 
-// 🟨 Notifications helper
 const displayNotification = (message, type = "success", duration = 3000) => {
-  notificationMessage.value = message;
-  notificationType.value = type;
-  showNotification.value = true;
-  setTimeout(() => (showNotification.value = false), duration);
+  notificationMessage.value = message;
+  notificationType.value = type;
+  showNotification.value = true;
+  setTimeout(() => (showNotification.value = false), duration);
 };
 
-// 🔹 Simple tab change handler (needed by the nav)
-const handleTabChange = (tabName) => { mainTab.value = tabName; };
+// 🟩 Tab switch
+const handleTabChange = (tabName) => {
+  mainTab.value = tabName;
+};
 
-// 🟩 Fetch Technician Auth + Availability + live listeners
+// 🟩 Auth & Firestore listeners
 onMounted(() => {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      technicianId.value = user.uid;
-      loadAvailability();
-      listenForOrders();
-      listenForServices();
-      listenForUnreadChats(); // 👈 2. تمت إضافة استدعاء الدالة
-    } else {
-      technicianId.value = null;
-      orders.value = [];
-      services.value = [];
-      days.value.forEach((d) => (d.active = false));
-      availabilityLoading.value = false;
-    }
-  });
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      technicianId.value = user.uid;
+      loadAvailability();
+      listenForOrders();
+      listenForServices();
+      listenForUnreadChats();
+    } else {
+      technicianId.value = null;
+      orders.value = [];
+      services.value = [];
+      days.value.forEach((d) => (d.active = false));
+      availabilityLoading.value = false;
+    }
+  });
 });
 
-// 🟦 3. تمت إضافة هذه الدالة بالكامل
-// Live unread chat count from Firestore
+// 🟩 Listen for unread chats
 const listenForUnreadChats = () => {
-  if (!technicianId.value) return;
-  
-  // ابحث عن كل الدردشات الخاصة بي التي (لم أقرأها)
-  const q = query(
-    collection(db, "users", technicianId.value, "active_chats"),
-    where("isRead", "==", false)
-  );
+  if (!technicianId.value) return;
+  const q = query(
+    collection(db, "users", technicianId.value, "active_chats"),
+    where("isRead", "==", false)
+  );
 
-  onSnapshot(q, (snapshot) => {
-    unreadChatCount.value = snapshot.size; // تحديث العدد
-  });
+  onSnapshot(q, (snapshot) => {
+    unreadChatCount.value = snapshot.size;
+  });
 };
 
-
+// 🟩 Load & Save Availability
 const loadAvailability = async () => {
-  if (!technicianId.value) return;
-  availabilityLoading.value = true;
-  try {
-    const docRef = doc(db, "technicians", technicianId.value);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (Array.isArray(data.availability)) {
-        days.value = days.value.map((day) => {
-          const saved = data.availability.find((d) => d.name === day.name);
-          return saved ? { ...day, ...saved } : day;
-        });
-      }
-    }
-  } catch (err) {
-    console.error("Error loading availability:", err);
-  }
-  availabilityLoading.value = false;
+  if (!technicianId.value) return;
+  availabilityLoading.value = true;
+  try {
+    const docRef = doc(db, "technicians", technicianId.value);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (Array.isArray(data.availability)) {
+        days.value = days.value.map((day) => {
+          const saved = data.availability.find((d) => d.name === day.name);
+          return saved ? { ...day, ...saved } : day;
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error loading availability:", err);
+  }
+  availabilityLoading.value = false;
 };
 
-// 🟩 Save availability
 const saveAvailability = async () => {
-  if (!technicianId.value) return;
-  availabilitySaving.value = true;
-  try {
-    const docRef = doc(db, "technicians", technicianId.value);
-    const anyActive = days.value.some((d) => d.active);
-    await updateDoc(docRef, {
-      availability: anyActive ? days.value : [],
-    });
-    displayNotification("Availability saved successfully!", "success");
-  } catch (error) {
-    console.error("Error saving availability:", error);
-    displayNotification("Failed to save availability.", "error");
-  }
-  availabilitySaving.value = false;
+  if (!technicianId.value) return;
+  availabilitySaving.value = true;
+  try {
+    const docRef = doc(db, "technicians", technicianId.value);
+    const anyActive = days.value.some((d) => d.active);
+    await updateDoc(docRef, {
+      availability: anyActive ? days.value : [],
+    });
+    displayNotification("Availability saved successfully!", "success");
+  } catch (error) {
+    console.error("Error saving availability:", error);
+    displayNotification("Failed to save availability.", "error");
+  }
+  availabilitySaving.value = false;
 };
 
-// 🟦 Live orders from Firestore
+// 🟩 Live Firestore listeners
 const listenForOrders = () => {
-  if (!technicianId.value) return;
-  const ordersRef = collection(db, "orders");
-  const q = query(ordersRef, where("technicianId", "==", technicianId.value));
-  onSnapshot(q, (snapshot) => {
-    const fetched = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-    orders.value = fetched.sort(
-      (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
-    );
-  });
+  if (!technicianId.value) return;
+  const ordersRef = collection(db, "orders");
+  const q = query(ordersRef, where("technicianId", "==", technicianId.value));
+  onSnapshot(q, (snapshot) => {
+    const fetched = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    orders.value = fetched.sort(
+      (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+    );
+  });
 };
 
-// 🟦 Live services from Firestore (subcollection)
 const listenForServices = () => {
-  if (!technicianId.value) return;
-  const servicesCol = collection(db, "technicians", technicianId.value, "services");
-  onSnapshot(servicesCol, (snap) => {
-    services.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  });
+  if (!technicianId.value) return;
+  const servicesCol = collection(db, "technicians", technicianId.value, "services");
+  onSnapshot(servicesCol, (snap) => {
+    services.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  });
 };
 
-// ... (باقي الدوال مثل updateOrderStatus, handleAcceptOrder, ... الخ) ...
-// ... (اتركها كما هي) ...
-
-// 🟩 Order Actions - Update Firestore
+// 🟩 Orders helpers
 const updateOrderStatus = async (id, status) => {
-  try {
-    const orderRef = doc(db, "orders", id);
-    await updateDoc(orderRef, { status });
-    displayNotification(`Order marked as ${status}`, "success");
-  } catch (error) {
-    console.error("Error updating order:", error);
-    displayNotification("Failed to update order.", "error");
-  }
+  try {
+    const orderRef = doc(db, "orders", id);
+    await updateDoc(orderRef, { status });
+    displayNotification(`Order marked as ${status}`, "success");
+  } catch (error) {
+    console.error("Error updating order:", error);
+    displayNotification("Failed to update order.", "error");
+  }
 };
 
-// Hook up to buttons
 const handleAcceptOrder = (id) => updateOrderStatus(id, "upcoming");
 const handleDeclineOrder = (id) => updateOrderStatus(id, "declined");
+const handleCancelOrder = (id) => updateOrderStatus(id, "cancelled");
 const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
 
-// 🟩 Popup (create/edit service)
+// 🟩 Services popups
 const openEditPopup = (service) => {
-  selectedService.value = service;
-  serviceTitle.value = service.descreption;
-  servicePrice.value = service.price;
-  newImage.value = null;
-  showPopup.value = true;
+  selectedService.value = service;
+  serviceTitle.value = service.descreption;
+  servicePrice.value = service.price;
+  newImage.value = null;
+  showPopup.value = true;
 };
+
 const openCreatePopup = () => {
-  selectedService.value = null;
-  serviceTitle.value = "";
-  servicePrice.value = "";
-  newImage.value = null;
-  showPopup.value = true;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
+  showPopup.value = true;
 };
+
 const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) newImage.value = URL.createObjectURL(file); // (placeholder preview only)
+  const file = e.target.files[0];
+  if (file) newImage.value = URL.createObjectURL(file);
 };
+
 const deleteImage = () => {
-  newImage.value = null;
-  if (selectedService.value) selectedService.value.image = null;
+  newImage.value = null;
+  if (selectedService.value) selectedService.value.image = null;
 };
 
-// 🟦 Create/Update service in Firestore
+// 🟩 Firestore Service CRUD
 const saveChanges = async () => {
-  if (!technicianId.value) return;
+  if (!technicianId.value) return;
 
-  try {
-    const servicesCol = collection(db, "technicians", technicianId.value, "services");
-    const payload = {
-      descreption: serviceTitle.value,
-      price: servicePrice.value,
-      image: newImage.value || selectedService.value?.image || "/images/create service.png",
-    };
+  try {
+    const servicesCol = collection(db, "technicians", technicianId.value, "services");
+    const payload = {
+      descreption: serviceTitle.value,
+      price: servicePrice.value,
+      image: newImage.value || selectedService.value?.image || "/images/create service.png",
+    };
 
-    if (selectedService.value?.id) {
-      // update
-      await updateDoc(doc(servicesCol, selectedService.value.id), payload);
-      displayNotification("Service updated.", "success");
-    } else {
-      // create
-      await addDoc(servicesCol, { ...payload, createdAt: serverTimestamp() });
-      displayNotification("Service created.", "success");
-    }
-  } catch (e) {
-    console.error("saveChanges error:", e);
-    displayNotification("Failed to save service.", "error");
-  }
+    if (selectedService.value?.id) {
+      await updateDoc(doc(servicesCol, selectedService.value.id), payload);
+      displayNotification("Service updated.", "success");
+    } else {
+      await addDoc(servicesCol, { ...payload, createdAt: serverTimestamp() });
+      displayNotification("Service created.", "success");
+    }
+  } catch (e) {
+    console.error("saveChanges error:", e);
+    displayNotification("Failed to save service.", "error");
+  }
 
-  closePopup();
+  closePopup();
 };
 
-// 🟦 Delete service in Firestore
 const handleDeleteService = async (serviceId) => {
-  if (!technicianId.value || !serviceId) return;
-  try {
-    await deleteDoc(doc(db, "technicians", technicianId.value, "services", serviceId));
-    displayNotification("Service deleted.", "success");
-  } catch (e) {
-    console.error("delete service error:", e);
-    displayNotification("Failed to delete service.", "error");
-  }
+  if (!technicianId.value || !serviceId) return;
+  try {
+    await deleteDoc(doc(db, "technicians", technicianId.value, "services", serviceId));
+    displayNotification("Service deleted.", "success");
+  } catch (e) {
+    console.error("delete service error:", e);
+    displayNotification("Failed to delete service.", "error");
+  }
 };
 
 const closePopup = () => {
-  showPopup.value = false;
-  selectedService.value = null;
-  serviceTitle.value = "";
-  servicePrice.value = "";
-  newImage.value = null;
+  showPopup.value = false;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
 };
 
-// 🟩 Tabs filtering
+// 🟩 Filtered Orders
 const filteredOrders = computed(() =>
-  orders.value.filter((o) => {
-    if (orderTab.value === "requests") return o.status === "new";
-    if (orderTab.value === "upcoming") return o.status === "upcoming";
-    if (orderTab.value === "completed") return o.status === "completed";
-    return false;
-  })
+  orders.value.filter((o) => {
+    if (orderTab.value === "requests") return o.status === "new";
+    if (orderTab.value === "upcoming") return o.status === "upcoming";
+    if (orderTab.value === "completed") return o.status === "completed";
+    return false;
+  })
 );
 
-// Count of completed orders (for badges / summary)
-const completedCount = computed(() => orders.value.filter((o) => o.status === "completed").length);
+const completedCount = computed(() =>
+  orders.value.filter((o) => o.status === "completed").length
+);
 
+// 🟩 Total earnings
+const totalEarnings = computed(() =>
+  orders.value.reduce((sum, o) => {
+    const val = parseFloat(o.price);
+    return sum + (isNaN(val) ? 0 : val);
+  }, 0)
+);
+
+// 🟩 Chart
 let chartInstance = null;
+
 watch(
-  mainTab,
-  (newTab) => {
-    if (newTab === "earnings") {
-      nextTick(() => {
-        const ctx = document.getElementById("earningsChart");
-        if (!ctx) return;
-        if (chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-            datasets: [
-              {
-                label: "Earnings (EGP)",
-                data: [500, 1200, 900, 1800, 2300, 2600],
-                backgroundColor: "rgba(19, 59, 93, 0.2)",
-                borderColor: "#133B5D",
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: "#1b5383",
-                pointRadius: 5,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: "#133B5D",
-                titleColor: "#fff",
-                bodyColor: "#fff",
-              },
-            },
-            scales: {
-              y: { beginAtZero: true, grid: { color: "#e0e0e0" }, ticks: { color: "#133B5D" } },
-              x: { grid: { display: false }, ticks: { color: "#133B5D" } },
-            },
-          },
-        });
-      });
-    }
-  },
-  { immediate: false }
+  mainTab,
+  async (newTab) => {
+    if (newTab !== "earnings") return;
+
+    await nextTick();
+
+    const ctx = document.getElementById("earningsChart");
+    if (!ctx) return;
+    if (chartInstance) chartInstance.destroy();
+
+    // 🟦 أسماء الشهور
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // 🟩 استخراج الشهر الفعلي من أي نوع تاريخ
+    const labels = orders.value.map((o) => {
+      if (!o.date) return "N/A";
+      try {
+        let dateStr = "";
+        let parsedDate;
+
+        // لو راجع timestamp من Firestore
+        if (o.date?.seconds) {
+          parsedDate = new Date(o.date.seconds * 1000);
+        }
+        // لو string
+        else if (typeof o.date === "string") {
+          dateStr = o.date.trim();
+
+          // نحاول نضيف سنة افتراضية لو مش موجودة
+          if (!/\d{4}/.test(dateStr)) {
+            dateStr += " 2025";
+          }
+
+          // نجرب نحوله لتاريخ فعلي
+          parsedDate = new Date(dateStr);
+
+          // fallback لو فشل التحويل
+          if (isNaN(parsedDate)) {
+            // نحاول نكتشف الشهر من النص نفسه
+            const found = monthNames.find((m) => dateStr.includes(m));
+            return found || "N/A";
+          }
+        }
+
+        if (!parsedDate || isNaN(parsedDate)) return "N/A";
+        const monthIndex = parsedDate.getMonth();
+        return monthNames[monthIndex];
+      } catch {
+        return "N/A";
+      }
+    });
+
+    // 🟩 المبالغ
+    const dataValues = orders.value.map((o) => parseFloat(o.price) || 0);
+
+    // 🟩 لو كله N/A نعمل fallback
+    const validLabels = labels.filter((l) => l !== "N/A");
+    const finalLabels = validLabels.length ? validLabels : ["No Data"];
+
+    chartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: finalLabels.slice(-6),
+        datasets: [
+          {
+            label: "Earnings (EGP)",
+            data: dataValues.slice(-6),
+            backgroundColor: "rgba(19,59,93,0.2)",
+            borderColor: "#133B5D",
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: "#1b5383",
+            pointRadius: 5,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#133B5D",
+            titleColor: "#fff",
+            bodyColor: "#fff",
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: "#e0e0e0" },
+            ticks: { color: "#133B5D" },
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: "#133B5D" },
+          },
+        },
+      },
+    });
+  },
+  { immediate: false }
 );
+
+
 </script>
+
+
 
 
 
@@ -430,6 +493,7 @@ watch(
               :key="order.id"
               :order="order"
               @markCompleted="handleMarkCompletedOrder"
+              @cancelOrder="handleCancelOrder"
               class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
             />
           </template>
@@ -527,7 +591,7 @@ watch(
           <div class="bg-gradient-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center">
              <div>
               <p class="text-lg opacity-90">Total Earnings</p>
-              <h1 class="text-5xl font-bold mt-2">4,530 EGP</h1>
+<h1 class="text-5xl font-bold mt-2">{{ totalEarnings.toLocaleString() }} EGP</h1>
               <p class="text-sm text-gray-200 mt-2">Updated today</p>
               <p class="text-sm mt-1 text-green-300 font-medium flex items-center">
                 <img src="../images/increase.png" class="w-5 h-5 mr-1" alt="" />

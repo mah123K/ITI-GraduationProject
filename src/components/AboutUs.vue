@@ -23,25 +23,25 @@
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Client 1",
+          name: "Samir Mohamed",
           text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002635_ny2rnm.png",
-          name: "Client 2",
+          name: "Mona Adel",
           text: "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!"
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002730_y0bkp5.png",
-          name: "Client 3",
+          name: "Mai Tarek",
           text: "Highly recommend Tashtebaty for reliable and quality work.",
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Client 4",
+          name: "Khaled Nabil",
           text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
         },
       ],
@@ -198,80 +198,81 @@
 
 
   <div class="WhyToChooseUs flex justify-center items-center w-full mb-15">
-<div class="grid grid-cols-2">
-    <div class="imagesContainer flex flex-col justify-center items-center">
-      <img src="../images/Rectangle 21.png" class="rounded-[40px]  h-80 mb-5 lg:w-[400px] lg:h-[380px] object-cover shadow-lg relative  z-10" alt="">
-    </div>
+    <div class="grid md:grid-cols-2">
+      <div class="imagesContainer flex flex-col justify-center items-center">
+        <img src="../images/Rectangle 21.png" class="rounded-[40px]  h-80 mb-5 lg:w-[400px] lg:h-[380px] object-cover shadow-lg relative  z-10" alt="">
+      </div>
 
-    <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
-      <h2 class="text-3xl font-semibold">Why choose us?</h2>
-      <p class="md:text-md text-md">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
-      
-      <ul class="space-y-4">
-      <li class="flex items-start gap-3 text-xl text-gray-800">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-          class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
-          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
-          169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 
-          18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
-          5.4-25.7-5.3-33.5z"/>
-        </svg>
-        Use best materials and labor in every project.
-      </li>
+      <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
 
-      <li class="flex items-start gap-3 text-xl text-gray-800">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-          class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
-          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
-          169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
-          33.9l72 72c5 5 11.8 7.5 
-          18.8 7s13.4-4.1 17.5-9.8L379.3 
-          179.2c7.8-10.7 
-          5.4-25.7-5.3-33.5z"/>
-        </svg>
-        Integrity and honesty from top to bottom.
-      </li>
+        <h2 class="text-3xl font-semibold">Why choose us?</h2>
+        <p class="md:text-md text-md">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
+        
+        <ul class="space-y-4">
+        <li class="flex items-start gap-3 text-xl text-gray-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
+            169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 
+            18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
+            5.4-25.7-5.3-33.5z"/>
+          </svg>
+          Use best materials and labor in every project.
+        </li>
 
-      <li class="flex items-start gap-3 text-xl text-gray-800">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-          class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
-          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
-          169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
-          33.9l72 72c5 5 11.8 7.5 
-          18.8 7s13.4-4.1 17.5-9.8L379.3 
-          179.2c7.8-10.7 
-          5.4-25.7-5.3-33.5z"/>
-        </svg>
-        Affordable and fair prices.
-      </li>
+        <li class="flex items-start gap-3 text-xl text-gray-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
+            169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
+            33.9l72 72c5 5 11.8 7.5 
+            18.8 7s13.4-4.1 17.5-9.8L379.3 
+            179.2c7.8-10.7 
+            5.4-25.7-5.3-33.5z"/>
+          </svg>
+          Integrity and honesty from top to bottom.
+        </li>
 
-      <li class="flex items-start gap-3 text-xl text-gray-800">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-          class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
-          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
-          169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
-          33.9l72 72c5 5 11.8 7.5 
-          18.8 7s13.4-4.1 17.5-9.8L379.3 
-          179.2c7.8-10.7 
-          5.4-25.7-5.3-33.5z"/>
-        </svg>
-        Licensed and Insured.
-      </li>
+        <li class="flex items-start gap-3 text-xl text-gray-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
+            169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
+            33.9l72 72c5 5 11.8 7.5 
+            18.8 7s13.4-4.1 17.5-9.8L379.3 
+            179.2c7.8-10.7 
+            5.4-25.7-5.3-33.5z"/>
+          </svg>
+          Affordable and fair prices.
+        </li>
 
-      <li class="flex items-start gap-3 text-xl text-gray-800">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-          class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
-          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
-          169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
-          33.9l72 72c5 5 11.8 7.5 
-          18.8 7s13.4-4.1 17.5-9.8L379.3 
-          179.2c7.8-10.7 
-          5.4-25.7-5.3-33.5z"/>
-        </svg>
-        We care about our customers and give personal attention.
-      </li>
-    </ul>
-    </div>
+        <li class="flex items-start gap-3 text-xl text-gray-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
+            169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
+            33.9l72 72c5 5 11.8 7.5 
+            18.8 7s13.4-4.1 17.5-9.8L379.3 
+            179.2c7.8-10.7 
+            5.4-25.7-5.3-33.5z"/>
+          </svg>
+          Licensed and Insured.
+        </li>
+
+        <li class="flex items-start gap-3 text-xl text-gray-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
+            169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
+            33.9l72 72c5 5 11.8 7.5 
+            18.8 7s13.4-4.1 17.5-9.8L379.3 
+            179.2c7.8-10.7 
+            5.4-25.7-5.3-33.5z"/>
+          </svg>
+          We care about our customers and give personal attention.
+        </li>
+      </ul>
+      </div>
     </div>
   </div>
 

@@ -10,9 +10,9 @@
       />
     </section>
     <!--cards-->
-    <h2 class="text-center main-header">Our Services</h2>
+    <h2 class="text-center main-header dark:bg-black">Our Services</h2>
     <div class="flex justify-center">
-      <div class="grid grid-cols-2 gap-10  md:grid-cols-4">
+      <div class="grid grid-cols-2 gap-10  md:grid-cols-4 ">
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
