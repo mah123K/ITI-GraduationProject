@@ -82,90 +82,53 @@
     <div class="text-accent-color flex justify-end mr-10">
       <router-link to="/offers">see more</router-link>
     </div>
-    <div class="flex justify-center mt-5">
-      <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="card bg-secondry-color rounded-xl h-fit w-70 shadow-lg">
-          <div class="offer absolute">
-            <img
-              src="../images/offerdisc.png"
-              class="w-15 rounded-b-full"
-              alt=""
-            />
-          </div>
+    <div v-if="loading" class="flex justify-center mt-10">
+    <p class="text-lg">Loading offers...</p>
+  </div>
 
+  <div v-else-if="offers.length > 0" class="flex justify-center mt-5">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      
+      <div
+        v-for="offer in offers"
+        :key="offer.id"
+        class="card bg-secondry-color rounded-2xl h-fit w-70 shadow-lg relative"
+      >
+        <div class="offer absolute">
           <img
-            src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702375/image_5_qdnori.jpg"
-            alt=""
-            class="w-full rounded-t-2xl"
+            src="../images/offerdisc.png"
+            class="w-15 rounded-b-full"
+            alt="Offer discount"
           />
-          <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
-            <p class="text-lg">on your First Service</p>
-            <div class="card-actions pb-3">
-              <button
-                class="btn mt-2 text-white px-3 cursor-pointer bg-accent-color rounded-[10px] text-lg"
-              >
-                Claim offer
-              </button>
-            </div>
-          </div>
         </div>
 
-        <div class="card bg-secondry-color rounded-2xl w-70 shadow-lg">
-          <div class="offer absolute">
-            <img
-              src="../images/offerdisc.png"
-              class="w-15 rounded-b-full"
-              alt=""
-            />
-          </div>
-
-          <img
-            src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg"
-            alt=""
-            class="w-full rounded-t-2xl"
+        <img
+          :src="offer.imageUrl"
+          :alt="offer.title"
+          class="w-full rounded-t-2xl h-48 object-cover" 
           />
-          <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
-            <p class="text-lg">on your First Service</p>
-            <div class="card-actions pb-3">
-              <button
-                class="btn mt-2 text-white rounded-[10px] px-3 cursor-pointer bg-accent-color text-lg"
-              >
-                Claim offer
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div class="card bg-secondry-color rounded-2xl w-70 shadow-lg">
-          <div class="offer absolute">
-            <img
-              src="../images/offerdisc.png"
-              class="w-15 rounded-b-full"
-              alt=""
-            />
-          </div>
-
-          <img
-            src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702373/image_7_gacwsb.jpg"
-            alt=""
-            class="w-full rounded-t-2xl"
-          />
-          <div class="card-body mt-2 items-center text-center">
-            <h2 class="card-title text-red-600 font-bold">10% OFF</h2>
-            <p class="text-lg">on your First Service</p>
-            <div class="card-actions pb-3">
-              <button
-                class="btn mt-2 text-white rounded-[10px] px-3 cursor-pointer bg-accent-color text-lg"
-              >
-                Claim offer
-              </button>
-            </div>
+        <div class="card-body mt-2 items-center text-center">
+          <h2 class="card-title text-red-600 font-bold">{{ offer.title }}</h2>
+          
+          <p class="text-lg">{{ offer.description }}</p>
+          
+          <div class="card-actions pb-3">
+            <button
+              class="btn mt-2 text-white px-3 cursor-pointer bg-accent-color rounded-[10px] text-lg"
+            >
+              Claim offer
+            </button>
           </div>
         </div>
       </div>
+      
     </div>
+  </div>
+
+  <div v-else class="flex justify-center mt-10">
+    <p class="text-lg">No offers available at the moment.</p>
+  </div>
     <!--Why choose us-->
     <div>
       <h2 class="main-header">Why Choose US?</h2>
@@ -422,128 +385,159 @@
     </div>
   </div>
 </template>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-<script>
-export default {
-  name: "HomePage",
+// 1. --- ADD FIREBASE IMPORTS ---
+// Make sure this path is correct for your project
+import { db } from '@/firebase/firebase';
+import { collection, getDocs, query, limit } from 'firebase/firestore';
 
-  data() {
-    return {
-      currentSlide: 0,
-      interval: null,
-      slides: [
-        {
-          image:
-            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Client 1",
-          text: "I used Tashtebaty for the first time. The process was incredibly smooth.",
-        },
-        {
-          image:
-            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002635_ny2rnm.png",
-          name: "Client 2",
-          text: "Great service and quick response. Loved the professionalism!",
-        },
-        {
-          image:
-            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002730_y0bkp5.png",
-          name: "Client 3",
-          text: "Highly recommend Tashtebaty for reliable and quality work.",
-        },
-        {
-          image:
-            "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Client 4",
-          text: "Very smooth process, fair pricing and great communication!",
-        },
-      ],
-      works: [
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 1",
-          size: "large",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 2",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 3",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 4",
-          size: "large",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 5",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 6",
-          size: "large",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 6",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 6",
-          size: "large",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 6",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 6",
-          size: "large",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
-          alt: "Work 6",
-          size: "small",
-        },
-        {
-          src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
-          alt: "Work 6",
-          size: "large",
-        },
-      ],
-    };
-  },
-  methods: {
-    nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-    },
-    prevSlide() {
-      this.currentSlide =
-        (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-    },
-    goToSlide(index) {
-      this.currentSlide = index;
-    },
-  },
+defineOptions({
+  name: 'HomePage'
+});
 
-  mounted() {
-    this.interval = setInterval(this.nextSlide, 5000);
-  },
+// --- DATA ---
 
-  beforeUnmount() {
-    clearInterval(this.interval);
-  },
+// Data for Customer Feedback Slider
+const currentSlide = ref(0);
+const slides = ref([]); 
+const works = ref([]);
+let interval = null;
+
+// 2. --- ADD DATA FOR OFFERS ---
+// These were missing, causing the error
+const offers = ref([]);
+const loading = ref(true);
+
+
+// --- METHODS ---
+
+// Methods for Customer Feedback Slider
+const nextSlide = () => {
+  if (slides.value.length === 0) return; 
+  currentSlide.value = (currentSlide.value + 1) % slides.value.length;
 };
-</script>
 
+const prevSlide = () => {
+  if (slides.value.length === 0) return; 
+  currentSlide.value =
+    (currentSlide.value - 1 + slides.value.length) % slides.value.length;
+};
+
+const goToSlide = (index) => {
+  currentSlide.value = index;
+};
+
+// 3. --- ADD METHOD TO FETCH OFFERS ---
+// This function will get your data from Firebase
+// 3. --- ADD METHOD TO FETCH OFFERS ---
+// This function will get your data from Firebase
+const fetchOffers = async () => {
+  try {
+    // If your collection is not named 'offers', change it here
+    const offersCollection = collection(db, 'offers');
+    
+    // THIS IS THE KEY LINE:
+    // The "limit(3)" tells Firebase to only get the first 3 documents.
+    const q = query(offersCollection, limit(3)); 
+    
+    const querySnapshot = await getDocs(q);
+    
+    const fetchedOffers = [];
+    querySnapshot.forEach((doc) => {
+      fetchedOffers.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    // This 'offers' array will only ever have 3 items in it.
+    offers.value = fetchedOffers; 
+
+  } catch (error) {
+    console.error("Error fetching offers: ", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+
+// --- LIFECYCLE HOOKS ---
+onMounted(() => {
+  // --- Set Static Data for Slider & Gallery ---
+  // (I've restored this data from your previous component)
+  slides.value = [
+    {
+      image:
+        "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
+      name: "Client 1",
+      text: "I used Tashtebaty for the first time. The process was incredibly smooth.",
+    },
+    {
+      image:
+        "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002635_ny2rnm.png",
+      name: "Client 2",
+      text: "Great service and quick response. Loved the professionalism!",
+    },
+    {
+      image:
+        "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002730_y0bkp5.png",
+      name: "Client 3",
+      text: "Highly recommend Tashtebaty for reliable and quality work.",
+    },
+    {
+      image:
+        "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
+      name: "Client 4",
+      text: "Very smooth process, fair pricing and great communication!",
+    },
+  ];
+  works.value = [
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
+      alt: "Work 1",
+      size: "large",
+    },
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+      alt: "Work 2",
+      size: "small",
+    },
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
+      alt: "Work 3",
+      size: "small",
+    },
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+      alt: "Work 4",
+      size: "large",
+    },
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760888695/service-maintenance-worker-repairing_slghmb.jpg",
+      alt: "Work 5",
+      size: "small",
+    },
+    {
+      src: "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760702374/image_6_y3qk8x.jpg",
+      alt: "Work 6",
+      size: "large",
+    },
+  ];
+
+  // --- Start the Customer Feedback slideshow ---
+  interval = setInterval(nextSlide, 5000);
+  
+  // 4. --- CALL THE FETCH OFFERS FUNCTION ---
+  // This tells Vue to get the offer data when the page loads
+  fetchOffers();
+});
+
+onBeforeUnmount(() => {
+  clearInterval(interval);
+});
+</script>
 <style scoped>
 .offer {
   z-index: 20;
