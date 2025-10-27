@@ -137,14 +137,12 @@ async updateProfile() {
     this.saving = true;
     let newPhotoURL = this.photoURL;
 
-    // 🔹 رفع الصورة الجديدة لو موجودة
     if (this.file) {
       const fileRef = storageRef(storage, `admin/${user.uid}/profile.jpg`);
       await uploadBytes(fileRef, this.file);
       newPhotoURL = await getDownloadURL(fileRef);
     }
 
-    // 🔹 تحديث بيانات Firebase Auth
     await updateProfile(user, {
       displayName: this.name,
       photoURL: newPhotoURL,

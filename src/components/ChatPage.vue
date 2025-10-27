@@ -5,8 +5,7 @@
       <p class="text-indigo-900">Initializing Chat...</p>
     </div>
 
-    <div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full max-w-5xl h-[600px] flex mt-20">
-      <!-- Sidebar (Chat list) -->
+<div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex">      <!-- Sidebar (Chat list) -->
       <div class="w-64 border-r border-gray-200 flex flex-col">
         <div class="bg-indigo-600 text-white p-4 rounded-tl-2xl">
           <h3 class="font-semibold">Chats</h3>
