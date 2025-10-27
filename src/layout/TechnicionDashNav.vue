@@ -110,7 +110,9 @@ onMounted(() => {
           @click="handleTabClick('Techsettings')"
         >Settings</li>
 
-        
+        <li :class="{'active': active === 'chat'}" @click="$emit('changeTab', 'chat')" class="cursor-pointer text-lg font-semibold p-1 rounded-xl my-1 w-[180px]">
+        <i class="fa-solid fa-comments"></i> Chat
+      </li>
         <button @click="handleLogout" class="border rounded-xl p-2 px-3 mt-4 cursor-pointer">Log Out</button>
       </ul>
     </div>

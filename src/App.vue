@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     hideLayout() {
-      const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard"];
+const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard", "/technician-chat"];
       return hiddenRoutes.some((path) => this.$route.path.startsWith(path));
     },
   },
