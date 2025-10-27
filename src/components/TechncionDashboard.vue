@@ -4,17 +4,18 @@ import Chart from "chart.js/auto";
 
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import ChatPage from "./ChatPage.vue";
 import {
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  serverTimestamp,
+  doc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import ordersCard from "../components/ordersCard.vue";
@@ -23,10 +24,12 @@ import ServiceCard from "../components/ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import CreateServiceCard from "../components/CreateServiceCard.vue";
 import ManageTechnicianProfile from './MannageTechnicionProfile.vue';
+
 // 🟦 Refs & states
 const technicianId = ref(null);
-const orders = ref([]);           // live from Firestore
-const services = ref([]);         // live from Firestore
+const orders = ref([]);
+const services = ref([]);
+const unreadChatCount = ref(0); // 👈 1. تمت إضافة هذا المتغير
 const mainTab = ref("orders");
 const orderTab = ref("requests");
 
@@ -39,39 +42,24 @@ const servicePrice = ref("");
 const availabilityLoading = ref(true);
 const availabilitySaving = ref(false);
 const days = ref([
-  { name: 'Monday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Tuesday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Wednesday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Thursday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Friday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Saturday', active: false, start: '09:00', end: '17:00' },
-  { name: 'Sunday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Monday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Tuesday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Wednesday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Thursday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Friday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Saturday', active: false, start: '09:00', end: '17:00' },
+  { name: 'Sunday', active: false, start: '09:00', end: '17:00' },
 ]);
 const timeOptions = ref([]);
 for (let h = 0; h < 24; h++) {
-  for (let m = 0; m < 60; m += 30) {
-    const hour = h.toString().padStart(2, '0');
-    const minute = m.toString().padStart(2, '0');
-    timeOptions.value.push(`${hour}:${minute}`);
-  }
+  for (let m = 0; m < 60; m += 30) {
+    const hour = h.toString().padStart(2, '0');
+    const minute = m.toString().padStart(2, '0');
+    timeOptions.value.push(`${hour}:${minute}`);
+  }
 }
-// --- Prevent leaving the dashboard ---
-import { onBeforeRouteLeave, useRouter } from "vue-router";
-const router = useRouter();
 
-// --- Prevent leaving the dashboard ---
-
-onBeforeRouteLeave((to, from) => {
-  // Get the current user directly from Firebase auth
-  const user = auth.currentUser;
-
-  if (user) {
-    console.log("Navigation blocked: User is still logged in.");
-    return false;
-  }
-  return true;
-});
-
+// ⛔️ تم حذف أكواد الـ router الخاطئة من هنا ⛔️
 
 const showNotification = ref(false);
 const notificationMessage = ref("");
@@ -79,10 +67,10 @@ const notificationType = ref("success");
 
 // 🟨 Notifications helper
 const displayNotification = (message, type = "success", duration = 3000) => {
-  notificationMessage.value = message;
-  notificationType.value = type;
-  showNotification.value = true;
-  setTimeout(() => (showNotification.value = false), duration);
+  notificationMessage.value = message;
+  notificationType.value = type;
+  showNotification.value = true;
+  setTimeout(() => (showNotification.value = false), duration);
 };
 
 // 🔹 Simple tab change handler (needed by the nav)
@@ -90,93 +78,114 @@ const handleTabChange = (tabName) => { mainTab.value = tabName; };
 
 // 🟩 Fetch Technician Auth + Availability + live listeners
 onMounted(() => {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      technicianId.value = user.uid;
-      loadAvailability();
-      listenForOrders();
-      listenForServices();     // 👈 live services from Firestore
-    } else {
-      technicianId.value = null;
-      orders.value = [];
-      services.value = [];
-      days.value.forEach((d) => (d.active = false));
-      availabilityLoading.value = false;
-    }
-  });
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      technicianId.value = user.uid;
+      loadAvailability();
+      listenForOrders();
+      listenForServices();
+      listenForUnreadChats(); // 👈 2. تمت إضافة استدعاء الدالة
+    } else {
+      technicianId.value = null;
+      orders.value = [];
+      services.value = [];
+      days.value.forEach((d) => (d.active = false));
+      availabilityLoading.value = false;
+    }
+  });
 });
 
+// 🟦 3. تمت إضافة هذه الدالة بالكامل
+// Live unread chat count from Firestore
+const listenForUnreadChats = () => {
+  if (!technicianId.value) return;
+  
+  // ابحث عن كل الدردشات الخاصة بي التي (لم أقرأها)
+  const q = query(
+    collection(db, "users", technicianId.value, "active_chats"),
+    where("isRead", "==", false)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    unreadChatCount.value = snapshot.size; // تحديث العدد
+  });
+};
+
+
 const loadAvailability = async () => {
-  if (!technicianId.value) return;
-  availabilityLoading.value = true;
-  try {
-    const docRef = doc(db, "technicians", technicianId.value);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (Array.isArray(data.availability)) {
-        days.value = days.value.map((day) => {
-          const saved = data.availability.find((d) => d.name === day.name);
-          return saved ? { ...day, ...saved } : day;
-        });
-      }
-    }
-  } catch (err) {
-    console.error("Error loading availability:", err);
-  }
-  availabilityLoading.value = false;
+  if (!technicianId.value) return;
+  availabilityLoading.value = true;
+  try {
+    const docRef = doc(db, "technicians", technicianId.value);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (Array.isArray(data.availability)) {
+        days.value = days.value.map((day) => {
+          const saved = data.availability.find((d) => d.name === day.name);
+          return saved ? { ...day, ...saved } : day;
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error loading availability:", err);
+  }
+  availabilityLoading.value = false;
 };
 
 // 🟩 Save availability
 const saveAvailability = async () => {
-  if (!technicianId.value) return;
-  availabilitySaving.value = true;
-  try {
-    const docRef = doc(db, "technicians", technicianId.value);
-    const anyActive = days.value.some((d) => d.active);
-    await updateDoc(docRef, {
-      availability: anyActive ? days.value : [],
-    });
-    displayNotification("Availability saved successfully!", "success");
-  } catch (error) {
-    console.error("Error saving availability:", error);
-    displayNotification("Failed to save availability.", "error");
-  }
-  availabilitySaving.value = false;
+  if (!technicianId.value) return;
+  availabilitySaving.value = true;
+  try {
+    const docRef = doc(db, "technicians", technicianId.value);
+    const anyActive = days.value.some((d) => d.active);
+    await updateDoc(docRef, {
+      availability: anyActive ? days.value : [],
+    });
+    displayNotification("Availability saved successfully!", "success");
+  } catch (error) {
+    console.error("Error saving availability:", error);
+    displayNotification("Failed to save availability.", "error");
+  }
+  availabilitySaving.value = false;
 };
 
 // 🟦 Live orders from Firestore
 const listenForOrders = () => {
-  if (!technicianId.value) return;
-  const ordersRef = collection(db, "orders");
-  const q = query(ordersRef, where("technicianId", "==", technicianId.value));
-  onSnapshot(q, (snapshot) => {
-    const fetched = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-    orders.value = fetched.sort(
-      (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
-    );
-  });
+  if (!technicianId.value) return;
+  const ordersRef = collection(db, "orders");
+  const q = query(ordersRef, where("technicianId", "==", technicianId.value));
+  onSnapshot(q, (snapshot) => {
+    const fetched = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    orders.value = fetched.sort(
+      (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+    );
+  });
 };
 
 // 🟦 Live services from Firestore (subcollection)
 const listenForServices = () => {
-  if (!technicianId.value) return;
-  const servicesCol = collection(db, "technicians", technicianId.value, "services");
-  onSnapshot(servicesCol, (snap) => {
-    services.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  });
+  if (!technicianId.value) return;
+  const servicesCol = collection(db, "technicians", technicianId.value, "services");
+  onSnapshot(servicesCol, (snap) => {
+    services.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  });
 };
+
+// ... (باقي الدوال مثل updateOrderStatus, handleAcceptOrder, ... الخ) ...
+// ... (اتركها كما هي) ...
 
 // 🟩 Order Actions - Update Firestore
 const updateOrderStatus = async (id, status) => {
-  try {
-    const orderRef = doc(db, "orders", id);
-    await updateDoc(orderRef, { status });
-    displayNotification(`Order marked as ${status}`, "success");
-  } catch (error) {
-    console.error("Error updating order:", error);
-    displayNotification("Failed to update order.", "error");
-  }
+  try {
+    const orderRef = doc(db, "orders", id);
+    await updateDoc(orderRef, { status });
+    displayNotification(`Order marked as ${status}`, "success");
+  } catch (error) {
+    console.error("Error updating order:", error);
+    displayNotification("Failed to update order.", "error");
+  }
 };
 
 // Hook up to buttons
@@ -186,85 +195,85 @@ const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
 
 // 🟩 Popup (create/edit service)
 const openEditPopup = (service) => {
-  selectedService.value = service;
-  serviceTitle.value = service.descreption;
-  servicePrice.value = service.price;
-  newImage.value = null;
-  showPopup.value = true;
+  selectedService.value = service;
+  serviceTitle.value = service.descreption;
+  servicePrice.value = service.price;
+  newImage.value = null;
+  showPopup.value = true;
 };
 const openCreatePopup = () => {
-  selectedService.value = null;
-  serviceTitle.value = "";
-  servicePrice.value = "";
-  newImage.value = null;
-  showPopup.value = true;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
+  showPopup.value = true;
 };
 const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) newImage.value = URL.createObjectURL(file); // (placeholder preview only)
+  const file = e.target.files[0];
+  if (file) newImage.value = URL.createObjectURL(file); // (placeholder preview only)
 };
 const deleteImage = () => {
-  newImage.value = null;
-  if (selectedService.value) selectedService.value.image = null;
+  newImage.value = null;
+  if (selectedService.value) selectedService.value.image = null;
 };
 
 // 🟦 Create/Update service in Firestore
 const saveChanges = async () => {
-  if (!technicianId.value) return;
+  if (!technicianId.value) return;
 
-  try {
-    const servicesCol = collection(db, "technicians", technicianId.value, "services");
-    const payload = {
-      descreption: serviceTitle.value,
-      price: servicePrice.value,
-      image: newImage.value || selectedService.value?.image || "/images/create service.png",
-    };
+  try {
+    const servicesCol = collection(db, "technicians", technicianId.value, "services");
+    const payload = {
+      descreption: serviceTitle.value,
+      price: servicePrice.value,
+      image: newImage.value || selectedService.value?.image || "/images/create service.png",
+    };
 
-    if (selectedService.value?.id) {
-      // update
-      await updateDoc(doc(servicesCol, selectedService.value.id), payload);
-      displayNotification("Service updated.", "success");
-    } else {
-      // create
-      await addDoc(servicesCol, { ...payload, createdAt: serverTimestamp() });
-      displayNotification("Service created.", "success");
-    }
-  } catch (e) {
-    console.error("saveChanges error:", e);
-    displayNotification("Failed to save service.", "error");
-  }
+    if (selectedService.value?.id) {
+      // update
+      await updateDoc(doc(servicesCol, selectedService.value.id), payload);
+      displayNotification("Service updated.", "success");
+    } else {
+      // create
+      await addDoc(servicesCol, { ...payload, createdAt: serverTimestamp() });
+      displayNotification("Service created.", "success");
+    }
+  } catch (e) {
+    console.error("saveChanges error:", e);
+    displayNotification("Failed to save service.", "error");
+  }
 
-  closePopup();
+  closePopup();
 };
 
 // 🟦 Delete service in Firestore
 const handleDeleteService = async (serviceId) => {
-  if (!technicianId.value || !serviceId) return;
-  try {
-    await deleteDoc(doc(db, "technicians", technicianId.value, "services", serviceId));
-    displayNotification("Service deleted.", "success");
-  } catch (e) {
-    console.error("delete service error:", e);
-    displayNotification("Failed to delete service.", "error");
-  }
+  if (!technicianId.value || !serviceId) return;
+  try {
+    await deleteDoc(doc(db, "technicians", technicianId.value, "services", serviceId));
+    displayNotification("Service deleted.", "success");
+  } catch (e) {
+    console.error("delete service error:", e);
+    displayNotification("Failed to delete service.", "error");
+  }
 };
 
 const closePopup = () => {
-  showPopup.value = false;
-  selectedService.value = null;
-  serviceTitle.value = "";
-  servicePrice.value = "";
-  newImage.value = null;
+  showPopup.value = false;
+  selectedService.value = null;
+  serviceTitle.value = "";
+  servicePrice.value = "";
+  newImage.value = null;
 };
 
 // 🟩 Tabs filtering
 const filteredOrders = computed(() =>
-  orders.value.filter((o) => {
-    if (orderTab.value === "requests") return o.status === "new";
-    if (orderTab.value === "upcoming") return o.status === "upcoming";
-    if (orderTab.value === "completed") return o.status === "completed";
-    return false;
-  })
+  orders.value.filter((o) => {
+    if (orderTab.value === "requests") return o.status === "new";
+    if (orderTab.value === "upcoming") return o.status === "upcoming";
+    if (orderTab.value === "completed") return o.status === "completed";
+    return false;
+  })
 );
 
 // Count of completed orders (for badges / summary)
@@ -272,52 +281,52 @@ const completedCount = computed(() => orders.value.filter((o) => o.status === "c
 
 let chartInstance = null;
 watch(
-  mainTab,
-  (newTab) => {
-    if (newTab === "earnings") {
-      nextTick(() => {
-        const ctx = document.getElementById("earningsChart");
-        if (!ctx) return;
-        if (chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-            datasets: [
-              {
-                label: "Earnings (EGP)",
-                data: [500, 1200, 900, 1800, 2300, 2600],
-                backgroundColor: "rgba(19, 59, 93, 0.2)",
-                borderColor: "#133B5D",
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: "#1b5383",
-                pointRadius: 5,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: "#133B5D",
-                titleColor: "#fff",
-                bodyColor: "#fff",
-              },
-            },
-            scales: {
-              y: { beginAtZero: true, grid: { color: "#e0e0e0" }, ticks: { color: "#133B5D" } },
-              x: { grid: { display: false }, ticks: { color: "#133B5D" } },
-            },
-          },
-        });
-      });
-    }
-  },
-  { immediate: false }
+  mainTab,
+  (newTab) => {
+    if (newTab === "earnings") {
+      nextTick(() => {
+        const ctx = document.getElementById("earningsChart");
+        if (!ctx) return;
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                label: "Earnings (EGP)",
+                data: [500, 1200, 900, 1800, 2300, 2600],
+                backgroundColor: "rgba(19, 59, 93, 0.2)",
+                borderColor: "#133B5D",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "#1b5383",
+                pointRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#133B5D",
+                titleColor: "#fff",
+                bodyColor: "#fff",
+              },
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { color: "#e0e0e0" }, ticks: { color: "#133B5D" } },
+              x: { grid: { display: false }, ticks: { color: "#133B5D" } },
+            },
+          },
+        });
+      });
+    }
+  },
+  { immediate: false }
 );
 </script>
 
@@ -633,6 +642,12 @@ watch(
         <ManageTechnicianProfile @showNotification="displayNotification"/>
 
       </template>
+      <template v-else-if="mainTab === 'chat'">
+            <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Chat</h2>
+            <ChatPage />
+          </template>
+
+      
     </div>
 
     <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
@@ -663,15 +678,25 @@ watch(
     </div>
   </div>
 
-  <!-- Sticky Chat Button -->
-<router-link
-  v-if="technicianId"
-  :to="{ name: 'TechnicianChat', query: { uid: technicianId } }"
-  @click="console.log('Navigating to TechnicianChat with uid:', technicianId)"
-  class="fixed bottom-8 right-8 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383]"
->
-  <i class="fa-solid fa-comments text-2xl"></i>
-</router-link>
+        <div v-if="showPopup" @click.self="closePopup" class="fixed inset-0 ...">
+            </div>
+
+    <button
+v-if="technicianId && mainTab !== 'chat'"
+ @click="handleTabChange('chat')"
+    class="sticky bottom-5 left-300 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 relative">
+    <i class="fa-solid fa-comments text-3xl"></i>
+
+    <span 
+      v-if="unreadChatCount > 0"
+      class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white"
+      aria-label="New messages"
+    >
+      {{ unreadChatCount }}
+    </span>
+    
+  </button>
+
 
 
 <!-- End of Chat Button -->
