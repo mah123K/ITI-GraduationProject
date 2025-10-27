@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { db, auth } from "@/firebase/firebase";
 import {
@@ -9,6 +9,9 @@ import {
   getDocs,
   addDoc,
   serverTimestamp,
+  query,
+  where,
+  onSnapshot,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -17,6 +20,11 @@ import UserServiceCard from "../components/UserServiceCard.vue";
 
 // 🟦 Dynamic service list from Firestore
 const serviceList = ref([]);
+
+// Completed orders count for this technician
+const completedCount = ref(0);
+
+let _ordersUnsub = null;
 
 const showPopup = ref(false);
 const uploadedFiles = ref([]);
@@ -77,11 +85,31 @@ const technicianProfileImage = computed(
     new URL("../images/Ellipse 56.png", import.meta.url).href
 );
 const technicianMemberSince = computed(() => {
-  if (!technician.value?.createdAt) return "N/A";
-  const date = technician.value.createdAt.toDate
-    ? technician.value.createdAt.toDate()
-    : new Date(technician.value.createdAt);
-  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  const ca = technician.value?.createdAt;
+  if (!ca) return "N/A";
+
+  let date;
+  // Firestore Timestamp object (has toDate)
+  if (ca && typeof ca.toDate === "function") {
+    date = ca.toDate();
+  }
+  // Plain object with seconds (e.g., { seconds, nanoseconds })
+  else if (ca && typeof ca === "object" && ("seconds" in ca || "_seconds" in ca)) {
+    const seconds = ca.seconds ?? ca._seconds;
+    date = new Date(seconds * 1000);
+  }
+  // ISO string or numeric
+  else {
+    date = new Date(ca);
+  }
+
+  if (!(date instanceof Date) || isNaN(date.getTime())) return "N/A";
+  // Return readable full date: e.g. "Oct 24, 2025"
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 });
 
 // --- Availability Logic ---
@@ -305,6 +333,21 @@ onMounted(async () => {
 
       // 🟩 Fetch technician services dynamically
       await fetchTechnicianServices(technicianIdParam);
+
+      // 🟩 Listen for completed orders count (live)
+      try {
+        const ordersRef = collection(db, "orders");
+        const q = query(
+          ordersRef,
+          where("technicianId", "==", technicianIdParam),
+          where("status", "==", "completed")
+        );
+        _ordersUnsub = onSnapshot(q, (snap) => {
+          completedCount.value = snap.size;
+        });
+      } catch (e) {
+        console.error("Error listening for completed orders:", e);
+      }
     } else {
       technician.value = null;
     }
@@ -314,6 +357,10 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
+});
+
+onUnmounted(() => {
+  if (_ordersUnsub) _ordersUnsub();
 });
 
 watch(selectedDayInfo, () => {
@@ -421,7 +468,7 @@ watch(selectedDayInfo, () => {
             <div>{{ technicianLocation }}</div>
             <div>{{ technicianMemberSince }}</div>
             <div>~35 Minutes</div>
-            <div>112+</div>
+            <div>{{ completedCount }}</div>
           </div>
         </div>
         <div class="flex justify-center mb-6 px-6">
