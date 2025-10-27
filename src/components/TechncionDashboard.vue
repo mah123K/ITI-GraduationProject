@@ -267,6 +267,9 @@ const filteredOrders = computed(() =>
   })
 );
 
+// Count of completed orders (for badges / summary)
+const completedCount = computed(() => orders.value.filter((o) => o.status === "completed").length);
+
 let chartInstance = null;
 watch(
   mainTab,
@@ -393,6 +396,9 @@ watch(
             ]"
           >
             Completed
+            <span v-if="completedCount" class="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+              {{ completedCount }}
+            </span>
           </button>
         </div>
         <div v-if="!filteredOrders.length" class="text-center text-gray-500 mt-10">

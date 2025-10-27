@@ -51,7 +51,7 @@
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
-          Orders Completed +45
+          Orders Completed <span class="font-semibold">{{ ordersCompleted > 0 ? ('+' + ordersCompleted) : 0 }}</span>
         </div>
 
         <div class="flex items-center gap-1">
@@ -116,6 +116,7 @@
               <i class="fa-solid fa-star text-[#FF9529]"></i>
               <span class="font-bold">{{ profile.rating }}</span>
             </div>
+            
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-[#0369F0]"></i>
               <span>{{ profile.location }}</span>
@@ -133,11 +134,17 @@
 </template>
 
 <script>
+import { auth, db } from "@/firebase/firebase";
+import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+
 export default {
   name: "ProfileCard",
   data() {
     return {
       isHovered: false,
+      memberSince: "",
+      ordersCompleted: 0,
+      ordersUnsub: null,
     };
   },
   props: {
@@ -147,7 +154,58 @@ export default {
       default: "grid",
     },
   },
+  async mounted() {
+    try {
+      const profileId = this.profile?.id;
+
+      // 🔹 Fetch profile's createdAt (prefer users collection; adjust if you store in 'technicians')
+      if (profileId) {
+        try {
+          const userRef = doc(db, "users", profileId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            if (data.createdAt?.seconds) {
+              const date = new Date(data.createdAt.seconds * 1000);
+              this.memberSince = date.getFullYear();
+            } else if (data.createdAt) {
+              const d = new Date(data.createdAt);
+              this.memberSince = isNaN(d.getTime()) ? "N/A" : d.getFullYear();
+            } else {
+              this.memberSince = "N/A";
+            }
+          }
+        } catch (e) {
+          console.error("Error fetching profile createdAt:", e);
+        }
+      }
+
+      // 🔹 Realtime count of completed orders for this profile (technician)
+      try {
+        const pid = profileId || auth.currentUser?.uid;
+        if (pid) {
+          const ordersRef = collection(db, "orders");
+          const q = query(
+            ordersRef,
+            where("technicianId", "==", pid),
+            where("status", "==", "completed")
+          );
+          this.ordersUnsub = onSnapshot(q, (snap) => {
+            this.ordersCompleted = snap.size;
+          });
+        }
+      } catch (e) {
+        console.error("ProfileCard orders listener error:", e);
+      }
+    } catch (e) {
+      console.error("ProfileCard mounted error:", e);
+    }
+  },
+  beforeUnmount() {
+    if (this.ordersUnsub) this.ordersUnsub();
+  },
 };
+
 </script>
 
 <style scoped>

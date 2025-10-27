@@ -62,7 +62,7 @@
           <th class="py-3 px-4 text-left">Provider</th>
           <th class="py-3 px-4 text-left">Amount</th>
           <th class="py-3 px-4 text-left">Date</th>
-          <th class="py-3 px-4 text-left">Time</th>
+     
           <th class="py-3 px-4 text-left">Status</th>
           <th class="py-3 px-4 text-left">Actions</th>
         </tr>
@@ -79,8 +79,13 @@
           <td class="py-3 px-4">{{ order.service }}</td>
           <td class="py-3 px-4">{{ order.provider }}</td>
           <td class="py-3 px-4 font-semibold">${{ order.amount }}</td>
-          <td class="py-3 px-4">{{ order.date }}</td>
-          <td class="py-3 px-4">{{ order.time }}</td>
+        <td class="py-3 px-4">
+  <div class="flex flex-col">
+    <span class="text-gray-700 font-medium">{{ order.date }}</span>
+    <span class="text-gray-500 text-xs">{{ order.time }}</span>
+  </div>
+</td>
+
           <td class="py-3 px-4">
             <span
               :class="[
@@ -187,19 +192,16 @@
             />
           </div>
 
-          <div>
-            <label class="text-sm font-medium text-gray-600">Status</label>
-            <select
-              v-model="selectedOrder.status"
-              :disabled="modalType === 'view'"
-              class="w-full p-2 border rounded-lg text-sm"
-            >
-              <option>Pending</option>
-              <option>In Progress</option>
-              <option>Completed</option>
-              <option>Cancelled</option>
-            </select>
-          </div>
+         <div>
+  <label class="text-sm font-medium text-gray-600">Status</label>
+ <input
+    v-model="selectedOrder.status"
+    :disabled="modalType === 'view'"
+    class="w-full p-2 border rounded-lg text-sm"
+ />
+
+</div>
+
 
           <div class="flex justify-end mt-4" v-if="modalType === 'edit'">
             <button
@@ -239,7 +241,7 @@
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 
 export default {
@@ -249,23 +251,27 @@ export default {
     const filterStatus = ref("All");
     const showFilter = ref(false);
     const showModal = ref(false);
-const modalType = ref("");
-const selectedOrder = ref({});
+    const modalType = ref("");
+    const selectedOrder = ref({});
 
-    const statusOptions = ["All", "Completed", "Pending", "new", "In Progress", "Cancelled"];
+    const statusOptions = ["All", "completed", "declined", "new", "In upcoming"];
 
+    
     const fetchOrders = async () => {
       const snapshot = await getDocs(collection(db, "orders"));
-      orders.value = snapshot.docs.map(doc => {
-        const data = doc.data();
+      orders.value = snapshot.docs.map((docItem) => {
+        const data = docItem.data();
         return {
-          id: doc.id,
+          id: docItem.id,
           customer: data.clientName,
           service: data.description,
           provider: data.technicianName,
           amount: data.price,
           date: data.appointmentDate.toDate().toLocaleDateString(),
-          time: data.appointmentDate.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          time: data.appointmentDate.toDate().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
           status: data.status,
         };
       });
@@ -274,7 +280,7 @@ const selectedOrder = ref({});
     onMounted(fetchOrders);
 
     const filteredOrders = computed(() => {
-      return orders.value.filter(order => {
+      return orders.value.filter((order) => {
         const matchesSearch =
           order.customer.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
           order.service.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -289,7 +295,7 @@ const selectedOrder = ref({});
 
     const toggleFilter = () => (showFilter.value = !showFilter.value);
 
-    
+   
     const openModal = (type, order) => {
       modalType.value = type;
       selectedOrder.value = { ...order };
@@ -300,14 +306,46 @@ const selectedOrder = ref({});
       showModal.value = false;
     };
 
-    const saveChanges = () => {
-      alert(`Changes saved for order ${selectedOrder.value.id}`);
-      closeModal();
+   
+    const saveChanges = async () => {
+      try {
+        const orderRef = doc(db, "orders", selectedOrder.value.id);
+        await updateDoc(orderRef, {
+          clientName: selectedOrder.value.customer,
+          description: selectedOrder.value.service,
+          technicianName: selectedOrder.value.provider,
+          price: selectedOrder.value.amount,
+          status: selectedOrder.value.status,
+        });
+
+
+        const index = orders.value.findIndex(
+          (o) => o.id === selectedOrder.value.id
+        );
+        if (index !== -1) {
+          orders.value[index] = { ...selectedOrder.value };
+        }
+
+        closeModal();
+      } catch (error) {
+        console.error("Error updating order:", error);
+      }
     };
 
-    const confirmDelete = () => {
-      alert(`Order ${selectedOrder.value.id} deleted`);
-      closeModal();
+   
+    const confirmDelete = async () => {
+      try {
+        const orderRef = doc(db, "orders", selectedOrder.value.id);
+        await deleteDoc(orderRef);
+
+        orders.value = orders.value.filter(
+          (o) => o.id !== selectedOrder.value.id
+        );
+
+        closeModal();
+      } catch (error) {
+        console.error("Error deleting order:", error);
+      }
     };
 
     return {
@@ -328,4 +366,5 @@ const selectedOrder = ref({});
     };
   },
 };
+
 </script>
