@@ -47,7 +47,7 @@ import MyAppointments from "./components/MyAppointments.vue";
 import ManageTechnicianProfile from "./components/MannageTechnicionProfile.vue";
 import ordersCard from "./components/ordersCard.vue";
 import ServiceCard from "./components/ServiceCard.vue";
-
+import TechChat from "./components/TechChat.vue";
 // ================================
 // ⚙️ Firebase Config
 // ================================
@@ -115,6 +115,7 @@ const routes = [
       { path: "appointments", name: "TechnicianAppointments", component: MyAppointments },
       { path: "Techsettings", name: "TechnicianSettings", component: ManageTechnicianProfile },
       { path: "create-service", name: "CreateServiceCard", component: CreateServiceCard },
+      { path: "techchat", name: "TechnicianChat", component: TechChat },
     ],
   },
 ];
