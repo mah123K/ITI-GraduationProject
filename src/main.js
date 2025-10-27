@@ -20,7 +20,7 @@ import "./assets/main.css";
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
 import LoginPage from "./components/LoginPage.vue";
-import SignUp from "./components/SignUp.vue";
+import SignUp from "./components/SignUp/SignUp.vue";
 import ContactUs from "./components/ContactUs.vue";
 import AboutUs from "./components/AboutUs.vue";
 import ProfilesPage from "./components/ProfilesPage.vue";
