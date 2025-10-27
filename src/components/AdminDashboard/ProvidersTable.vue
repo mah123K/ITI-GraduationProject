@@ -153,7 +153,19 @@
             <td class="py-3 px-4">{{ craft.name }}</td>
             <td class="py-3 px-4">{{ craft.email }}</td>
             <td class="py-3 px-4">{{ craft.phone || '-' }}</td>
-            <td class="py-3 px-4">{{ craft.address || '-' }}</td>
+            <td class="py-3 px-4">
+  {{
+    typeof craft.address === 'object'
+      ? (
+          craft.address.city ||
+          Object.values(craft.address)
+            .filter(v => typeof v === 'string' && v.length === 1)
+            .join('')
+        ) || '-'
+      : craft.address || '-'
+  }}
+</td>
+
             <td class="py-3 px-4">{{ craft.skill || '-' }}</td>
             <td class="py-3 px-4 flex items-center space-x-1">
               <span>{{ craft.rating ?? 0 }}</span>
