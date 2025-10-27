@@ -5,10 +5,14 @@ const props = defineProps({
   order: Object,
 })
 
-const emit = defineEmits(["markCompleted"])
+const emit = defineEmits(["markCompleted", "cancelOrder"])
 
 const handleMarkCompleted = () => {
   emit("markCompleted", props.order.id)
+}
+
+const handleCancelOrder = () => {
+  emit("cancelOrder", props.order.id)
 }
 
 // Short description: 15 words + "..." (fallback to char slice for long unbroken text)
@@ -160,6 +164,13 @@ const showDetails = ref(false)
         class="cursor-pointer bg-[#133B5D] hover:bg-[#0f2d47] text-white font-semibold px-6 py-2 rounded-xl transition"
       >
         Mark as Completed
+      </button>
+
+      <button
+        @click="handleCancelOrder"
+        class="ml-1 cursor-pointer bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-xl transition"
+      >
+        Cancel
       </button>
     </div>
   </div>
