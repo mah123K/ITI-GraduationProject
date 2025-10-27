@@ -95,7 +95,7 @@
           />
 
           <div class="card-body mt-2 items-center text-center p-3">
-            <h2 class="text-red-600 font-bold text-xl">{{ offer.title }}</h2>
+            <h2 class="text-red-600 font-bold text-xl">{{ offer.title }} off</h2>
             <p class="text-gray-700 text-sm">{{ offer.description }}</p>
             <div class="mt-4">
               <!-- ✅ --- UPDATED BUTTON --- -->

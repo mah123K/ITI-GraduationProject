@@ -662,6 +662,19 @@ watch(
       </div>
     </div>
   </div>
+
+  <!-- Sticky Chat Button -->
+<router-link
+  v-if="technicianId"
+  :to="{ name: 'TechnicianChat', query: { uid: technicianId } }"
+  @click="console.log('Navigating to TechnicianChat with uid:', technicianId)"
+  class="fixed bottom-8 right-8 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383]"
+>
+  <i class="fa-solid fa-comments text-2xl"></i>
+</router-link>
+
+
+<!-- End of Chat Button -->
 </template>
 
 <style scoped>
