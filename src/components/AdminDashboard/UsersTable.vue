@@ -51,14 +51,23 @@
           <tr
             v-for="client in filteredClients"
             :key="client.uid"
-        class="border-t hover:bg-[#f3f9fc] transition"
-
+            class="border-t hover:bg-[#f3f9fc] transition"
           >
-            <td class="py-3 px-4">{{ client.name || "No name" }}</td>
-            <td class="py-3 px-4">{{ client.phone || "-" }}</td>
-            <td class="py-3 px-4">{{ client.address || "-" }}</td>
-            <td class="py-3 px-4">{{ client.email }}</td>
-            <td class="py-3 px-4">
+            <td class="py-3 px-6">{{ client.name || "No name" }}</td>
+            <td class="py-3 px-6">{{ client.phone || "-" }}</td>
+            <td class="py-3 px-2">
+              {{
+                typeof client.address === "object"
+                  ? client.address.city ||
+                    Object.values(client.address)
+                      .filter((v) => typeof v === "string" && v.length === 1)
+                      .join("") ||
+                    "-"
+                  : client.address || "-"
+              }}
+            </td>
+            <td class="py-3 px-6">{{ client.email }}</td>
+            <td class="py-3 px-6">
               <span
                 :class="[
                   'px-3 py-1 rounded-full text-xs font-semibold',
@@ -66,24 +75,33 @@
                     ? 'bg-red-100 text-red-600'
                     : client.status === 'pending'
                     ? 'bg-yellow-100 text-yellow-600'
-                    : 'bg-green-100 text-green-600'
+                    : 'bg-green-100 text-green-600',
                 ]"
               >
-                {{ client.status === 'banned'
-                  ? 'Suspended'
-                  : client.status === 'pending'
-                  ? 'Pending'
-                  : 'Active' }}
+                {{
+                  client.status === "banned"
+                    ? "Suspended"
+                    : client.status === "pending"
+                    ? "Pending"
+                    : "Active"
+                }}
               </span>
             </td>
             <td class="py-3 px-4">
-              {{ client.createdAt ? new Date(client.createdAt).toLocaleDateString() : "-" }}
+              {{
+                client.createdAt
+                  ? new Date(client.createdAt).toLocaleDateString()
+                  : "-"
+              }}
             </td>
-            <td class="py-3 px-4 flex items-center gap-2">
-              <button @click="openModal('view', client)" class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg">
+            <td class="py-3 px-3 flex items-center gap-2">
+              <button
+                @click="openModal('view', client)"
+                class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
+              >
                 <i class="bi bi-eye"></i>
               </button>
-          <div class="h-3 border-l border-gray-300 "></div>
+              <div class="h-3 border-l border-gray-300"></div>
               <button
                 v-if="client.status !== 'banned'"
                 @click="openModal('ban', client)"
@@ -98,10 +116,11 @@
               >
                 <i class="bi bi-check-circle"></i>
               </button>
-               <div class="h-3 border-l border-gray-300 "></div>
-              
-
-              <button @click="openModal('delete', client)" class="p-2 text-red-500 hover:bg-red-100 rounded-lg">
+              <div class="h-3 border-l border-gray-300"></div>
+              <button
+                @click="openModal('delete', client)"
+                class="p-2 text-red-500 hover:bg-red-100 rounded-lg"
+              >
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -109,58 +128,118 @@
         </tbody>
       </table>
 
-      <div v-if="filteredClients.length === 0" class="text-center py-6 text-gray-500">
+      <div
+        v-if="filteredClients.length === 0"
+        class="text-center py-6 text-gray-500"
+      >
         No clients found.
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- CONFIRMATION MODALS (Styled like Provider) -->
     <div
       v-if="showModal"
-      class="fixed inset-0 bg-black/20 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-2xl shadow-xl p-6 w-[420px]">
-        <h3 class="text-lg font-semibold mb-2 text-center">{{ modalTitle }}</h3>
+      <!-- Delete Modal -->
+      <div
+        v-if="modalType === 'delete'"
+        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
+      >
+        <h3 class="text-xl font-semibold text-red-600 mb-4">Delete User</h3>
+        <p class="text-gray-600 mb-6">
+          Are you sure you want to delete
+          "<strong>{{ selectedClient?.name }}</strong>"?
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button
+            @click="confirmAction"
+            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Delete
+          </button>
+          <button
+            @click="closeModal"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
 
-        <!-- View Client -->
-        <div v-if="modalType === 'view'" class="space-y-2 text-sm text-gray-600 mt-4">
+      <!-- Suspend Modal -->
+      <div
+        v-else-if="modalType === 'ban'"
+        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
+      >
+        <h3 class="text-xl font-semibold text-red-600 mb-4">Suspend User</h3>
+        <p class="text-gray-600 mb-6">
+          Suspend "<strong>{{ selectedClient?.name }}</strong>" temporarily?
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button
+            @click="confirmAction"
+            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Suspend
+          </button>
+          <button
+            @click="closeModal"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Reactivate Modal -->
+      <div
+        v-else-if="modalType === 'reactivate'"
+        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
+      >
+        <h3 class="text-xl font-semibold text-green-600 mb-4">
+          Reactivate User
+        </h3>
+        <p class="text-gray-600 mb-6">
+          Reactivate "<strong>{{ selectedClient?.name }}</strong>"?
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button
+            @click="confirmAction"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          >
+            Reactivate
+          </button>
+          <button
+            @click="closeModal"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- View Modal -->
+      <div
+        v-else-if="modalType === 'view'"
+        class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
+      >
+        <h3 class="text-xl font-semibold text-[#5984C6] mb-4">
+          Client Details
+        </h3>
+        <div class="text-gray-700 text-sm space-y-2 text-left">
           <p><strong>Name:</strong> {{ selectedClient?.name || "-" }}</p>
           <p><strong>Email:</strong> {{ selectedClient?.email }}</p>
           <p><strong>Phone:</strong> {{ selectedClient?.phone || "-" }}</p>
           <p><strong>Address:</strong> {{ selectedClient?.address || "-" }}</p>
           <p><strong>Status:</strong> {{ selectedClient?.status }}</p>
         </div>
-
-      
-
-        <!-- Confirm Actions -->
-        <p v-else class="text-gray-500 text-sm mt-4">{{ modalMessage }}</p>
-
-        <!-- Buttons -->
-        <div class="flex justify-center gap-3 mt-6">
-          <button @click="closeModal" class="px-4 py-2 bg-gray-100 text-gray-800 rounded-xl hover:bg-gray-200">
-            Cancel
-          </button>
-
+        <div class="flex justify-center mt-6">
           <button
-            v-if="['delete', 'ban', 'reactivate'].includes(modalType)"
-            @click="confirmAction"
-            :class="[
-              'px-4 py-2 rounded-xl text-white',
-              modalType === 'delete' ? 'bg-red-500 hover:bg-red-600' :
-              modalType === 'ban' ? 'bg-gray-800 hover:bg-gray-900' :
-              'bg-blue-900 hover:bg-blue-950'
-            ]"
+            @click="closeModal"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
           >
-            Confirm
-          </button>
-
-          <button
-            v-else-if="modalType === 'edit'"
-            @click="saveEdit"
-            class="px-4 py-2 bg-[#5984C6] text-white rounded-xl hover:bg-[#4369a4]"
-          >
-            Save
+            Close
           </button>
         </div>
       </div>
@@ -169,37 +248,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, reactive } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { db } from "../../firebase/firebase";
 import { collection, onSnapshot, updateDoc, doc, deleteDoc } from "firebase/firestore";
 
-// Reactive clients
 const clients = ref([]);
 const loading = ref(true);
 const searchTerm = ref("");
-
-// Modal state
 const showModal = ref(false);
-const modalType = ref(""); // delete, ban, reactivate, view, edit
-const modalTitle = ref("");
-const modalMessage = ref("");
+const modalType = ref("");
 const selectedClient = ref(null);
 
-// Edit form
-const editForm = reactive({
-  name: "",
-  email: "",
-  phone: "",
-  address: "",
-  status: "active",
-});
-
-// Fetch clients real-time
+// Fetch clients
 onMounted(() => {
-  const unsub = onSnapshot(
+  onSnapshot(
     collection(db, "clients"),
     (snapshot) => {
-      clients.value = snapshot.docs.map(docItem => ({
+      clients.value = snapshot.docs.map((docItem) => ({
         uid: docItem.id,
         ...docItem.data(),
         status: docItem.data().status || "active",
@@ -213,51 +278,31 @@ onMounted(() => {
   );
 });
 
-// Filtered clients
 const filteredClients = computed(() => {
   const term = searchTerm.value.toLowerCase();
-  return clients.value.filter(c =>
-    (c.name || "").toLowerCase().includes(term) ||
-    (c.email || "").toLowerCase().includes(term) ||
-    (c.phone || "").toLowerCase().includes(term) ||
-    (c.address || "").toLowerCase().includes(term)
+  return clients.value.filter(
+    (c) =>
+      (c.name || "").toLowerCase().includes(term) ||
+      (c.email || "").toLowerCase().includes(term) ||
+      (c.phone || "").toLowerCase().includes(term) ||
+      (c.address || "").toLowerCase().includes(term)
   );
 });
 
-// Open modal
+// Open/Close Modal
 const openModal = (type, client) => {
-  selectedClient.value = client;
   modalType.value = type;
+  selectedClient.value = client;
   showModal.value = true;
-
-  switch (type) {
-    case "delete":
-      modalTitle.value = "Delete Account?";
-      modalMessage.value = "This action cannot be undone. This will permanently delete the client account.";
-      break;
-    case "ban":
-      modalTitle.value = "Suspend Account?";
-      modalMessage.value = "The user will not be able to log in until the account is reactivated.";
-      break;
-    case "reactivate":
-      modalTitle.value = "Reactivate Account?";
-      modalMessage.value = "This will allow the user to log in and access the system again.";
-      break;
-    case "view":
-      modalTitle.value = "Client Details";
-      break;
- 
-  }
 };
 
-// Close modal
 const closeModal = () => {
   showModal.value = false;
-  selectedClient.value = null;
   modalType.value = "";
+  selectedClient.value = null;
 };
 
-// Confirm delete/ban/reactivate
+// Confirm Actions
 const confirmAction = async () => {
   if (!selectedClient.value) return;
   const clientRef = doc(db, "clients", selectedClient.value.uid);
@@ -276,6 +321,4 @@ const confirmAction = async () => {
     closeModal();
   }
 };
-
-
 </script>
