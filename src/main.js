@@ -123,6 +123,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // خلي الصفحة تبدأ دايماً من فوق
+    return { top: 0 }
+  }
 });
 
 // ================================
