@@ -11,14 +11,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "start": "node server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fortawesome/vue-fontawesome": "^3.1.2",
     "@tailwindcss/vite": "^4.1.14",
-    "axios": "^1.12.2",
+    "axios": "^1.13.0",
     "chart.js": "^4.5.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "firebase": "^12.4.0",
     "pinia": "^3.0.3",
     "sweetalert2": "^11.26.3",
@@ -37,5 +40,18 @@
     "tailwindcss": "^4.1.16",
     "vite": "^7.1.7",
     "vite-plugin-vue-devtools": "^8.0.2"
-  }
+  },
+  "description": "This template should help get you started developing with Vue 3 in Vite.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mah123K/ITI-GraduationProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mah123K/ITI-GraduationProject/issues"
+  },
+  "homepage": "https://github.com/mah123K/ITI-GraduationProject#readme"
 }
