@@ -28,15 +28,35 @@ import { db } from "@/firebase/firebase";
 
 const router = useRouter();
 
-// 👇 function to confirm payment and update Firestore
+// ✅ Get order_id from Paymob redirect link
 const params = new URLSearchParams(window.location.search);
 const orderId = params.get("order_id");
 
+// ✅ Update order status in Firebase + call backend to confirm payment
 if (orderId) {
-  const orderRef = doc(db, "orders", orderId);
-  updateDoc(orderRef, { status: "upcoming" });
+  const updateOrderStatus = async () => {
+    try {
+      // 1️⃣ Update Firestore directly
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, { status: "upcoming" });
+
+      // 2️⃣ Notify backend (optional but recommended for Paymob confirmation)
+      await fetch("http://localhost:5000/payment-callback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, success: true }),
+      });
+
+      console.log("✅ Order marked as upcoming successfully.");
+    } catch (error) {
+      console.error("❌ Failed to update order status:", error);
+    }
+  };
+
+  updateOrderStatus();
 }
 
+// 🔁 Redirect to My Orders
 const goToOrders = () => {
   router.push("/userorders");
 };
