@@ -95,13 +95,13 @@
 
           <!-- Forgot password -->
           <div class="flex justify-end mb-4 lg:mb-6">
-            <button
-              type="button"
-              @click="showForgotModal = true"
-              class="text-sm text-[#5984C6] hover:text-blue-500"
-            >
-              Forgot password?
-            </button>
+           <router-link
+  to="/forgot-password"
+  class="text-sm text-[#5984C6] hover:text-blue-500"
+>
+  Forgot password?
+</router-link>
+
           </div>
 
           <!-- Submit -->
@@ -112,6 +112,43 @@
             Sign In
           </button>
         </form>
+        
+
+
+
+<!-- Divider -->
+
+<div class="flex items-center my-6">
+  <hr class="flex-grow border-gray-300" />
+  <span class="mx-3 text-gray-400 text-sm">or continue with</span>
+  <hr class="flex-grow border-gray-300" />
+</div>
+
+<!-- Google Sign-In -->
+<button
+  @click="handleGoogleSignIn"
+  type="button"
+  class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
+>
+  <img
+    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+    alt="Google"
+    class="w-5 h-5 mr-2"
+  />
+  <span class="text-gray-700 font-medium">Sign in with Google</span>
+</button>
+
+
+
+
+
+
+
+
+
+
+
+
 
         <p class="mt-6 text-center text-gray-600 text-sm">
           Don't have an account?
@@ -124,55 +161,7 @@
 
         <!-- Forgot Password Modal -->
        <!-- Forgot Password Modal -->
-<transition name="fade">
-  <div
-    v-if="showForgotModal"
-    class="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 transition-all duration-300"
-    @click.self="showForgotModal = false"
-  >
-    <div
-      class="bg-white rounded-2xl p-6 w-96 shadow-2xl transform transition-all duration-300 scale-100 hover:scale-105"
-    >
-      <h3 class="text-xl font-semibold mb-4 text-center text-[#5984C6]">
-        Reset Password
-      </h3>
 
-      <input
-        type="email"
-        v-model="forgotEmail"
-        placeholder="Enter your email"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
-      />
-
-      <div class="flex justify-end space-x-2">
-        <button
-          @click="showForgotModal = false"
-          class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
-          :disabled="isSending"
-        >
-          Cancel
-        </button>
-        <button
-          @click="handleForgotPasswordModal"
-          class="px-4 py-2 rounded-lg bg-[#5984C6] text-white hover:bg-[#4a73b1] flex items-center justify-center min-w-[90px]"
-          :disabled="isSending"
-        >
-          <span v-if="!isSending">Send</span>
-          <span v-else><i class="fa fa-spinner fa-spin"></i> Sending...</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</transition>
-
-
-        <!-- Toast -->
-        <div
-          v-if="showToast"
-          :class="[toastColor, 'fixed top-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300']"
-        >
-          {{ toastMessage }}
-        </div>
       </div>
     </div>
   </div>
@@ -185,9 +174,11 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider, signInWithPopup 
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+
 
 const router = useRouter();
 const email = ref("");
@@ -282,6 +273,43 @@ const handleForgotPasswordModal = async () => {
     }
   } finally {
     isSending.value = false;
+  }
+};
+const handleGoogleSignIn = async () => {
+  try {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+
+    const user = result.user;
+
+    // Check which collection user belongs to
+    const collections = [
+      { name: "admin", route: "/dashboard" },
+      { name: "clients", route: "/" },
+      { name: "technicians", route: "/technician-dashboard" },
+      { name: "companies", route: "/technician-dashboard" },
+    ];
+
+    let found = false;
+
+    for (const c of collections) {
+      const docRef = doc(db, c.name, user.uid);
+      const userDoc = await getDoc(docRef);
+      if (userDoc.exists()) {
+        found = true;
+        router.push(c.route);
+        break;
+      }
+    }
+
+    if (!found) {
+      // If new user (not in any collection)
+      router.push("/signup");
+    }
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    showToastMessage("Google Sign-In failed.", "error");
   }
 };
 </script>
