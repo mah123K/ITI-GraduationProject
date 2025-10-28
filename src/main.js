@@ -52,8 +52,11 @@ import ServiceCard from "./components/ServiceCard.vue";
 
 // ✅ User Pages
 import UserOrders from "./components/UserOrders.vue";
-import PaymentSuccess from "./components/PaymentSuccess.vue"; // ✅ صفحة نجاح الدفع
-import PaymentFailed from "./components/PaymentFailed.vue"; // ❌ صفحة فشل الدفع
+import PaymentSuccess from "./components/PaymentSuccess.vue";
+import PaymentFailed from "./components/PaymentFailed.vue";
+
+// ✅ New Payment Page
+import PaymentPage from "./components/PaymentPage.vue"; // 🆕 Added line
 
 // ================================
 // ⚙️ Firebase Config
@@ -93,6 +96,14 @@ const routes = [
     path: "/my-orders",
     name: "MyOrders",
     component: UserOrders,
+    meta: { requiresAuth: true },
+  },
+
+  // ✅ صفحة الدفع المخصصة (قبل Paymob iframe)
+  {
+    path: "/payment",
+    name: "PaymentPage",
+    component: PaymentPage, // 🆕 Added route
     meta: { requiresAuth: true },
   },
 

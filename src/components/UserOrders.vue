@@ -36,10 +36,10 @@
             <p><span class="font-semibold text-accent-color">Location:</span> {{ order.location }}</p>
           </div>
 
-          <!-- 🧾 Payment Button (only for Unconfirmed) -->
+          <!-- 🧾 Payment Button -->
           <div v-if="order.status === 'unconfirmed'" class="mt-5 text-center">
             <button
-              @click="goToPayment(order)"
+              @click="openPaymentPopup(order)"
               class="bg-accent-color hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition"
             >
               Pay Now
@@ -47,10 +47,7 @@
           </div>
 
           <!-- ✅ Paid -->
-          <div
-            v-else-if="order.status === 'upcoming'"
-            class="mt-5 text-center text-green-600 font-semibold"
-          >
+          <div v-else-if="order.status === 'upcoming'" class="mt-5 text-center text-green-600 font-semibold">
             Payment Completed
           </div>
 
@@ -63,7 +60,10 @@
           </div>
 
           <!-- 🟢 Completed -->
-          <div v-else-if="order.status === 'completed'" class="mt-5 text-center text-accent-color font-semibold">
+          <div
+            v-else-if="order.status === 'completed'"
+            class="mt-5 text-center text-accent-color font-semibold"
+          >
             Service Completed
           </div>
         </div>
@@ -74,6 +74,49 @@
         No orders found.
       </div>
     </div>
+
+    <!-- 💳 Payment Confirmation Popup -->
+    <transition name="fade">
+      <div
+        v-if="showPopup"
+        class="fixed inset-0 bg-[#00000079] flex items-center justify-center z-50"
+      >
+        <div
+          class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center"
+        >
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">
+            Confirm Your Payment
+          </h2>
+
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">Service:</span>
+            {{ selectedOrder?.serviceTitle }}
+          </p>
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">Technician:</span>
+            {{ selectedOrder?.technicianName }}
+          </p>
+          <p class="text-gray-900 text-xl font-bold mb-6">
+            Total: {{ selectedOrder?.price }} EGP
+          </p>
+
+          <div class="flex justify-center gap-4">
+            <button
+              @click="confirmPayment"
+              class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Confirm & Pay
+            </button>
+            <button
+              @click="cancelPayment"
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -86,6 +129,50 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 const orders = ref([]);
 const loading = ref(true);
 
+const showPopup = ref(false);
+const selectedOrder = ref(null);
+
+// 🟩 Open confirmation popup before redirecting
+const openPaymentPopup = (order) => {
+  selectedOrder.value = order;
+  showPopup.value = true;
+};
+
+// 🟥 Cancel popup
+const cancelPayment = () => {
+  selectedOrder.value = null;
+  showPopup.value = false;
+};
+
+// 🟦 Confirm & redirect to Paymob
+const confirmPayment = async () => {
+  if (!selectedOrder.value) return;
+  try {
+    const response = await fetch("http://localhost:5000/pay", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: Number(selectedOrder.value.price) || 0,
+        orderId: selectedOrder.value.id,
+        serviceTitle: selectedOrder.value.serviceTitle,
+        technicianName: selectedOrder.value.technicianName,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url; // redirect to Paymob
+    } else {
+      alert("Payment request failed.");
+      console.error("❌ Payment response:", data);
+    }
+  } catch (err) {
+    console.error("❌ Payment connection error:", err);
+    alert("Error connecting to payment server.");
+  }
+};
+
+// 🟨 Status badge colors
 const statusColor = (status) => {
   switch (status) {
     case "unconfirmed":
@@ -102,12 +189,11 @@ const statusColor = (status) => {
   }
 };
 
-// ⚡ تحميل الطلبات من Firestore
+// ⚡ Load user's orders from Firestore
 onMounted(() => {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // ✅ تعديل الشرط ليستخدم clientId بدل userId
       const q = query(collection(db, "orders"), where("clientId", "==", user.uid));
       onSnapshot(q, (snap) => {
         orders.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -118,32 +204,15 @@ onMounted(() => {
     }
   });
 });
-
-// 💳 الانتقال للدفع
-const goToPayment = async (order) => {
-  try {
-    const response = await fetch("http://localhost:5000/pay", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amount: order.price,
-        orderId: order.id,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.url) {
-      // ✅ Store this order ID temporarily
-      localStorage.setItem("lastPaidOrder", order.id);
-      window.location.href = data.url;
-    } else {
-      alert("Payment failed. Please try again.");
-    }
-  } catch (err) {
-    console.error("Payment error:", err);
-    alert("Payment request failed.");
-  }
-};
-
-
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
