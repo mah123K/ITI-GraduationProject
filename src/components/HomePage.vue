@@ -10,7 +10,7 @@
       />
     </section>
     <!--cards-->
-    <h2 class="text-center main-header dark:bg-black">Our Services</h2>
+    <h2 class="text-center main-header">Our Services</h2>
     <div class="flex justify-center">
       <div class="grid grid-cols-2 gap-10  md:grid-cols-4 ">
         <div
