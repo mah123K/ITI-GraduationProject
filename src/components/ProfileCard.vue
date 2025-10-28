@@ -34,7 +34,7 @@
       </svg>
 
       <div
-        class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 border border-white flex items-center justify-center transition-all duration-500"
+        class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 rtl:right-auto rtl:left-10 border border-white flex items-center justify-center transition-all duration-500"
         :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
       >
         <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2" />
@@ -51,7 +51,7 @@
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
-          Orders Completed <span class="font-semibold">{{ ordersCompleted > 0 ? ('+' + ordersCompleted) : 0 }}</span>
+          {{ $t('profilesPage.ordersCompleted') }} <span class="font-semibold">{{ ordersCompleted > 0 ? ('+' + ordersCompleted) : 0 }}</span>
         </div>
 
         <div class="flex items-center gap-1">
@@ -69,8 +69,8 @@
               :to="`/profile/${profile.id}`"
               class=""
             >
-  View Profile
-</router-link>
+              {{ $t('profilesPage.viewProfile') }}
+            </router-link>
           </button>
 
           <div class="flex items-center gap-1 mt-2">
@@ -85,7 +85,7 @@
         </div>
       </div>
     </div>
-    <!-- List View -->
+    
     <div
       v-else
       @mouseenter="isHovered = true"
@@ -97,7 +97,7 @@
         alt="Profile photo"
         class="w-full sm:w-32 sm:h-32 md:w-50 md:h-50 object-cover rounded-xl"
       />
-      <div class="flex flex-col flex-1 mt-4 sm:mt-0">
+      <div class="flex flex-col flex-1 mt-4 sm:mt-0 text-left rtl:text-right">
         <div>
           <h2 class="text-lg md:text-xl font-bold text-[#0B161B]">{{ profile.name }}</h2>
           <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -111,7 +111,7 @@
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 md:mt-20 gap-4"
         >
-          <div class="flex items-center gap-6 text-sm text-[#0B161B]">
+          <div class="flex items-center gap-6 text-sm text-[#0B161B] space-x-6 rtl:space-x-reverse">
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-star text-[#FF9529]"></i>
               <span class="font-bold">{{ profile.rating }}</span>
@@ -125,7 +125,7 @@
           <button
             class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-[#0369F0] hover:bg-[#0B161B]"
           >
-            View Profile
+            {{ $t('profilesPage.viewProfile') }}
           </button>
         </div>
       </div>
@@ -158,7 +158,6 @@ export default {
     try {
       const profileId = this.profile?.id;
 
-      // 🔹 Fetch profile's createdAt (prefer users collection; adjust if you store in 'technicians')
       if (profileId) {
         try {
           const userRef = doc(db, "users", profileId);
@@ -170,9 +169,11 @@ export default {
               this.memberSince = date.getFullYear();
             } else if (data.createdAt) {
               const d = new Date(data.createdAt);
-              this.memberSince = isNaN(d.getTime()) ? "N/A" : d.getFullYear();
+              // UPDATED: Use $t for fallback
+              this.memberSince = isNaN(d.getTime()) ? this.$t('profilesPage.fallbackNA') : d.getFullYear();
             } else {
-              this.memberSince = "N/A";
+              // UPDATED: Use $t for fallback
+              this.memberSince = this.$t('profilesPage.fallbackNA');
             }
           }
         } catch (e) {
@@ -180,7 +181,6 @@ export default {
         }
       }
 
-      // 🔹 Realtime count of completed orders for this profile (technician)
       try {
         const pid = profileId || auth.currentUser?.uid;
         if (pid) {
@@ -205,7 +205,6 @@ export default {
     if (this.ordersUnsub) this.ordersUnsub();
   },
 };
-
 </script>
 
 <style scoped>
