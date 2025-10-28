@@ -1,43 +1,39 @@
 <template>
-  <footer class="bg-accent-color mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8">
-    <!-- Logo & Description -->
+  <footer class="bg-accent-color mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8 text-left rtl:text-right">
+    
     <div>
       <img
         src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760784552/image__11_-removebg-preview_ev3uvd.png"
         alt="Tashtebaty Logo"
         class="w-70 mb-4"
       />
-      <p class="w-80 ml-10  max-w-full sm:w-full">
-        Tashtebaty exists to simplify home maintenance for every household in Egypt by connecting users with skilled, verified technicians.
+      <p class="w-80 ms-10 max-w-full sm:w-full">
+        {{ $t('footer.description') }}
       </p>
     </div>
 
-    <!-- Company Links -->
-    <div class="ml-30 sm:ml-10 ">
-      <h6 class="text-lg font-semibold mb-3">Quick Links</h6>
+    <div class="ms-30 sm:ms-10">
+      <h6 class="text-lg font-semibold mb-3">{{ $t('footer.quickLinks') }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="hover:underline">About us</a></li>
-        <li><a href="#" class="hover:underline">Contact</a></li>
-        <li><a href="#" class="hover:underline">Services</a></li>
-        <li><a href="#" class="hover:underline">Offers</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.about') }}</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.contact') }}</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.services') }}</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.offers') }}</a></li>
       </ul>
     </div>
 
-    <!-- Legal Links -->
-    <div class="ml-30 sm:ml-10">
-      <h6 class="text-lg font-semibold mb-3">Legal</h6>
+    <div class="ms-30 sm:ms-10">
+      <h6 class="text-lg font-semibold mb-3">{{ $t('footer.legal') }}</h6>
       <ul class="space-y-2">
-        <li><a href="#" class="hover:underline">Terms of use</a></li>
-        <li><a href="#" class="hover:underline">Privacy policy</a></li>
-        <li><a href="#" class="hover:underline">Cookie policy</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.terms') }}</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.privacy') }}</a></li>
+        <li><a href="#" class="hover:underline">{{ $t('footer.links.cookie') }}</a></li>
       </ul>
     </div>
 
-    <!-- Contact & Social -->
-    <div class="ml-30 sm:ml-10">
-      <h6 class="text-lg font-semibold mb-3">Contact Us</h6>
-      <div class="flex space-x-4 mt-2">
-        <!-- Twitter -->
+    <div class="ms-30 sm:ms-10">
+      <h6 class="text-lg font-semibold mb-3">{{ $t('footer.contactUs') }}</h6>
+      <div class="flex gap-x-4 mt-2 rtl:justify-start">
         <a href="#" class="hover:text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
             <path
@@ -46,7 +42,6 @@
           </svg>
         </a>
 
-        <!-- YouTube -->
         <a href="#" class="hover:text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
             <path
@@ -55,7 +50,6 @@
           </svg>
         </a>
 
-        <!-- Facebook -->
         <a href="#" class="hover:text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
             <path

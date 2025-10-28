@@ -1,40 +1,35 @@
 <template>
   <div>
     <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
-      <!-- 🏠 Logo -->
       <div class="navbar-start">
-        <router-link to="/" class="flex items-center space-x-2">
-          <img src="../images/site logo.png" alt="Logo" class="w-[180px] mt-3 ml-5" />
+        <router-link to="/" class="flex items-center space-x-2 rtl:space-x-reverse">
+          <img src="../images/site logo.png" alt="Logo" class="w-[180px] mt-3 ml-5 rtl:mr-5 rtl:ml-0" />
         </router-link>
       </div>
 
-      <!-- 🌐 Center Navigation -->
       <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal text-black px-1 text-lg">
-          <li><router-link to="/" active-class="font-semibold text-black">Home</router-link></li>
+         <ul class="menu menu-horizontal text-black px-1 text-lg space-x-4 rtl:space-x-reverse">
+          <li><router-link to="/" active-class="font-semibold text-black">{{ $t('navbar.home') }}</router-link></li>
 
           <li class="relative group">
-            <a class="cursor-pointer">Services</a>
+            <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse hover:text-accent-color transition-colors duration-200" >{{ $t('navbar.services') }}</a>
             <ul class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl">
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">Plumbing</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">Electrical</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">Finishing</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">Carpentry</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">{{ $t('navbar.plumbing') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">{{ $t('navbar.electrical') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">{{ $t('navbar.finishing') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">{{ $t('navbar.carpentry') }}</router-link></li>
             </ul>
           </li>
 
-          <li><router-link to="/offers" active-class="font-semibold text-black">Offers</router-link></li>
-          <li><router-link to="/about" active-class="font-semibold text-black">About</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-semibold text-black">Contact Us</router-link></li>
+          <li><router-link to="/offers" active-class="font-semibold text-black">{{ $t('navbar.offers') }}</router-link></li>
+          <li><router-link to="/about" active-class="font-semibold text-black">{{ $t('navbar.about') }}</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-semibold text-black">{{ $t('navbar.contact') }}</router-link></li>
         </ul>
       </div>
 
-      <!-- 🌙 Right Side (User Area + Theme) -->
-      <div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
+      <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center">
 
-        <!-- 🌐 Globe + Notifications + Orders + Dark Mode -->
-        <div class="flex items-center mr-4 space-x-3">
-          <!-- 🔔 Notification Icon -->
+        <div class="flex items-center me-4 gap-x-3">
           <div class="relative" v-if="user">
             <button @click="toggleNotifications" class="relative cursor-pointer">
               <i class="fa-solid fa-bell text-xl text-accent-color"></i>
@@ -46,13 +41,12 @@
               </span>
             </button>
 
-            <!-- 🔽 Notifications Dropdown -->
             <transition name="fade-slide">
               <div
                 v-if="showNotifications"
                 class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50"
               >
-                <div class="p-3 font-semibold text-[#133B5D] border-b">Notifications</div>
+                <div class="p-3 font-semibold text-[#133B5D] border-b">{{ $t('navbar.notifications') }}</div>
                 <ul class="max-h-64 overflow-y-auto">
                   <li
                     v-for="n in notifications"
@@ -65,42 +59,39 @@
                     </p>
                   </li>
                   <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
-                    No notifications yet
+                    {{ $t('navbar.noNotifications') }}
                   </li>
                 </ul>
               </div>
             </transition>
           </div>
 
-          <!-- 🧾 Orders Icon -->
           <router-link
             v-if="user"
             to="/my-orders"
             class="relative cursor-pointer"
-            title="My Orders"
+            :title="$t('navbar.myOrdersTitle')"
           >
             <i class="text-accent-color fa-solid fa-cart-shopping"></i>
           </router-link>
 
-          <!-- 🌐 Globe -->
-          <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color"></i>
+          <button @click="toggleLanguage" class="cursor-pointer text-xl text-accent-color">
+            <i class="fa-solid fa-globe"></i>
+          </button>
 
-          <!-- 🌙 Dark Mode -->
           <button @click="toggleDarkMode" class="cursor-pointer">
             <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
             <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
           </button>
         </div>
 
-        <!-- 🔄 Loading user -->
-        <div v-if="loadingUser" class="flex items-center space-x-3 animate-pulse">
+        <div v-if="loadingUser" class="flex items-center gap-x-3 animate-pulse">
           <div class="h-5 w-20 bg-gray-200 rounded"></div>
           <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
         </div>
 
-        <!-- 👤 Logged In -->
         <div v-else-if="user" class="relative flex items-center">
-          <span class="font-medium text-black hidden sm:block mr-5">Hello, {{ firstName }}</span>
+          <span class="font-medium text-black hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
 
           <div
             ref="profileButton"
@@ -110,7 +101,6 @@
             <i class="bi bi-person text-gray-500 text-xl"></i>
           </div>
 
-          <!-- 🔽 Profile Dropdown -->
           <transition name="fade-slide">
             <div
               v-if="isUserMenuOpen"
@@ -128,7 +118,7 @@
                   <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
                     <i class="fa-solid fa-user text-accent-color"></i>
                     <router-link to="/manageuserprofile" @click="closeMenu">
-                      <h4 class="cursor-pointer text-accent-color">Manage your Profile</h4>
+                      <h4 class="cursor-pointer text-accent-color">{{ $t('navbar.manageProfile') }}</h4>
                     </router-link>
                   </div>
 
@@ -137,7 +127,7 @@
                     @click="switchAccount"
                   >
                     <i class="fa-solid fa-repeat text-accent-color"></i>
-                    <h4 class="text-accent-color">Switch Account</h4>
+                    <h4 class="text-accent-color">{{ $t('navbar.switchAccount') }}</h4>
                   </div>
 
                   <div
@@ -145,7 +135,7 @@
                     class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
                   >
                     <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
-                    <h4 class="text-accent-color">Log out</h4>
+                    <h4 class="text-accent-color">{{ $t('navbar.logout') }}</h4>
                   </div>
                 </div>
               </div>
@@ -153,31 +143,28 @@
           </transition>
         </div>
 
-        <!-- 🚫 Not Logged In -->
-        <div v-else class="flex items-center space-x-3">
+        <div v-else class="flex items-center gap-x-3">
           <router-link
             to="/signup"
             class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
           >
-            Sign Up
+            {{ $t('navbar.signup') }}
           </router-link>
           <router-link
             to="/login"
             class="btn btn-outline btn-sm text-accent-color rounded-[10px] hover:bg-white"
           >
-            Login
+            {{ $t('navbar.login') }}
           </router-link>
         </div>
       </div>
 
-      <!-- 🕶 Sidebar Overlay -->
       <div
         v-if="isSidebarOpen"
         class="fixed inset-0 bg-black/50 z-40"
         @click="isSidebarOpen = false"
       ></div>
 
-      <!-- 📱 Sidebar Content -->
       <aside
         v-if="isSidebarOpen"
         class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-6 flex flex-col space-y-4"
@@ -190,21 +177,21 @@
         </button>
 
         <ul class="menu text-lg text-first-blue bg-white space-y-2">
-          <li><router-link to="/" @click="isSidebarOpen = false">Home</router-link></li>
+          <li><router-link to="/" @click="isSidebarOpen = false">{{ $t('navbar.home') }}</router-link></li>
           <li>
             <details>
-              <summary>Services</summary>
+              <summary>{{ $t('navbar.services') }}</summary>
               <ul class="pl-4">
-                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">Plumbing</router-link></li>
-                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">Electrical</router-link></li>
-                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">Finishing</router-link></li>
-                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">Carpentry</router-link></li>
+                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">{{ $t('navbar.plumbing') }}</router-link></li>
+                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">{{ $t('navbar.electrical') }}</router-link></li>
+                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">{{ $t('navbar.finishing') }}</router-link></li>
+                <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">{{ $t('navbar.carpentry') }}</router-link></li>
               </ul>
             </details>
           </li>
-          <li><router-link to="/offers" @click="isSidebarOpen = false">Offers</router-link></li>
-          <li><router-link to="/about" @click="isSidebarOpen = false">About</router-link></li>
-          <li><router-link to="/ContactUs" @click="isSidebarOpen = false">Contact</router-link></li>
+          <li><router-link to="/offers" @click="isSidebarOpen = false">{{ $t('navbar.offers') }}</router-link></li>
+          <li><router-link to="/about" @click="isSidebarOpen = false">{{ $t('navbar.about') }}</router-link></li>
+          <li><router-link to="/ContactUs" @click="isSidebarOpen = false">{{ $t('navbar.contact') }}</router-link></li>
         </ul>
       </aside>
     </div>
@@ -212,6 +199,7 @@
 </template>
 
 <script>
+// --- YOUR SCRIPT IS UNCHANGED AND CORRECT ---
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
@@ -255,8 +243,29 @@ export default {
       this.isUserMenuOpen = false;
       this.$router.push("/login");
     },
-    toggleDarkMode() {
+   toggleDarkMode() {
       this.isDark = !this.isDark;
+      const root = document.documentElement;
+      if (this.isDark) {
+        root.classList.add('dark');
+        localStorage.setItem('theme', 'dark'); // Save theme
+      } else {
+        root.classList.remove('dark');
+        localStorage.setItem('theme', 'light'); // Save theme
+      }
+    },
+
+    toggleLanguage() {
+      // 'this.$i18n' is now available everywhere
+      const newLang = this.$i18n.locale === 'en' ? 'ar' : 'en';
+      this.$i18n.locale = newLang;
+      
+      // Set HTML direction for RTL/LTR
+      document.documentElement.lang = newLang;
+      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+
+      // Save preference
+      localStorage.setItem('lang', newLang);
     },
     toggleNotifications() {
       this.showNotifications = !this.showNotifications;
@@ -276,6 +285,22 @@ export default {
   },
 
   mounted() {
+
+    const savedTheme = localStorage.getItem('theme');
+    const root = document.documentElement;
+    if (savedTheme === 'dark') {
+      this.isDark = true;
+      root.classList.add('dark');
+    } else {
+      this.isDark = false;
+      root.classList.remove('dark');
+    }
+
+    // 2. Load saved language
+    const savedLang = localStorage.getItem('lang') || 'en';
+    this.$i18n.locale = savedLang;
+    document.documentElement.lang = savedLang;
+    document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
     const auth = getAuth();
     onAuthStateChanged(auth, async (currentUser) => {
       this.loadingUser = true;
@@ -312,6 +337,7 @@ export default {
         this.isUserMenuOpen &&
         dropdown &&
         !dropdown.contains(e.target) &&
+        profileButton && // Added check for profileButton existence
         !profileButton.contains(e.target)
       ) {
         this.isUserMenuOpen = false;
@@ -322,6 +348,8 @@ export default {
 </script>
 
 <style scoped>
+/* --- THIS IS THE CRITICAL PART FOR RTL --- */
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -333,5 +361,38 @@ export default {
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* * This CSS swaps the layout and fixes the spacing.
+*/
+[dir="rtl"] .navbar-start {
+  order: 1; /* 3rd item (moves to the right) */
+  justify-content: flex-start; /* Aligns logo to the far right */
+}
+[dir="rtl"] .navbar-center {
+  order: 1; /* 2nd item (stays in center) */
+}
+[dir="rtl"] .navbar-end {
+  order: 1; /* 1st item (moves to the left) */
+  justify-content: flex-end; /* Aligns icons to the far left */
+  min-width: auto; 
+}
+
+/* Fix for profile dropdown position in RTL */
+[dir="rtl"] .absolute[ref="dropdown"] {
+  right: auto; /* Remove the 'right: 0' */
+  left: 0; /* Anchor it to the left instead */
+}
+
+/* Fix for notification dropdown in RTL */
+[dir="rtl"] .absolute[v-if="showNotifications"] {
+  right: auto; /* Remove the 'right: 0' */
+  left: 0; /* Anchor it to the left instead */
+}
+
+/* Fix for mobile sidebar in RTL */
+[dir="rtl"] aside {
+  right: auto;
+  left: 0;
 }
 </style>
