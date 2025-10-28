@@ -27,6 +27,8 @@ import ProfilesPage from "./components/ProfilesPage.vue";
 import TechnicianProfile from "./components/technicianProfile.vue";
 import ChatPage from "./components/ChatPage.vue";
 import ManageUserProfile from "./components/MannageUserProfile.vue";
+import forgotpassword from "./components/ForgotPassword.vue";
+
 
 // Admin Dashboard
 import DashboardLayout from "./components/AdminDashboard/Sisebar.vue";
@@ -78,6 +80,8 @@ const routes = [
   { path: "/contactus", component: ContactUs },
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
+  { path: '/forgot-password', component: forgotpassword, alias: '/forgotpassword' },
+
 
   // Admin Dashboard
   {
