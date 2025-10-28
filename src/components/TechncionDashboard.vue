@@ -167,26 +167,24 @@ const listenForServices = () => {
   });
 };
 
-// 🟩 ✅ Fixed Notification Sending Logic
+// 🟩 Orders helpers (updated flow)
 const updateOrderStatus = async (id, status) => {
   try {
     const orderRef = doc(db, "orders", id);
     const orderSnap = await getDoc(orderRef);
     const orderData = orderSnap.data();
 
-    // ✅ Update the order status
     await updateDoc(orderRef, { status });
 
-    // ✅ Send notification to the client
-    const clientId = orderData?.clientId || orderData?.userId;
-
-    if (clientId) {
-      const notifCol = collection(db, "users", clientId, "notifications");
+    // ✅ Create notification for the client
+    if (orderData?.userId) {
+      const notifCol = collection(db, "users", orderData.userId, "notifications");
       const messages = {
-        upcoming: "✅ Technician accepted your order.",
-        declined: "❌ Technician declined your order.",
-        cancelled: "⚠️ Technician cancelled your order.",
-        completed: "🎉 Your order has been completed!",
+        unconfirmed: "Your order has been accepted. Please complete your payment to confirm it.",
+        upcoming: "Payment received successfully. Your order is now confirmed and scheduled.",
+        completed: "Your order has been completed successfully!",
+        declined: "Technician declined your order.",
+        cancelled: "Technician cancelled your order.",
       };
 
       await addDoc(notifCol, {
@@ -196,10 +194,6 @@ const updateOrderStatus = async (id, status) => {
         isRead: false,
         timestamp: serverTimestamp(),
       });
-
-      console.log("📩 Notification sent to client:", clientId);
-    } else {
-      console.warn("⚠️ No clientId found in this order document");
     }
 
     displayNotification(`Order marked as ${status}`, "success");
@@ -209,10 +203,12 @@ const updateOrderStatus = async (id, status) => {
   }
 };
 
-const handleAcceptOrder = (id) => updateOrderStatus(id, "upcoming");
+// 🟩 Technician actions
+const handleAcceptOrder = (id) => updateOrderStatus(id, "unconfirmed");
+const handleConfirmPayment = (id) => updateOrderStatus(id, "upcoming"); // after client pays
+const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
 const handleDeclineOrder = (id) => updateOrderStatus(id, "declined");
 const handleCancelOrder = (id) => updateOrderStatus(id, "cancelled");
-const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
 
 // 🟩 Services popups
 const openEditPopup = (service) => {
@@ -291,6 +287,7 @@ const closePopup = () => {
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
     if (orderTab.value === "requests") return o.status === "new";
+    if (orderTab.value === "unconfirmed") return o.status === "unconfirmed";
     if (orderTab.value === "upcoming") return o.status === "upcoming";
     if (orderTab.value === "completed") return o.status === "completed";
     return false;
@@ -323,48 +320,23 @@ watch(
     if (!ctx) return;
     if (chartInstance) chartInstance.destroy();
 
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const labels = orders.value.map((o) => {
       if (!o.date) return "N/A";
       try {
-        let dateStr = "";
         let parsedDate;
-
-        if (o.date?.seconds) {
-          parsedDate = new Date(o.date.seconds * 1000);
-        } else if (typeof o.date === "string") {
-          dateStr = o.date.trim();
-          if (!/\d{4}/.test(dateStr)) dateStr += " 2025";
-          parsedDate = new Date(dateStr);
-          if (isNaN(parsedDate)) {
-            const found = monthNames.find((m) => dateStr.includes(m));
-            return found || "N/A";
-          }
-        }
-
-        if (!parsedDate || isNaN(parsedDate)) return "N/A";
-        const monthIndex = parsedDate.getMonth();
-        return monthNames[monthIndex];
+        if (o.date?.seconds) parsedDate = new Date(o.date.seconds * 1000);
+        else parsedDate = new Date(o.date);
+        if (!isNaN(parsedDate)) return monthNames[parsedDate.getMonth()];
+        return "N/A";
       } catch {
         return "N/A";
       }
     });
 
     const dataValues = orders.value.map((o) => parseFloat(o.price) || 0);
+
     const validLabels = labels.filter((l) => l !== "N/A");
     const finalLabels = validLabels.length ? validLabels : ["No Data"];
 
@@ -398,15 +370,8 @@ watch(
           },
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: "#e0e0e0" },
-            ticks: { color: "#133B5D" },
-          },
-          x: {
-            grid: { display: false },
-            ticks: { color: "#133B5D" },
-          },
+          y: { beginAtZero: true },
+          x: { grid: { display: false } },
         },
       },
     });
@@ -414,6 +379,7 @@ watch(
   { immediate: false }
 );
 </script>
+
 
 
 

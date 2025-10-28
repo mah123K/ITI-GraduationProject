@@ -32,7 +32,7 @@
       <!-- 🌙 Right Side (User Area + Theme) -->
       <div class="navbar-end space-x-3 min-w-[250px] flex justify-end items-center">
 
-        <!-- 🌐 Globe + Notifications + Dark Mode -->
+        <!-- 🌐 Globe + Notifications + Orders + Dark Mode -->
         <div class="flex items-center mr-4 space-x-3">
           <!-- 🔔 Notification Icon -->
           <div class="relative" v-if="user">
@@ -71,6 +71,16 @@
               </div>
             </transition>
           </div>
+
+          <!-- 🧾 Orders Icon -->
+          <router-link
+            v-if="user"
+            to="/my-orders"
+            class="relative cursor-pointer"
+            title="My Orders"
+          >
+            <i class="text-accent-color fa-solid fa-cart-shopping"></i>
+          </router-link>
 
           <!-- 🌐 Globe -->
           <i class="fa-solid fa-globe cursor-pointer text-xl text-accent-color"></i>
@@ -216,8 +226,6 @@ export default {
       user: null,
       firstName: "",
       loadingUser: true,
-
-      // 🔔 Notifications
       notifications: [],
       unreadCount: 0,
       showNotifications: false,
@@ -250,15 +258,12 @@ export default {
     toggleDarkMode() {
       this.isDark = !this.isDark;
     },
-
-    // 🔔 Notifications
     toggleNotifications() {
       this.showNotifications = !this.showNotifications;
       if (this.showNotifications) {
         this.markNotificationsAsRead();
       }
     },
-
     async markNotificationsAsRead() {
       if (!this.user || !this.notifications.length) return;
       for (const n of this.notifications) {
@@ -272,12 +277,10 @@ export default {
 
   mounted() {
     const auth = getAuth();
-
     onAuthStateChanged(auth, async (currentUser) => {
       this.loadingUser = true;
       if (currentUser) {
         this.user = currentUser;
-
         const collections = ["clients", "technicians", "companies", "admin"];
         for (const c of collections) {
           const docRef = doc(db, c, currentUser.uid);
@@ -289,7 +292,6 @@ export default {
           }
         }
 
-        // 🟢 Listen for real-time notifications
         const notifRef = collection(db, "users", currentUser.uid, "notifications");
         const q = query(notifRef, orderBy("timestamp", "desc"));
         onSnapshot(q, (snap) => {
