@@ -11,13 +11,15 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // ================================
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
-import App from "./App.vue";
+import App from "./assets/App.vue";
 import "./assets/main.css";
 
 
 import { createI18n } from "vue-i18n";
-import en from "./locals/en.json"; // Import your new EN file
-import ar from "./locals/ar.json";
+import en from "@/assets/locales/en.json";
+import ar from "@/assets/locales/ar.json";
+
+
 
 
 
