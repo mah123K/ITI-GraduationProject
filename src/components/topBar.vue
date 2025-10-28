@@ -1,12 +1,10 @@
 <template>
   <div ref="wrapper">
     <div
-      class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10 px-4 max-w-7xl mx-auto"
+      class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-10 px-4 max-w-7xl mx-auto md:rtl:flex-row-reverse"
     >
-      <!-- Left section -->
-      <div class="flex flex-row items-center w-full md:w-auto">
-        <div class="relative flex items-center justify-center pr-4">
-          <!-- Filter Button -->
+      <div class="flex flex-row items-center w-full md:w-auto rtl:flex-row-reverse">
+        <div class="relative flex items-center justify-center pr-4 rtl:pr-0 rtl:pl-4">
           <button
             id="dropdownDefault"
             @click.stop="toggleDropdown"
@@ -27,20 +25,19 @@
                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2l-7 7v6l-4-2v-4L3 6V4z"
               />
             </svg>
-            Filter
+            {{ $t('topBar.filterButton') }}
           </button>
 
-          <!-- Dropdown Menu -->
           <div
             v-show="showDropdown"
             ref="dropdown"
-            class="absolute top-full mt-2 left-32 transform -translate-x-1/2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50"
+            class="absolute top-full mt-2 left-32 transform -translate-x-1/2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50 rtl:left-auto rtl:right-32 rtl:translate-x-1/2"
           >
-            <div class="flex justify-between items-center mb-2">
-              <h6 class="text-sm font-medium text-gray-800">Filters</h6>
+            <div class="flex justify-between items-center mb-2 text-left rtl:text-right">
+              <h6 class="text-sm font-medium text-gray-800">{{ $t('topBar.filtersTitle') }}</h6>
               <div class="flex gap-3 text-xs">
                 <button class="text-gray-400 hover:text-red-500 transition" @click="clearAll">
-                  Clear all
+                  {{ $t('topBar.clearAll') }}
                 </button>
               </div>
             </div>
@@ -48,15 +45,15 @@
             <input
               v-model="searchKeyword"
               type="text"
-              placeholder="Search keywords..."
-              class="w-full px-3 py-2 mb-3 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400"
+              :placeholder="$t('topBar.searchPlaceholder')"
+              class="w-full px-3 py-2 mb-3 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 rtl:text-right"
               @input="emitFilters"
             />
 
-            <div class="space-y-2 text-sm text-gray-700 max-h-64 overflow-y-auto">
+            <div class="space-y-2 text-sm text-gray-700 max-h-64 overflow-y-auto text-left rtl:text-right">
               <details class="rounded-md p-2" open>
-                <summary class="cursor-pointer font-medium text-gray-800">Category</summary>
-                <ul class="mt-2 space-y-1 pl-2">
+                <summary class="cursor-pointer font-medium text-gray-800">{{ $t('topBar.categoryTitle') }}</summary>
+                <ul class="mt-2 space-y-1 pl-2 rtl:pl-0 rtl:pr-2">
                   <li v-for="cat in categories" :key="cat.id" class="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -64,26 +61,26 @@
                       :value="cat.label"
                       v-model="selectedFilters"
                       @change="emitFilters"
-                      class="rounded text-blue-600 focus:ring-blue-400"
+                      class="rounded text-blue-600 focus:ring-blue-400 rtl:ml-2"
                     />
                     <label :for="cat.id" class="cursor-pointer text-gray-700">
-                      {{ cat.label }}
+                      {{ $t(cat.key) }}
                     </label>
                   </li>
                 </ul>
               </details>
 
               <details class="rounded-md p-2">
-                <summary class="cursor-pointer font-medium text-gray-800">Price</summary>
-                <div class="mt-2 space-y-1 pl-2">
+                <summary class="cursor-pointer font-medium text-gray-800">{{ $t('topBar.priceTitle') }}</summary>
+                <div class="mt-2 space-y-1 pl-2 rtl:pl-0 rtl:pr-2">
                   <label>
                     <input
                       type="checkbox"
                       v-model="selectedFilters"
                       value="low"
-                      class="mr-2"
+                      class="mr-2 rtl:mr-0 rtl:ml-2"
                       @change="emitFilters"
-                    />Under $50
+                    />{{ $t('topBar.price.low') }}
                   </label>
                   <br />
                   <label>
@@ -91,9 +88,9 @@
                       type="checkbox"
                       v-model="selectedFilters"
                       value="medium"
-                      class="mr-2"
+                      class="mr-2 rtl:mr-0 rtl:ml-2"
                       @change="emitFilters"
-                    />$50–$200
+                    />{{ $t('topBar.price.medium') }}
                   </label>
                   <br />
                   <label>
@@ -101,24 +98,24 @@
                       type="checkbox"
                       v-model="selectedFilters"
                       value="high"
-                      class="mr-2"
+                      class="mr-2 rtl:mr-0 rtl:ml-2"
                       @change="emitFilters"
-                    />Over $200
+                    />{{ $t('topBar.price.high') }}
                   </label>
                 </div>
               </details>
 
               <details class="rounded-md p-2">
-                <summary class="cursor-pointer font-medium text-gray-800">Rating</summary>
-                <div class="mt-2 space-y-1 pl-2">
+                <summary class="cursor-pointer font-medium text-gray-800">{{ $t('topBar.ratingTitle') }}</summary>
+                <div class="mt-2 space-y-1 pl-2 rtl:pl-0 rtl:pr-2">
                   <label>
                     <input
                       type="radio"
                       v-model="ratingFilter"
                       value="4stars"
-                      class="mr-2"
+                      class="mr-2 rtl:mr-0 rtl:ml-2"
                       @change="emitFilters"
-                    />4 stars & up
+                    />{{ $t('topBar.rating.fourStars') }}
                   </label>
                   <br />
                   <label>
@@ -126,9 +123,9 @@
                       type="radio"
                       v-model="ratingFilter"
                       value="3stars"
-                      class="mr-2"
+                      class="mr-2 rtl:mr-0 rtl:ml-2"
                       @change="emitFilters"
-                    />3 stars & up
+                    />{{ $t('topBar.rating.threeStars') }}
                   </label>
                 </div>
               </details>
@@ -137,25 +134,23 @@
         </div>
 
         <div class="text-[#0B161B]/90 font-medium text-sm md:text-base whitespace-nowrap">
-          Showing {{ displayedCount }} of {{ totalCount }} results
+          {{ $t('topBar.resultsText', { displayed: displayedCount, total: totalCount }) }}
         </div>
       </div>
 
-      <!-- Right section -->
       <div
-        class="flex flex-row flex-wrap items-center gap-3 w-full md:w-auto justify-start md:justify-end"
+        class="flex flex-row flex-wrap items-center gap-3 w-full md:w-auto justify-start md:justify-end md:rtl:justify-start"
       >
         <select
           v-model="sortOption"
           @change="emitSort"
-          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition"
+          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition rtl:text-right"
         >
-          <option value="default">Default sort</option>
-          <option value="rating">Rating</option>
-          <option value="location">Location</option>
+          <option value="default">{{ $t('topBar.sort.default') }}</option>
+          <option value="rating">{{ $t('topBar.sort.rating') }}</option>
+          <option value="location">{{ $t('topBar.sort.location') }}</option>
         </select>
 
-        <!-- grid view icon -->
         <div
           @click="changeView('grid')"
           :class="[
@@ -175,7 +170,6 @@
           </svg>
         </div>
 
-        <!-- list view icon -->
         <div
           @click="changeView('list')"
           :class="[
@@ -220,15 +214,21 @@ export default {
       ratingFilter: "",
       sortOption: "default",
       currentView: "grid",
+      
+      // --- UPDATED ---
+      // Added 'key' property to each category for translation.
+      // The 'label' is now used as the *value* for filtering,
+      // and the 'key' is used for the *display text*.
       categories: [
-        { id: "Cairo", label: "Cairo" },
-        { id: "Alex", label: "Alexandria" },
-        { id: "Giza", label: "Giza" },
-        { id: "Suez", label: "Suez" },
-        { id: "Aswan", label: "Aswan" },
-        { id: "Luxor", label: "Luxor" },
-        { id: "Red Sea", label: "Red Sea" },
+        { id: "Cairo", label: "Cairo", key: "topBar.locations.cairo" },
+        { id: "Alex", label: "Alexandria", key: "topBar.locations.alexandria" },
+        { id: "Giza", label: "Giza", key: "topBar.locations.giza" },
+        { id: "Suez", label: "Suez", key: "topBar.locations.suez" },
+        { id: "Aswan", label: "Aswan", key: "topBar.locations.aswan" },
+        { id: "Luxor", label: "Luxor", key: "topBar.locations.luxor" },
+        { id: "Red Sea", label: "Red Sea", key: "topBar.locations.redSea" },
       ],
+      // --- END UPDATE ---
     };
   },
   methods: {

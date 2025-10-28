@@ -1,6 +1,8 @@
 <template>
   <div class="profiles-page">
-    <h1 class="main-header mt-20">{{ serviceName }} Profiles</h1>
+    <h1 class="main-header mt-20">
+      {{ $t(translatedServiceName) }} {{ $t('profilesPage.titleSuffix') }}
+    </h1>
 
     <TopBar
       @view-changed="currentView = $event"
@@ -29,7 +31,6 @@
 <script>
 import ProfileCard from "./ProfileCard.vue";
 import TopBar from "./topBar.vue";
-// ADD: Import Firebase Firestore functions
 import { db } from "@/firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -44,17 +45,30 @@ export default {
       selectedLocations: [],
       ratingFilter: "",
       sortOption: "default",
-      isLoading: false, // ADD: For loading indicator
-
-      // MODIFIED: Start with an empty array
+      isLoading: false,
       profiles: [],
     };
   },
   computed: {
+    // UPDATED: New computed property to translate the service name
+    translatedServiceName() {
+      if (!this.serviceName || this.serviceName.toLowerCase() === "all") {
+        return 'profilesPage.allProfiles';
+      }
+      const key = this.serviceName.toLowerCase();
+      
+      // Map route param to your existing navbar translation keys
+      if (key === 'plumbing') return 'navbar.plumbing';
+      if (key === 'electrical') return 'navbar.electrical';
+      if (key === 'finishing') return 'navbar.finishing';
+      if (key === 'carpentry') return 'navbar.carpentry';
+      
+      return this.serviceName; // Fallback if no match
+    },
+    
     filteredProfiles() {
       let results = this.profiles;
 
-      // This filter now works dynamically with Firebase data
       if (this.serviceName && this.serviceName !== "All") {
         results = results.filter(
           (p) => p.service.toLowerCase() === this.serviceName.toLowerCase()
@@ -101,10 +115,9 @@ export default {
       this.sortOption = sortValue;
     },
 
-    // ADD: New method to fetch data from Firebase
     async fetchProfiles() {
       this.isLoading = true;
-      this.profiles = []; // Clear existing profiles
+      this.profiles = []; 
       
       try {
         const techniciansCol = collection(db, "technicians");
@@ -114,15 +127,16 @@ export default {
         snapshot.forEach((doc) => {
           const data = doc.data();
           
-          // Map your Firebase data to the structure your component expects
           fetchedProfiles.push({
-            id: doc.id, // Good to have a unique ID
-            name: data.name, // Fetched from Firebase
-            service: data.skill, // This is the "work type" (skill) from Firebase
-            location: data.city || "Not specified", // Map 'city' to 'location'
-            rating: data.rating || 0, // Use existing rating or default to 0
-            bio: data.description || "No bio provided.", // Map 'description' to 'bio'
-            profileImage: data.profileImage || null // Pass profile image URL
+            id: doc.id,
+            name: data.name,
+            service: data.skill,
+            // UPDATED: Use $t for fallback text
+            location: data.city || this.$t('profilesPage.fallbackLocation'),
+            rating: data.rating || 0,
+            // UPDATED: Use $t for fallback text
+            bio: data.description || this.$t('profilesPage.fallbackBio'),
+            profileImage: data.profileImage || null
           });
         });
         
@@ -130,23 +144,20 @@ export default {
 
       } catch (error) {
         console.error("Error fetching profiles: ", error);
-        alert("Failed to load profiles. Please try again.");
+        // UPDATED: Use $t for the error message
+        alert(this.$t('profilesPage.loadingError'));
       }
       this.isLoading = false;
     },
   },
   mounted() {
     this.serviceName = this.$route.params.service || "All";
-    // ADD: Call the fetch method when the component is mounted
     this.fetchProfiles();
   },
   watch: {
     $route(to) {
       this.serviceName = to.params.service || "All";
-      // The computed property 'filteredProfiles' will automatically re-filter
-      // when serviceName changes, so you don't need to re-fetch here.
     },
   },
 };
 </script>
-

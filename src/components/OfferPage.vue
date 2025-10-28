@@ -1,6 +1,5 @@
 <template>
   <div class="pb-16">
-    <!-- --- Static Banners (No Change) --- -->
     <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 mt-10">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         
@@ -8,24 +7,23 @@
           class="relative lg:col-span-2 w-full mx-auto bg-accent-color rounded-3xl p-8 text-white shadow-2xl transform hover:scale-105 transition duration-300"
         >
           <div
-            class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
+            class="absolute top-4 right-4 rtl:right-auto rtl:left-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm"
           >
-            Limited Time
+            {{ $t('offersPage.banner1.tag') }}
           </div>
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">SIGN UP AND GET</h1>
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ $t('offersPage.banner1.title') }}</h1>
           <div
             class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border-2 border-white/30 inline-block"
           >
             <div class="text-4xl md:text-5xl font-black mb-2">150 EGP</div>
-            <div class="text-2xl font-semibold">DISCOUNT VOUCHER!</div>
+            <div class="text-2xl font-semibold">{{ $t('offersPage.banner1.subtitle') }}</div>
           </div>
-          <p class="mt-6 text-lg">on your first order!</p>
-          <!-- ✅ MODIFIED THIS: Changed <button> to <router-link> -->
+          <p class="mt-6 text-lg">{{ $t('offersPage.banner1.text') }}</p>
           <router-link
             to="/signup"
-            class="mt-6 bg-white text-accent-color w-fit px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2"
+            class="mt-6 bg-white text-accent-color w-fit px-8 py-3 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse"
           >
-            <span>Get Started</span>
+            <span>{{ $t('offersPage.banner1.button') }}</span>
           </router-link>
         </div>
 
@@ -34,9 +32,9 @@
         >
           <div class="flex flex-col items-center justify-between gap-6">
             <div class="flex-1 text-center">
-              <h2 class="text-2xl md:text-3xl font-bold mb-2">REFER A FRIEND</h2>
+              <h2 class="text-2xl md:text-3xl font-bold mb-2">{{ $t('offersPage.banner2.title') }}</h2>
               <p class="text-lg opacity-90">
-                You both get 100 EGP credit when they book!
+                {{ $t('offersPage.banner2.text') }}
               </p>
             </div>
 
@@ -44,43 +42,39 @@
               class="bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 border-2 border-white/30"
             >
               <div class="text-3xl md:text-4xl font-black">100 EGP</div>
-              <div class="text-sm font-semibold mt-1">FOR EACH</div>
+              <div class="text-sm font-semibold mt-1">{{ $t('offersPage.banner2.subtitle') }}</div>
             </div>
 
             <button
-              class="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 whitespace-nowrap"
+              class="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold hover:shadow-xl transition transform hover:scale-105 flex items-center space-x-2 rtl:space-x-reverse whitespace-nowrap"
             >
-              <span>Share Now</span>
+              <span>{{ $t('offersPage.banner2.button') }}</span>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- --- Dynamic Offers Grid --- -->
     <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
       
-      <!-- 1. Loading State -->
       <div v-if="isLoading" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-color mx-auto"></div>
-        <p class="mt-3 text-gray-600">Loading special offers...</p>
+        <p class="mt-3 text-gray-600">{{ $t('offersPage.grid.loading') }}</p>
       </div>
 
-      <!-- 2. Empty State -->
       <div v-else-if="offers.length === 0" class="text-center py-20">
         <i class="fa-solid fa-tags text-4xl text-gray-400 mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-700">No Offers Available</h3>
-        <p class="text-gray-500 mt-2">Please check back later for new promotions!</p>
+        <h3 class="text-xl font-semibold text-gray-700">{{ $t('offersPage.grid.emptyTitle') }}</h3>
+        <p class="text-gray-500 mt-2">{{ $t('offersPage.grid.emptyText') }}</p>
       </div>
 
-      <!-- 3. Offers Grid -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
         <div
           v-for="offer in offers"
           :key="offer.id" 
           class="relative bg-secondary-blue rounded-2xl w-full max-w-xs sm:max-w-none shadow-md hover:shadow-xl transition transform hover:scale-105"
         >
-          <div class="absolute top-0 left-0">
+          <div class="absolute top-0 left-0 rtl:left-auto rtl:right-0">
             <img
               src="../images/offerdisc.png"
               class="w-15"
@@ -95,10 +89,9 @@
           />
 
           <div class="card-body mt-2 items-center text-center p-3">
-            <h2 class="text-red-600 font-bold text-xl">{{ offer.title }} off</h2>
+            <h2 class="text-red-600 font-bold text-xl">{{ offer.title }} {{ $t('offersPage.grid.suffix') }}</h2>
             <p class="text-gray-700 text-sm">{{ offer.description }}</p>
             <div class="mt-4">
-              <!-- ✅ --- UPDATED BUTTON --- -->
               <button
                 @click="claimOffer(offer)"
                 :disabled="isClaiming === offer.id || claimedOfferIds.has(offer.id)"
@@ -111,11 +104,10 @@
               >
                 {{ 
                   isClaiming === offer.id 
-                    ? 'Claiming...' 
-                    : (claimedOfferIds.has(offer.id) ? 'Claimed' : 'Claim Offer') 
+                    ? $t('offersPage.grid.buttonClaiming') 
+                    : (claimedOfferIds.has(offer.id) ? $t('offersPage.grid.buttonClaimed') : $t('offersPage.grid.buttonClaim')) 
                 }}
               </button>
-              <!-- ✅ --- END OF UPDATE --- -->
             </div>
           </div>
         </div>
