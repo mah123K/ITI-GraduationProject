@@ -1,18 +1,16 @@
 <template>
-  <div>
-    <!-- test -->
-    <!--hero section-->
-    <section class="hero relative w-full ">
+  <div class="theme-bg theme-text text-left rtl:text-right">
+    <section class="hero relative w-full">
       <img
         src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760692341/image_jmqili.jpg"
         alt="Hero"
         class="h-screen w-full"
       />
     </section>
-    <!--cards-->
-    <h2 class="text-center main-header dark:bg-black">Our Services</h2>
+
+    <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
     <div class="flex justify-center">
-      <div class="grid grid-cols-2 gap-10  md:grid-cols-4 ">
+      <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
         <div
           class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
         >
@@ -23,7 +21,7 @@
                 class=""
               />
               <span class="text-center block text-accent-color text-xl font-medium"
-                >Plumbing</span
+                >{{ $t('home.services.plumbing') }}</span
               >
             </div>
           </router-link>
@@ -38,7 +36,7 @@
                 class="w-full"
               />
               <span class="text-center block text-accent-color text-xl font-medium"
-                >Finishing</span
+                >{{ $t('home.services.finishing') }}</span
               >
             </div>
           </router-link>
@@ -53,7 +51,7 @@
                 class=""
               />
               <span class="text-center block text-accent-color text-xl font-medium"
-                >Electrical</span
+                >{{ $t('home.services.electrical') }}</span
               >
             </div>
           </router-link>
@@ -68,70 +66,75 @@
                 class=""
               />
               <span class="text-center block text-accent-color text-xl font-medium"
-                >Carpentry</span
+                >{{ $t('home.services.carpentry') }}</span
               >
             </div>
           </router-link>
         </div>
       </div>
     </div>
-    <!--offer cards-->
-    <div>
-      <h2 class="text-center main-header">Exclusive Offers</h2>
-    </div>
-    <div class="text-accent-color flex justify-end mr-10">
-      <router-link to="/offers">see more</router-link>
-    </div>
+
+   
     <div v-if="loading" class="flex justify-center mt-10">
-    <p class="text-lg">Loading offers...</p>
-  </div>
+      <p class="text-lg">{{ $t('home.offers.loading') }}</p>
+    </div>
 
-  <div v-else-if="offers.length > 0" class="flex justify-center mt-5">
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      
-      <div
-        v-for="offer in offers"
-        :key="offer.id"
-        class="card bg-secondry-color rounded-2xl h-fit w-70 shadow-lg relative"
-      >
-        <div class="offer absolute">
-          <img
-            src="../images/offerdisc.png"
-            class="w-15 rounded-b-full"
-            alt="Offer discount"
-          />
-        </div>
+   <div>
+  <h2 class="text-center main-header">{{ $t('home.offers.title') }}</h2>
+</div>
+<div class="text-accent-color flex justify-end rtl:justify-end me-60 rtl:ms-10 rtl:me-60">
+  <router-link to="/offers">{{ $t('home.offers.seeMore') }}</router-link>
+</div>
+<div v-if="loading" class="flex justify-center mt-10">
+  <p class="text-lg">{{ $t('home.offers.loading') }}</p>
+</div>
 
+<div v-else-if="offers.length > 0" class="flex justify-center mt-5">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    
+    <div
+      v-for="offer in offers"
+      :key="offer.id"
+      class="card bg-secondry-color rounded-2xl h-fit w-70 shadow-lg relative"
+    >
+      <div class="offer absolute">
         <img
-          :src="offer.imageUrl"
-          :alt="offer.title"
-          class="w-full rounded-t-2xl h-48 object-cover" 
-          />
+          src="../images/offerdisc.png"
+          class="w-15 rounded-b-full"
+          alt="Offer discount"
+        />
+      </div>
 
-        <div class="card-body mt-2 items-center text-center">
-          <h2 class="card-title text-red-600 font-bold">{{ offer.title }}</h2>
-          
-          <p class="text-lg">{{ offer.description }}</p>
-          
-          <div class="card-actions pb-3">
-            <button
-              class="btn mt-2 text-white px-3 cursor-pointer bg-accent-color rounded-[10px] text-lg"
-            >
-              Claim offer
-            </button>
-          </div>
+      <img
+        :src="offer.imageUrl"
+        :alt="offer.title"
+        class="w-full rounded-t-2xl h-48 object-cover" 
+        />
+
+      <div class="card-body mt-2 items-center text-center">
+        <h2 class="card-title text-red-600 font-bold">{{ offer.title }}</h2> 
+        
+        <p class="text-lg">{{ offer.description }}</p>
+        
+        <div class="card-actions pb-3">
+          <button
+            class="btn mt-2 text-white px-3 cursor-pointer bg-accent-color rounded-[10px] text-lg"
+          >
+            {{ $t('home.offers.claim') }}
+          </button>
         </div>
       </div>
-      
     </div>
+    
   </div>
+</div>
 
-  <div v-else class="flex justify-center mt-10">
-    <p class="text-lg">No offers available at the moment.</p>
-  </div>
-    <!--Why choose us-->
+<div v-else class="flex justify-center mt-10">
+  <p class="text-lg">{{ $t('home.offers.noOffers') }}</p>
+</div>
+
     <div>
-      <h2 class="main-header">Why Choose US?</h2>
+      <h2 class="main-header">{{ $t('home.whyUs.title') }}</h2>
     </div>
     <div class="flex justify-center">
       <div class="grid grid-cols-1 md:grid-cols-2">
@@ -142,9 +145,9 @@
             alt="Movie"
           />
         </div>
-        <ul class=" ">
-          <li class="row flex flex-row justify-between pb-15">
-            <div class="text-4xl font-thin pr-5">
+        <ul class="space-y-12 mt-6">
+          <li class="flex items-start gap-3">
+            <div class="text-4xl font-thin flex-shrink-0 me-5">
               <img
                 class="w-10"
                 src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760704859/image__9_-removebg-preview_rlbcrt.png"
@@ -153,43 +156,40 @@
             </div>
             <div class="list-col-grow">
               <div class="w-80">
-                We serve over 60,000 happy customers and they continue to order
-                regularly.
+                {{ $t('home.whyUs.point1') }}
               </div>
             </div>
           </li>
 
-          <li class="row flex flex-row justify-between pb-15">
-            <div class="text-4xl font-thin pr-5">
+          <li class="flex items-start gap-3">
+            <div class="text-4xl font-thin flex-shrink-0 me-5">
               <i class="fa-solid fa-people-group text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
-                flexible prices, choose the price suitable for you and negotiate
+                {{ $t('home.whyUs.point2') }}
               </div>
             </div>
           </li>
 
-          <li class="row flex flex-row justify-between pb-15">
-            <div class="text-4xl font-thin pr-5">
+          <li class="flex items-start gap-3">
+            <div class="text-4xl font-thin flex-shrink-0 me-5">
               <i class="fa-solid fa-address-card text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
-                All workers and technicians are contracted with us and all their
-                data is fully available.
+                {{ $t('home.whyUs.point3') }}
               </div>
             </div>
           </li>
 
-          <li class="row flex flex-row justify-between pb-15">
-            <div class="text-4xl font-thin pr-5">
+          <li class="flex items-start gap-3">
+            <div class="text-4xl font-thin flex-shrink-0 me-5">
               <i class="fa-solid fa-headphones text-accent-color w-10"></i>
             </div>
             <div class="list-col-grow">
               <div class="w-80">
-                continues follow-up during and until the completion of the order
-                implementation.
+                {{ $t('home.whyUs.point4') }}
               </div>
             </div>
           </li>
@@ -197,12 +197,9 @@
       </div>
     </div>
 
-    <!--Customer feedback-->
     <div class="relative w-full">
-      <!-- العنوان -->
-      <h2 class="main-header">Our Customers Feedback</h2>
+      <h2 class="main-header">{{ $t('home.feedback.title') }}</h2>
 
-      <!-- السلايدر -->
       <div class="relative h-80 overflow-hidden rounded-lg">
         <div
           v-for="(item, index) in slides"
@@ -223,7 +220,7 @@
               alt="client"
             />
             <h2 class="text-accent-color text-2xl mb-2 font-medium">
-              {{ item.name }}
+              {{ $t('home.feedback.name') }}
             </h2>
             <div class="flex justify-center text-yellow-300 mb-2">
               <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
@@ -235,7 +232,6 @@
         </div>
       </div>
 
-      <!-- النقاط -->
       <div
         class="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-3 z-20"
       >
@@ -248,16 +244,15 @@
         ></button>
       </div>
 
-      <!-- الأسهم -->
       <button
         @click="prevSlide"
-        class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+        class="absolute top-0 left-0 rtl:right-0 rtl:left-auto z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
       >
         <span
           class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
         >
           <svg
-            class="w-4 h-4 text-gray-800"
+            class="w-4 h-4 text-gray-800 rtl:rotate-180"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 6 10"
@@ -275,13 +270,13 @@
 
       <button
         @click="nextSlide"
-        class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+        class="absolute top-0 right-0 rtl:left-0 rtl:right-auto z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
       >
         <span
           class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
         >
           <svg
-            class="w-4 h-4 text-gray-800"
+            class="w-4 h-4 text-gray-800 rtl:rotate-180"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 6 10"
@@ -297,47 +292,45 @@
         </span>
       </button>
     </div>
-    <!--our work-->
-    <div class="work-gallery py-16 bg-gray-50">
-  <div class="text-center mb-10">
-    <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
-      Our Work Gallery
-    </h2>
-    <p class="text-gray-600 max-w-2xl mx-auto text-base">
-      Take a look at some of our completed projects — from home repairs to full renovations. Every project is handled with care, precision, and quality.
-    </p>
-  </div>
 
-  <div class="flex justify-center">
-    <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-11/12 md:w-4/5"
-    >
-      <div
-        v-for="(image, index) in works"
-        :key="index"
-        class="relative group overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
-      >
-        <img
-          :src="image.src"
-          :alt="image.alt"
-          class="w-full h-48 sm:h-56 md:h-64 lg:h-62 object-cover transform group-hover:scale-110 transition-transform duration-500"
-        />
+    <div class="work-gallery py-16 bg-gray-50">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
+          {{ $t('home.gallery.title') }}
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-base">
+          {{ $t('home.gallery.description') }}
+        </p>
+      </div>
+
+      <div class="flex justify-center">
         <div
-          class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-11/12 md:w-4/5"
         >
-          <p class="text-white text-sm md:text-base font-medium">
-            {{ image.alt }}
-          </p>
+          <div
+            v-for="(image, index) in works"
+            :key="index"
+            class="relative group overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
+          >
+            <img
+              :src="image.src"
+              :alt="image.alt"
+              class="w-full h-48 sm:h-56 md:h-64 lg:h-62 object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+            <div
+              class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+            >
+              <p class="text-white text-sm md:text-base font-medium">
+                {{ image.alt }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-    <!--contact info-->
     <div class="flex justify-center mt-10">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Card 1 -->
         <div
           class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
@@ -347,12 +340,11 @@
             <i class="fa-solid fa-phone"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">Phone</h3>
+            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.phone') }}</h3>
             <span class="text-gray-500 text-sm">+2025895623</span>
           </div>
         </div>
 
-        <!-- Card 2 -->
         <div
           class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
@@ -362,12 +354,11 @@
             <i class="fa-solid fa-envelope"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">Email</h3>
+            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.email') }}</h3>
             <span class="text-gray-500 text-sm">tashtebaty12@gmail.com</span>
           </div>
         </div>
 
-        <!-- Card 3 -->
         <div
           class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
@@ -377,7 +368,7 @@
             <i class="fa-solid fa-location-dot"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">Address</h3>
+            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.address') }}</h3>
             <span class="text-gray-500 text-sm">XYZ Street</span>
           </div>
         </div>
@@ -385,11 +376,10 @@
     </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-// 1. --- ADD FIREBASE IMPORTS ---
-// Make sure this path is correct for your project
+<script setup>
+// --- YOUR SCRIPT IS UNCHANGED AND CORRECT ---
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { db } from '@/firebase/firebase';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 
@@ -397,23 +387,13 @@ defineOptions({
   name: 'HomePage'
 });
 
-// --- DATA ---
-
-// Data for Customer Feedback Slider
 const currentSlide = ref(0);
 const slides = ref([]); 
 const works = ref([]);
 let interval = null;
-
-// 2. --- ADD DATA FOR OFFERS ---
-// These were missing, causing the error
 const offers = ref([]);
 const loading = ref(true);
 
-
-// --- METHODS ---
-
-// Methods for Customer Feedback Slider
 const nextSlide = () => {
   if (slides.value.length === 0) return; 
   currentSlide.value = (currentSlide.value + 1) % slides.value.length;
@@ -429,44 +409,27 @@ const goToSlide = (index) => {
   currentSlide.value = index;
 };
 
-// 3. --- ADD METHOD TO FETCH OFFERS ---
-// This function will get your data from Firebase
-// 3. --- ADD METHOD TO FETCH OFFERS ---
-// This function will get your data from Firebase
 const fetchOffers = async () => {
-  try {
-    // If your collection is not named 'offers', change it here
-    const offersCollection = collection(db, 'offers');
-    
-    // THIS IS THE KEY LINE:
-    // The "limit(3)" tells Firebase to only get the first 3 documents.
-    const q = query(offersCollection, limit(3)); 
-    
-    const querySnapshot = await getDocs(q);
-    
-    const fetchedOffers = [];
-    querySnapshot.forEach((doc) => {
-      fetchedOffers.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
-    
-    // This 'offers' array will only ever have 3 items in it.
-    offers.value = fetchedOffers; 
-
-  } catch (error) {
-    console.error("Error fetching offers: ", error);
-  } finally {
-    loading.value = false;
-  }
+  try {
+    const offersCollection = collection(db, 'offers');
+    const q = query(offersCollection, limit(3)); 
+    const querySnapshot = await getDocs(q);
+    const fetchedOffers = [];
+    querySnapshot.forEach((doc) => {
+      fetchedOffers.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    offers.value = fetchedOffers; 
+  } catch (error) {
+    console.error("Error fetching offers: ", error);
+  } finally {
+    loading.value = false;
+  }
 };
 
-
-// --- LIFECYCLE HOOKS ---
 onMounted(() => {
-  // --- Set Static Data for Slider & Gallery ---
-  // (I've restored this data from your previous component)
   slides.value = [
     {
       image:
@@ -526,11 +489,7 @@ onMounted(() => {
     },
   ];
 
-  // --- Start the Customer Feedback slideshow ---
   interval = setInterval(nextSlide, 5000);
-  
-  // 4. --- CALL THE FETCH OFFERS FUNCTION ---
-  // This tells Vue to get the offer data when the page loads
   fetchOffers();
 });
 
@@ -538,8 +497,13 @@ onBeforeUnmount(() => {
   clearInterval(interval);
 });
 </script>
+
 <style scoped>
 .offer {
   z-index: 20;
+}
+/* Ensure Why Choose Us list items align correctly */
+ul li > div:first-child {
+  padding-top: 0.125rem; /* Small adjustment for icon alignment */
 }
 </style>

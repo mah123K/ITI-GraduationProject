@@ -1,0 +1,82 @@
+{
+  "navbar": {
+    "home": "Home",
+    "services": "Services",
+    "plumbing": "Plumbing",
+    "electrical": "Electrical",
+    "finishing": "Finishing",
+    "carpentry": "Carpentry",
+    "offers": "Offers",
+    "about": "About",
+    "contact": "Contact Us",
+    "hello": "Hello, {name}",
+    "manageProfile": "Manage your Profile",
+    "switchAccount": "Switch Account",
+    "logout": "Log out",
+    "signup": "Sign Up",
+    "login": "Login",
+    "myOrders": "My Orders",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications yet",
+    "myOrdersTitle": "My Orders"
+  },
+  "footer": {
+    "description": "Tashtebaty exists to simplify home maintenance for every household in Egypt by connecting users with skilled, verified technicians.",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "contactUs": "Contact Us",
+    "links": {
+      "about": "About us",
+      "contact": "Contact",
+      "services": "Services",
+      "offers": "Offers",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "cookie": "Cookie policy"
+    }
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "prompt": "Enter your email to get a reset link.",
+    "emailPlaceholder": "Enter your email",
+    "button": "Send Reset Link",
+    "backToLogin": "Back to Login"
+  },
+  "home": {
+    "services": {
+      "title": "Our Services",
+      "plumbing": "Plumbing",
+      "finishing": "Finishing",
+      "electrical": "Electrical",
+      "carpentry": "Carpentry"
+    },
+    "offers": {
+      "title": "Exclusive Offers",
+      "seeMore": "see more",
+      "loading": "Loading offers...",
+      "claim": "Claim offer",
+      "noOffers": "No offers available at the moment."
+    },
+    "whyUs": {
+      "title": "Why Choose US?",
+      "point1": "We serve over 60,000 happy customers and they continue to order regularly.",
+      "point2": "Flexible prices, choose the price suitable for you and negotiate.",
+      "point3": "All workers and technicians are contracted with us and all their data is fully available.",
+      "point4": "Continuous follow-up during and until the completion of the order implementation."
+    },
+    "feedback": {
+      "title": "Our Customers Feedback",
+      "name": "Customer Name"
+    },
+    "gallery": {
+      "title": "Our Work Gallery",
+      "description": "Take a look at some of our completed projects — from home repairs to full renovations. Every project is handled with care, precision, and quality."
+    },
+    "contactInfo": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
+    }
+  }
+
+}
