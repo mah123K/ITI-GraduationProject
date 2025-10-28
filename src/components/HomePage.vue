@@ -7,8 +7,8 @@
         class="h-screen w-full"
       />
     </section>
-
-    <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
+    <!--cards-->
+    <h2 class="text-center main-header">Our Services</h2>
     <div class="flex justify-center">
       <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
         <div
