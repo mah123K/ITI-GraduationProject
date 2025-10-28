@@ -29,21 +29,18 @@ onMounted(async () => {
   if (user) {
     technicianId.value = user.uid;
 
-    // load technician info
     const docRef = doc(db, "technicians", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       technician.value = docSnap.data();
     }
 
-    // listen for live orders for total earnings
     const ordersRef = collection(db, "orders");
     const q = query(ordersRef, where("technicianId", "==", user.uid));
     onSnapshot(q, (snapshot) => {
       orders.value = snapshot.docs.map((d) => d.data());
     });
 
-    // 🔒 منع الرجوع لصفحة اللوجين بعد الدخول
     window.history.pushState(null, "", window.location.href);
     window.addEventListener("popstate", () => {
       window.history.pushState(null, "", window.location.href);
@@ -64,86 +61,92 @@ const handleLogout = async () => {
 
 <template>
   <div
-    class="fixed left-0 top-0 h-full w-[20%] bg-[#133B5D] text-white flex flex-col items-center py-6 justify-between"
+    class="fixed left-0 top-0 h-full w-[20%] bg-[#133B5D] text-white flex flex-col items-center py-4 justify-between"
   >
     <div class="flex flex-col items-center w-full">
       <img
         src="../images/white logo.png"
-        alt=""
-        class="w-[200px] mb-6"
+        alt="logo"
+        class="w-[180px] mb-4"
       />
 
-      <div class="flex flex-col items-center mb-6">
+      <div class="flex flex-col items-center mb-5">
         <img
           :src="technician.image || '/images/default-tech.png'"
           alt=""
-          class="w-[100px] h-[100px] rounded-full border-4 border-white shadow-md mb-3 object-cover"
+          class="w-[90px] h-[90px] rounded-full border-4 border-white shadow-md mb-2 object-cover"
         />
-        <p class="text-lg font-semibold">{{ technician.name || 'Technician' }}</p>
+        <p class="text-base font-semibold">{{ technician.name || 'Technician' }}</p>
 
-        <div class="mt-3 text-center">
+        <div class="mt-2 text-center">
           <p class="text-sm opacity-80 font-medium">My Earnings:</p>
-<p class="text-xl font-bold">{{ totalEarnings?.toLocaleString?.() || 0 }} EGP</p>
+          <p class="text-lg font-bold">{{ totalEarnings?.toLocaleString?.() || 0 }} EGP</p>
         </div>
       </div>
 
-      <nav class="flex flex-col w-full mt-2 space-y-2">
+      <nav class="flex flex-col w-full mt-2 space-y-1">
         <button
           @click="emit('changeTab', 'orders')"
-          :class="[props.active === 'orders' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'orders' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          📋 Orders
+          <i class="fa-solid fa-clipboard-list text-white text-lg"></i>
+          Orders
         </button>
 
         <button
           @click="emit('changeTab', 'appointments')"
-          :class="[props.active === 'appointments' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'appointments' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          🗓 Appointments
+          <i class="fa-solid fa-calendar-days text-white text-lg"></i>
+          Appointments
         </button>
 
         <button
           @click="emit('changeTab', 'services')"
-          :class="[props.active === 'services' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'services' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          🧰 My Services
+          <i class="fa-solid fa-screwdriver-wrench text-white text-lg"></i>
+          My Services
         </button>
 
         <button
           @click="emit('changeTab', 'earnings')"
-          :class="[props.active === 'earnings' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'earnings' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          💰 My Earnings
+          <i class="fa-solid fa-coins text-white text-lg"></i>
+          My Earnings
         </button>
 
         <button
           @click="emit('changeTab', 'Techsettings')"
-          :class="[props.active === 'Techsettings' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'Techsettings' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          ⚙️ Settings
+          <i class="fa-solid fa-gear text-white text-lg"></i>
+          Settings
         </button>
 
         <button
           @click="emit('changeTab', 'chat')"
-          :class="[props.active === 'chat' ? 'bg-[#1b5383] text-white' : 'text-gray-300 hover:bg-[#1b5383]/60']"
-          class="cursor-pointer flex items-center justify-center gap-2 py-3 text-lg font-semibold rounded-xl w-[90%] mx-auto transition"
+          :class="[props.active === 'chat' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
         >
-          <i class="fa-solid fa-comments text-xl"></i>
+          <i class="fa-solid fa-comments text-white text-lg"></i>
           Chat
         </button>
       </nav>
     </div>
 
-    <div class="w-full flex flex-col items-center space-y-4 mt-6 sticky bottom-6">
+    <div class="w-full flex flex-col items-center mt-4 mb-2">
       <button
         @click="handleLogout"
-        class="cursor-pointer bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-xl w-[80%] transition shadow-md"
+        class="cursor-pointer border hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-xl w-[88%] transition shadow-md text-[16px] flex items-center justify-center gap-2"
       >
+        <i class="fa-solid fa-right-from-bracket text-white text-lg"></i>
         Log Out
       </button>
     </div>
