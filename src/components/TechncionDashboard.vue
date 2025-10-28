@@ -298,85 +298,96 @@ const completedCount = computed(() =>
   orders.value.filter((o) => o.status === "completed").length
 );
 
-// 🟩 Total earnings
-const totalEarnings = computed(() =>
-  orders.value.reduce((sum, o) => {
-    const val = parseFloat(o.price);
-    return sum + (isNaN(val) ? 0 : val);
-  }, 0)
-);
+// 🔹 Calculate total and monthly earnings dynamically
+const totalEarnings = computed(() => {
+  return orders.value
+    .filter((o) => o.status === "completed")
+    .reduce((sum, o) => sum + (parseFloat(o.price) || 0), 0);
+});
+
+// 🔹 Earnings grouped by month (for chart)
+const monthlyEarnings = computed(() => {
+  const monthly = Array(12).fill(0); // Jan–Dec
+  orders.value.forEach((order) => {
+    if (order.status === "completed" && order.date) {
+      const dateObj = new Date(order.date);
+      const monthIndex = dateObj.getMonth();
+      monthly[monthIndex] += parseFloat(order.price) || 0;
+    }
+  });
+  return monthly;
+});
+
+const earningsGrowth = computed(() => {
+  const m = monthlyEarnings.value;
+  const activeMonths = m
+    .map((v, i) => ({ value: v, month: i }))
+    .filter((x) => x.value > 0);
+
+  if (activeMonths.length === 0) return 0; 
+  if (activeMonths.length === 1) return "first"; 
+
+  const last = activeMonths[activeMonths.length - 1].value;
+  const prev = activeMonths[activeMonths.length - 2].value;
+
+  if (prev === 0) return 100;
+  const growth = ((last - prev) / prev) * 100;
+  return parseFloat(growth.toFixed(1));
+});
 
 // 🟩 Chart
 let chartInstance = null;
-
 watch(
-  mainTab,
-  async (newTab) => {
-    if (newTab !== "earnings") return;
+  [mainTab, monthlyEarnings],
+  ([newTab], [_, oldMonthly]) => {
+    if (newTab === "earnings") {
+      nextTick(() => {
+        const ctx = document.getElementById("earningsChart");
+        if (!ctx) return;
 
-    await nextTick();
+        const data = monthlyEarnings.value;
+        const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    const ctx = document.getElementById("earningsChart");
-    if (!ctx) return;
-    if (chartInstance) chartInstance.destroy();
-
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    const labels = orders.value.map((o) => {
-      if (!o.date) return "N/A";
-      try {
-        let parsedDate;
-        if (o.date?.seconds) parsedDate = new Date(o.date.seconds * 1000);
-        else parsedDate = new Date(o.date);
-        if (!isNaN(parsedDate)) return monthNames[parsedDate.getMonth()];
-        return "N/A";
-      } catch {
-        return "N/A";
-      }
-    });
-
-    const dataValues = orders.value.map((o) => parseFloat(o.price) || 0);
-
-    const validLabels = labels.filter((l) => l !== "N/A");
-    const finalLabels = validLabels.length ? validLabels : ["No Data"];
-
-    chartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: finalLabels.slice(-6),
-        datasets: [
-          {
-            label: "Earnings (EGP)",
-            data: dataValues.slice(-6),
-            backgroundColor: "rgba(19,59,93,0.2)",
-            borderColor: "#133B5D",
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: "#1b5383",
-            pointRadius: 5,
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Earnings (EGP)",
+                data,
+                backgroundColor: "rgba(19, 59, 93, 0.2)",
+                borderColor: "#133B5D",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "#1b5383",
+                pointRadius: 5,
+              },
+            ],
           },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: "#133B5D",
-            titleColor: "#fff",
-            bodyColor: "#fff",
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "#133B5D",
+                titleColor: "#fff",
+                bodyColor: "#fff",
+              },
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { color: "#e0e0e0" }, ticks: { color: "#133B5D" } },
+              x: { grid: { display: false }, ticks: { color: "#133B5D" } },
+            },
           },
-        },
-        scales: {
-          y: { beginAtZero: true },
-          x: { grid: { display: false } },
-        },
-      },
-    });
+        });
+      });
+    }
   },
-  { immediate: false }
+  { immediate: true }
 );
 </script>
 
@@ -579,15 +590,37 @@ watch(
       <template v-else-if="mainTab === 'earnings'">
         <div class="earningsSection">
           <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2">My Earnings</h2>
-          <div class="bg-gradient-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center">
+          <div class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center">
              <div>
               <p class="text-lg opacity-90">Total Earnings</p>
-<h1 class="text-5xl font-bold mt-2">{{ totalEarnings.toLocaleString() }} EGP</h1>
+              <h1 class="text-5xl font-bold mt-2"> {{ totalEarnings }} EGP</h1>
               <p class="text-sm text-gray-200 mt-2">Updated today</p>
-              <p class="text-sm mt-1 text-green-300 font-medium flex items-center">
-                <img src="../images/increase.png" class="w-5 h-5 mr-1" alt="" />
-                12% this month
-              </p>
+                       <p
+  class="text-sm mt-1 font-medium flex items-center"
+  :class="{
+    'text-green-300': earningsGrowth === 'first' || earningsGrowth > 0,
+    'text-red-300': earningsGrowth < 0,
+    'text-gray-300': earningsGrowth === 0,
+  }"
+>
+  <img
+    v-if="earningsGrowth === 'first'"
+    src="../images/increase.png"
+    class="w-5 h-5 mr-1"
+    alt=""
+  />
+  <img
+    v-else
+    :src="earningsGrowth > 0 ? '../images/increase.png' : '../images/decrease.png'"
+    class="w-5 h-5 mr-1"
+    alt=""
+  />
+
+  <span v-if="earningsGrowth === 'first'">New earnings this month</span>
+  <span v-else>{{ earningsGrowth > 0 ? '+' : '' }}{{ earningsGrowth }}% this month</span>
+</p>
+
+
             </div>
           </div>
           <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
@@ -614,9 +647,23 @@ watch(
                     <td class="py-3 px-3">{{ order.descreption }}</td>
                     <td class="py-3 px-3">{{ order.customer }}</td>
                     <td class="py-3 px-3 text-right">
-                      <span class="px-2 py-1 rounded text-xs bg-green-100 text-green-700 font-semibold">
-                        {{ order.price }} EGP
-                      </span>
+                      <div class="flex flex-col items-end">
+                        <span
+                           class="px-2 py-1 rounded text-xs font-semibold mb-1"
+                            :class="{
+                          'bg-green-100 text-green-700': order.status === 'completed',
+                          'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                          'bg-gray-100 text-gray-700': order.status === 'in-progress',
+                          'bg-red-100 text-red-700': order.status === 'cancelled',
+                  }"
+  >
+          {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+              </span>
+              <span class="text-sm text-[#133B5D] font-medium">
+              {{ order.price }} EGP
+            </span>
+                </div>
+
                     </td>
                   </tr>
                   <tr v-if="!orders.length">
@@ -627,7 +674,7 @@ watch(
             </div>
           </div>
         </div>
-      </template>
+      </template>
 
       <template v-else-if="mainTab === 'appointments'">
         <div v-if="!technicianId" class="text-center text-gray-500 mt-10 p-6 bg-white rounded-lg shadow">
