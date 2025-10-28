@@ -287,12 +287,13 @@ const closePopup = () => {
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
     if (orderTab.value === "requests") return o.status === "new";
-    if (orderTab.value === "unconfirmed") return o.status === "unconfirmed";
-    if (orderTab.value === "upcoming") return o.status === "upcoming";
+    if (orderTab.value === "upcoming") 
+      return o.status === "unconfirmed" || o.status === "upcoming";
     if (orderTab.value === "completed") return o.status === "completed";
     return false;
   })
 );
+
 
 const completedCount = computed(() =>
   orders.value.filter((o) => o.status === "completed").length

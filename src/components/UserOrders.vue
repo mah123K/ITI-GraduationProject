@@ -121,21 +121,29 @@ onMounted(() => {
 
 // 💳 الانتقال للدفع
 const goToPayment = async (order) => {
-  const response = await fetch("http://localhost:5000/pay", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      amount: order.price,
-      orderId: order.id,
-    }),
-  });
+  try {
+    const response = await fetch("http://localhost:5000/pay", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: order.price,
+        orderId: order.id,
+      }),
+    });
 
-  const data = await response.json();
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    alert("Payment failed. Please try again.");
+    const data = await response.json();
+    if (data.url) {
+      // ✅ Store this order ID temporarily
+      localStorage.setItem("lastPaidOrder", order.id);
+      window.location.href = data.url;
+    } else {
+      alert("Payment failed. Please try again.");
+    }
+  } catch (err) {
+    console.error("Payment error:", err);
+    alert("Payment request failed.");
   }
 };
+
 
 </script>
