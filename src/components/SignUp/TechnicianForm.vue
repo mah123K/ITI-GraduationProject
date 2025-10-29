@@ -2,122 +2,164 @@
   <div
     class="bg-white shadow-2xl rounded-3xl p-8 pt-4 w-[1200px] min-h-[500px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
   >
-    <h2 class="text-3xl font-bold mb-3 text-center text-accent-color">
-      {{ $t('signUpPage.technician.title') }}
-    </h2>
+    <h2 class="text-3xl font-bold mb-3 text-center text-accent-color">Technician Registration</h2>
 
-   <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full rtl:flex-row-reverse">
-      <div class="flex flex-col items-start ml-40 rtl:ml-50 rtl:mr-40">
-        <label class="font-semibold mb-2">{{ $t('signUpPage.technician.idCard') }}</label>
+    <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full">
+      <!-- ID Card -->
+      <div class="flex flex-col items-start ml-40">
+        <label class="font-semibold mb-2">ID Card</label>
         <div
           @click.stop="$refs.idCardInput.click()"
           class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
         >
-          </div>
-        <input ref="idCardInput" type="file" @change="previewIDImage" class="hidden" />
+          <img
+            v-if="idCardPreview"
+            :src="idCardPreview"
+            alt="ID Preview"
+            class="w-full h-full object-cover"
+          />
+          <template v-else>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 512" class="w-[60px] h-[60px]">
+              <path
+                fill="#5984c6"
+                d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64L0 96zm0 48l576 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144zM247.3 416c20.2 0 35.3-19.4 22.4-35-14.7-17.7-36.9-29-61.7-29l-64 0c-24.8 0-47 11.3-61.7 29-12.9 15.6 2.2 35 22.4 35l142.5 0zM176 312a56 56 0 1 0 0-112 56 56 0 1 0 0 112zM360 208c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0z"
+              />
+            </svg>
+          </template>
+        </div>
+        <input ref="idCardInput" type="file" @change="previewIdCard" class="hidden" />
+        <p v-if="errors.idCardImage" class="text-red-500 text-sm mt-1">
+          {{ errors.idCardImage }}
+        </p>
       </div>
 
-      <div class="flex flex-col items-end mr-40 rtl:mr-50 rtl:ml-40">
-        <label class="font-semibold mb-2">{{ $t('signUpPage.technician.profilePic') }}</label>
+      <!-- Profile Picture -->
+      <div class="flex flex-col items-end mr-40">
+        <label class="font-semibold mb-2">Profile Picture</label>
         <div
           @click.stop="$refs.profileInput.click()"
           class="w-32 h-32 rounded-full shadow-lg bg-[#f5f5f5] overflow-hidden flex items-center justify-center cursor-pointer hover:border-accent-color relative"
         >
-          </div>
-        <input ref="profileInput" type="file" @change="previewTechProfile" class="hidden" />
+          <img
+            v-if="profilePreview"
+            :src="profilePreview"
+            alt="Profile Preview"
+            class="w-full h-full object-cover"
+          />
+          <template v-else>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[60px] h-[60px]">
+              <path
+                fill="#5984c6"
+                d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"
+              />
+            </svg>
+          </template>
+        </div>
+        <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
       </div>
     </div>
 
+    <!-- Form -->
     <div class="max-w-6xl mx-auto w-full space-y-6">
+      <!-- Name & Email -->
       <div class="grid grid-cols-2 gap-8">
         <div>
           <input
             v-model="form.name"
             type="text"
-            :placeholder="$t('signUpPage.technician.fullName')"
+            placeholder="Full Name *"
             required
             :class="inputClass(errors.name)"
             @input="clearError('name')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.name" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.name }}</p>
+          <p v-if="errors.name" class="text-red-500 text-sm mt-1">
+            {{ errors.name }}
+          </p>
         </div>
+
         <div>
           <input
             v-model="form.email"
             type="email"
-            :placeholder="$t('signUpPage.technician.email')"
+            placeholder="Email *"
             required
             :class="inputClass(errors.email)"
             @input="clearError('email')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.email" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.email }}</p>
+          <p v-if="errors.email" class="text-red-500 text-sm mt-1">
+            {{ errors.email }}
+          </p>
         </div>
       </div>
 
+      <!-- Password & Confirm Password -->
       <div class="grid grid-cols-2 gap-8">
         <div class="relative">
           <input
             v-model="form.password"
             :type="showPassword ? 'text' : 'password'"
-            :placeholder="$t('signUpPage.technician.password')"
+            placeholder="Password *"
             required
             minlength="6"
             @input="validatePasswordLive"
             :class="inputClass(errors.password, true)"
-            class="rtl:text-right"
           />
           <button
             type="button"
             @click="togglePassword"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none rtl:right-auto rtl:left-3"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
             aria-label="Toggle password visibility"
           >
             <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
           </button>
-          <p v-if="errors.password" class="absolute text-red-500 text-sm mt-1 left-0 -bottom-5 rtl:text-right">
+          <p v-if="errors.password" class="absolute text-red-500 text-sm mt-1 left-0 -bottom-5">
             {{ errors.password }}
           </p>
         </div>
+
         <div class="relative">
           <input
             v-model="form.confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
-            :placeholder="$t('signUpPage.technician.confirmPassword')"
+            placeholder="Confirm Password *"
             required
             minlength="6"
             @input="validatePasswordLive"
             :class="inputClass(errors.confirmPassword, true)"
-            class="rtl:text-right"
           />
           <button
             type="button"
             @click="toggleConfirmPassword"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none rtl:right-auto rtl:left-3"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
             aria-label="Toggle confirm password visibility"
           >
             <i :class="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
           </button>
-          <p v-if="errors.confirmPassword" class="absolute text-red-500 text-sm mt-1 left-0 -bottom-5 rtl:text-right">
+          <p
+            v-if="errors.confirmPassword"
+            class="absolute text-red-500 text-sm mt-1 left-0 -bottom-5"
+          >
             {{ errors.confirmPassword }}
           </p>
         </div>
       </div>
 
+      <!-- Phone & Country -->
       <div class="grid grid-cols-2 gap-8">
         <div>
           <input
             v-model="form.phone"
             type="tel"
-            :placeholder="$t('signUpPage.technician.phone')"
+            placeholder="Phone Number *"
             required
             :class="inputClass(errors.phone)"
             @input="clearError('phone')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.phone" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.phone }}</p>
+          <p v-if="errors.phone" class="text-red-500 text-sm mt-1">
+            {{ errors.phone }}
+          </p>
         </div>
+
         <div>
           <input
             v-model="form.address.country"
@@ -126,63 +168,74 @@
             required
             :class="inputClass(errors.country)"
             @input="clearError('country')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.country" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.country }}</p>
+          <p v-if="errors.country" class="text-red-500 text-sm mt-1">
+            {{ errors.country }}
+          </p>
         </div>
       </div>
 
+      <!-- Address -->
       <div class="grid grid-cols-2 gap-8">
         <div>
           <input
             v-model="form.address.street"
             type="text"
-            :placeholder="$t('signUpPage.technician.address')"
+            placeholder="Street Address *"
             required
             :class="inputClass(errors.street)"
             @input="clearError('street')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.street" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.street }}</p>
+          <p v-if="errors.street" class="text-red-500 text-sm mt-1">
+            {{ errors.street }}
+          </p>
         </div>
         <div>
           <input
             v-model="form.address.city"
             type="text"
-            :placeholder="$t('signUpPage.technician.workArea')"
+            placeholder="City *"
             required
             :class="inputClass(errors.city)"
             @input="clearError('city')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.city" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.city }}</p>
+          <p v-if="errors.city" class="text-red-500 text-sm mt-1">
+            {{ errors.city }}
+          </p>
         </div>
       </div>
-
+      <!-- Technician Fields -->
       <div class="grid grid-cols-2 gap-8">
         <div>
-          <input
-            v-model="form.workType"
-            type="text"
-            :placeholder="$t('signUpPage.technician.skill')"
+          <select
+            v-model="form.skill"
             required
-            :class="inputClass(errors.workType)"
-            @input="clearError('workType')"
-            class="rtl:text-right"
-          />
-          <p v-if="errors.workType" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.workType }}</p>
+            :class="inputClass(errors.skill)"
+            @change="clearError('skill')"
+          >
+            <option value="" disabled>Select Work Type *</option>
+            <option value="Plumbing">🔧 Plumbing</option>
+            <option value="Electrical">⚡ Electrical</option>
+            <option value="Carpentry">🔨 Carpentry</option>
+            <option value="Finishing">🛠️ Finishing</option>
+          </select>
+          <p v-if="errors.skill" class="text-red-500 text-sm mt-1">
+            {{ errors.skill }}
+          </p>
         </div>
+
         <div>
           <input
             v-model="form.experience"
-            type="number"
-            :placeholder="$t('signUpPage.technician.experience')"
+            type="text"
+            placeholder="Years of Experience *"
             required
             :class="inputClass(errors.experience)"
             @input="clearError('experience')"
-            class="rtl:text-right"
           />
-          <p v-if="errors.experience" class="text-red-500 text-sm mt-1 rtl:text-right">{{ errors.experience }}</p>
+          <p v-if="errors.experience" class="text-red-500 text-sm mt-1">
+            {{ errors.experience }}
+          </p>
         </div>
       </div>
 
@@ -190,34 +243,36 @@
         <textarea
           v-model="form.bio"
           rows="3"
-          :placeholder="$t('signUpPage.technician.bio')"
-          class="w-full p-4 border rounded-xl border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none resize-none rtl:text-right"
+          placeholder="Bio (Optional)"
+          class="w-full p-4 border rounded-xl border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none resize-none"
         ></textarea>
       </div>
     </div>
 
     <button
       @click="submit"
-      class="mt-10 mx-auto bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer"
+      :disabled="isSubmitting"
+      :class="[
+        'mt-10 mx-auto text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer',
+        isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent-color',
+      ]"
     >
-      {{ $t('signUpPage.signUpButton') }}
+      <span v-if="!isSubmitting">Sign Up</span>
+      <span v-else>Submitting...</span>
+      <!-- ✅ added -->
     </button>
 
     <p class="text-center mt-4 text-gray-500">
-      {{ $t('signUpPage.promptLogin') }}
-      <a
-        :href="loginRoute"
-        class="text-accent-color font-semibold hover:underline"
-      >
-        {{ $t('signUpPage.loginLink') }}
-      </a>
+      Already have an account?
+      <a :href="loginRoute" class="text-accent-color font-semibold hover:underline"> Login here </a>
     </p>
   </div>
 </template>
 
 <script>
+import { uploadImageOnly } from "@/composables/useImageUpload"; // ✅ استدعاء الفنكشن من الملف الخارجي
+
 export default {
-  // ... (props, data, methods.inputClass, toggles remain the same) ...
   props: {
     loginRoute: { type: String, required: true },
   },
@@ -225,139 +280,205 @@ export default {
     return {
       showPassword: false,
       showConfirmPassword: false,
-      profileTechPreview: null,
-      idCardPreview: null, // Added this
+      profilePreview: null,
+      idCardPreview: null,
+      isSubmitting: false,
       errors: {},
       form: {
         name: "",
         email: "",
+        phone: "",
         password: "",
         confirmPassword: "",
-        phone: "",
         address: {
           street: "",
           city: "",
           country: "Egypt",
         },
-        workType: "",
-        experience: "",
+        skill: "",
         bio: "",
+        experience: "",
         profileImage: null,
-        idImage: null,
+        idCardImage: null,
       },
     };
   },
   methods: {
     inputClass(error, hasPadding = false) {
       return [
-        "w-full p-4 border rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none rtl:text-right", // Added rtl:text-right
-        hasPadding ? "pr-12 rtl:pr-4 rtl:pl-12" : "", // Added RTL padding swap
+        "w-full p-4 border rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none",
+        hasPadding ? "pr-12" : "",
         error ? "border-red-500" : "border-gray-300",
       ];
     },
-    togglePassword() { this.showPassword = !this.showPassword; },
-    toggleConfirmPassword() { this.showConfirmPassword = !this.showConfirmPassword; },
-    clearError(field) { if (this.errors[field]) this.errors[field] = ""; },
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+    toggleConfirmPassword() {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    },
+    clearError(field) {
+      if (this.errors[field]) this.errors[field] = "";
+    },
 
-    previewTechProfile(e) {
+    // ✅ رفع صورة البروفايل إلى Cloudinary
+    async previewProfile(e) {
       const file = e.target.files[0];
       if (file) {
         if (file.size > 5 * 1024 * 1024) {
-          // UPDATED
-          this.errors.profileImage = this.$t('signUpPage.alerts.imageSize');
+          this.errors.profileImage = "Image should be less than 5MB";
           return;
         }
-        this.form.profileImage = file;
-        this.profileTechPreview = URL.createObjectURL(file);
+
+        // عرض المعاينة المحلية مؤقتاً
+        this.profilePreview = URL.createObjectURL(file);
+        this.errors.profileImage = "";
+
+        try {
+          // رفع الصورة إلى Cloudinary
+          const imageUrl = await uploadImageOnly(file);
+          this.form.profileImage = imageUrl; // حفظ اللينك بدلاً من الملف
+          console.log("✅ Profile image uploaded:", imageUrl);
+        } catch (err) {
+          this.errors.profileImage = "Failed to upload image";
+          console.error(err);
+        }
       }
     },
-    previewIDImage(e) {
+
+    // ✅ رفع صورة بطاقة الهوية إلى Cloudinary
+    async previewIdCard(e) {
       const file = e.target.files[0];
       if (file) {
         if (file.size > 5 * 1024 * 1024) {
-          // UPDATED
-          this.errors.idImage = this.$t('signUpPage.alerts.imageSize');
+          this.errors.idCardImage = "ID image must be less than 5MB";
           return;
         }
-        this.form.idImage = file;
-        this.idCardPreview = URL.createObjectURL(file); // Added preview
-        this.errors.idImage = "";
+
+        this.idCardPreview = URL.createObjectURL(file);
+        this.errors.idCardImage = "";
+
+        try {
+          const imageUrl = await uploadImageOnly(file);
+          this.form.idCardImage = imageUrl;
+          console.log("✅ ID card uploaded:", imageUrl);
+        } catch (err) {
+          this.errors.idCardImage = "Failed to upload ID image";
+          console.error(err);
+        }
       }
     },
+
     validatePasswordLive() {
-      // ... (validation logic) ...
-      // UPDATED
+      this.errors.password = "";
+      this.errors.confirmPassword = "";
+      if (!this.form.password) {
+        this.errors.password = "Password is required";
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(this.form.password)) {
+        this.errors.password = "Password must include uppercase, lowercase, number, and symbol";
+      }
       if (this.form.confirmPassword && this.form.password !== this.form.confirmPassword) {
-        this.errors.confirmPassword = this.$t('signUpPage.alerts.passwordMismatch');
+        this.errors.confirmPassword = "Passwords do not match";
       }
     },
+
     validateForm() {
       const e = {};
       let valid = true;
 
-      // UPDATED all error messages to use $t
       if (!this.form.name.trim()) {
-        e.name = this.$t('signUpPage.technician.fullName') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.name = "Full name is required";
+        valid = false;
+      } else if (!/^[A-Za-z\u0600-\u06FF]+(?:\s+[A-Za-z\u0600-\u06FF]+)+$/.test(this.form.name)) {
+        e.name = "Please enter your full name (first and last)";
         valid = false;
       }
-      // ... (rest of validation) ...
+
       if (!this.form.email.trim()) {
-        e.email = this.$t('signUpPage.technician.email') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.email = "Email is required";
         valid = false;
       } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(this.form.email)) {
-        e.email = this.$t('signUpPage.alerts.invalidEmail');
+        e.email = "Enter a valid email address";
         valid = false;
       }
+
       if (!this.form.password.trim()) {
-        e.password = this.$t('signUpPage.technician.password') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.password = "Password is required";
         valid = false;
       }
-      // ...
+
       if (!this.form.confirmPassword.trim()) {
-        e.confirmPassword = this.$t('signUpPage.technician.confirmPassword') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.confirmPassword = "Confirm your password";
         valid = false;
       } else if (this.form.password !== this.form.confirmPassword) {
-        e.confirmPassword = this.$t('signUpPage.alerts.passwordMismatch');
+        e.confirmPassword = "Passwords do not match";
         valid = false;
       }
+
       if (!this.form.phone.trim()) {
-        e.phone = this.$t('signUpPage.technician.phone') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.phone = "Phone number is required";
         valid = false;
       } else if (!/^(010|011|012|015)\d{8}$/.test(this.form.phone)) {
-        e.phone = this.$t('signUpPage.alerts.phoneDigits'); // Generic
+        e.phone = "Invalid Egyptian phone format";
         valid = false;
       }
+
       if (!this.form.address.street.trim()) {
-        e.street = this.$t('signUpPage.technician.address') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.street = "Street address is required";
         valid = false;
       }
       if (!this.form.address.city.trim()) {
-        e.city = this.$t('signUpPage.technician.workArea') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.city = "City is required";
         valid = false;
       }
-      if (!this.form.workType.trim()) {
-        e.workType = this.$t('signUpPage.technician.skill') + ' ' + this.$t('signUpPage.alerts.allFields');
+      if (!this.form.address.country.trim()) {
+        e.country = "Country is required";
+        valid = false;
+      }
+
+      if (!this.form.skill.trim()) {
+        e.skill = "Work type is required";
         valid = false;
       }
       if (!this.form.experience.trim()) {
-        e.experience = this.$t('signUpPage.technician.experience') + ' ' + this.$t('signUpPage.alerts.allFields');
+        e.experience = "Experience is required";
         valid = false;
       }
-      if (!this.form.idImage) {
-        e.idImage = this.$t('signUpPage.technician.idCard') + ' ' + this.$t('signUpPage.alerts.allFields');
+      if (!this.form.idCardImage) {
+        e.idCardImage = "ID card image is required";
         valid = false;
       }
 
       this.errors = e;
       return valid;
     },
-    submit() {
-      if (this.validateForm()) this.$emit("submit", this.form);
+
+    async submit() {
+      if (this.validateForm()) {
+        this.isSubmitting = true;
+        this.$emit("submit", this.form);
+
+        setTimeout(() => {
+          this.isSubmitting = false;
+        }, 3000);
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-/* ... (styles remain the same) ... */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
