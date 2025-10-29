@@ -68,26 +68,9 @@ const feedbacks = ref([
     text: "My main breaker kept tripping...",
   },
 ]);
-import locale from "../i18n";
+
 // --- Computed Properties ---
-const technicianName = computed(() => {
-  const nameData = technician.value?.name; // Access raw name data
-  const currentLocale = locale.value || 'en'; // Get current language ('en' or 'ar')
-
-  // If nameData is an object like { en: "...", ar: "..." }
-  if (typeof nameData === 'object' && nameData !== null) {
-    // Return the name for the current locale if it exists
-    if (nameData[currentLocale]) {
-      return nameData[currentLocale];
-    }
-    // Fallback to English if the current locale isn't in the object
-    return nameData.en || ''; // Return English or empty string if 'en' is missing
-  }
-
-  // If nameData is just a string (or null/undefined), return it directly
-  // Use a simple fallback if it's missing entirely
-  return nameData || 'Technician'; // Fallback for string or missing name
-});
+const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
 const technicianLocation = computed(
   () => technician.value?.city || "Not Specified"
@@ -493,7 +476,7 @@ watch(selectedDayInfo, () => {
             :to="{ path: '/chat', query: { uid: route.params.id } }"
             class="w-full bg-accent-color text-white text-center px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer shadow-md"
           >
-            Chat with {{ technicianName }}
+            Chat with {{ technicianName.split(" ")[0] }}
           </router-link>
         </div>
       </div>

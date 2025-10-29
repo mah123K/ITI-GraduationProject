@@ -7,7 +7,7 @@
 
 <div v-else-if="user" class="bg-white rounded-2xl shadow-xl w-full h-[calc(100vh-10rem)] flex">      <!-- Sidebar (Chat list) -->
       <div class="w-64 border-r border-gray-200 flex flex-col">
-        <div class="bg-indigo-600 text-white p-4 ">
+        <div class="bg-indigo-600 text-white p-4 rounded-tl-2xl">
           <h3 class="font-semibold">Chats</h3>
         </div>
 
@@ -47,7 +47,7 @@
 
       <!-- Chat area -->
       <div class="flex-1 flex flex-col">
-        <div class="bg-indigo-600 text-white p-3.5 mr-1">
+        <div class="bg-indigo-600 text-white p-4 rounded-tr-2xl">
           <h2 class="text-lg font-bold">
             {{ selectedUser ? (selectedUser.name || selectedUser.email.split('@')[0]) : 'Select a chat' }}
           </h2>
