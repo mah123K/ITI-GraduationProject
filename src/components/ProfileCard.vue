@@ -7,7 +7,7 @@
       @mouseleave="isHovered = false"
     >
       <img
-        src="../images/plumber.png"
+        :src="profile.profileImage"
         alt="Profile photo"
         class="absolute w-full h-[70%] object-contain"
       />
@@ -51,7 +51,8 @@
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
-          {{ $t('profilesPage.ordersCompleted') }} <span class="font-semibold">{{ ordersCompleted > 0 ? ('+' + ordersCompleted) : 0 }}</span>
+          {{ $t("profilesPage.ordersCompleted") }}
+          <span class="font-semibold">{{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}</span>
         </div>
 
         <div class="flex items-center gap-1">
@@ -65,11 +66,8 @@
             class="mt-4 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition-all duration-500"
             :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
           >
-            <router-link
-              :to="`/profile/${profile.id}`"
-              class=""
-            >
-              {{ $t('profilesPage.viewProfile') }}
+            <router-link :to="`/profile/${profile.id}`" class="">
+              {{ $t("profilesPage.viewProfile") }}
             </router-link>
           </button>
 
@@ -79,13 +77,13 @@
               :class="isHovered ? 'text-white' : 'text-[#0B161B]'"
             ></i>
             <span class="text-sm" :class="isHovered ? 'text-white' : 'text-[#0B161B]'">
-              {{ profile.location }}
+              {{ profile.username }}
             </span>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div
       v-else
       @mouseenter="isHovered = true"
@@ -116,7 +114,7 @@
               <i class="fa-solid fa-star text-[#FF9529]"></i>
               <span class="font-bold">{{ profile.rating }}</span>
             </div>
-            
+
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-[#0369F0]"></i>
               <span>{{ profile.location }}</span>
@@ -125,7 +123,7 @@
           <button
             class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-[#0369F0] hover:bg-[#0B161B]"
           >
-            {{ $t('profilesPage.viewProfile') }}
+            {{ $t("profilesPage.viewProfile") }}
           </button>
         </div>
       </div>
@@ -160,7 +158,7 @@ export default {
 
       if (profileId) {
         try {
-          const userRef = doc(db, "users", profileId);
+          const userRef = doc(db, "technicians", profileId); 
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             const data = userSnap.data();
@@ -169,11 +167,11 @@ export default {
               this.memberSince = date.getFullYear();
             } else if (data.createdAt) {
               const d = new Date(data.createdAt);
-              // UPDATED: Use $t for fallback
-              this.memberSince = isNaN(d.getTime()) ? this.$t('profilesPage.fallbackNA') : d.getFullYear();
+              this.memberSince = isNaN(d.getTime())
+                ? this.$t("profilesPage.fallbackNA")
+                : d.getFullYear();
             } else {
-              // UPDATED: Use $t for fallback
-              this.memberSince = this.$t('profilesPage.fallbackNA');
+              this.memberSince = this.$t("profilesPage.fallbackNA");
             }
           }
         } catch (e) {

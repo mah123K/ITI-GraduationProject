@@ -72,7 +72,7 @@ const handleLogout = async () => {
 
       <div class="flex flex-col items-center mb-5">
         <img
-          :src="technician.image || '/images/default-tech.png'"
+          :src="technician.profileImage || '/images/default-tech.png'"
           alt=""
           class="w-[90px] h-[90px] rounded-full border-4 border-white shadow-md mb-2 object-cover"
         />
