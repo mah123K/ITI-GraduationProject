@@ -69,7 +69,7 @@
     <transition name="fade">
       <div
         v-if="showPopup"
-        class="fixed inset-0 bg-[#00000079] flex items-center justify-center z-50"
+        class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50"
       >
         <div
           class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center"
@@ -114,8 +114,7 @@
 import { ref, onMounted } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "@/firebase/firebase";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { useI18n } from "vue-i18n"; // *** 1. Import useI18n ***
+import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/firestore";
 
 const orders = ref([]);
 const loading = ref(true);
@@ -148,8 +147,14 @@ const cancelPayment = () => {
 // 🟦 Confirm & redirect to Paymob
 const confirmPayment = async () => {
   if (!selectedOrder.value) return;
+
   try {
     // *** 4. Use helper function when sending data to backend ***
+    // 🟩 أولًا: حدث الحالة في Firestore إلى "upcoming"
+    const orderRef = doc(db, "orders", selectedOrder.value.id);
+    await updateDoc(orderRef, { status: "upcoming" });
+
+    // 🟦 ثانيًا: كمل العملية عادي بالربط مع السيرفر / باي موب
     const response = await fetch("http://localhost:5000/pay", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -163,18 +168,19 @@ const confirmPayment = async () => {
 
     const data = await response.json();
     if (data.url) {
-      window.location.href = data.url; // redirect to Paymob
+      window.location.href = data.url; // 🚀 يروح على صفحة الدفع
     } else {
       alert("Payment request failed.");
       console.error("❌ Payment response:", data);
     }
   } catch (err) {
-    console.error("❌ Payment connection error:", err);
-    alert("Error connecting to payment server.");
+    console.error("❌ Error updating order or connecting to payment:", err);
+    alert("Error while preparing payment.");
   }
 };
 
-// 🟨 Status badge colors (unchanged)
+
+// 🟨 Status badge colors
 const statusColor = (status) => {
   switch (status) {
     case "unconfirmed":
