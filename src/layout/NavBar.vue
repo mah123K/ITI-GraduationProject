@@ -79,10 +79,10 @@
             <i class="fa-solid fa-globe"></i>
           </button>
 
-         <button @click="toggleDarkMode" class="cursor-pointer">
-          <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-          <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
-        </button>
+          <button @click="toggleDarkMode" class="cursor-pointer">
+            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
+          </button>
         </div>
 
         <div v-if="loadingUser" class="flex items-center gap-x-3 animate-pulse">
@@ -244,16 +244,16 @@ export default {
       this.$router.push("/login");
     },
    toggleDarkMode() {
-  this.isDark = !this.isDark; // This line should update the icon
-  const root = document.documentElement;
-  if (this.isDark) {
-    root.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    root.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
-  }
-},
+      this.isDark = !this.isDark;
+      const root = document.documentElement;
+      if (this.isDark) {
+        root.classList.add('dark');
+        localStorage.setItem('theme', 'dark'); // Save theme
+      } else {
+        root.classList.remove('dark');
+        localStorage.setItem('theme', 'light'); // Save theme
+      }
+    },
 
     toggleLanguage() {
       // 'this.$i18n' is now available everywhere
@@ -286,17 +286,15 @@ export default {
 
   mounted() {
 
-  const savedTheme = localStorage.getItem('theme');
-  const root = document.documentElement;
-  if (savedTheme === 'dark') {
-    this.isDark = true; // Sets initial icon state
-    root.classList.add('dark');
-  } else {
-    this.isDark = false; // Sets initial icon state
-    root.classList.remove('dark');
-  }
- 
-
+    const savedTheme = localStorage.getItem('theme');
+    const root = document.documentElement;
+    if (savedTheme === 'dark') {
+      this.isDark = true;
+      root.classList.add('dark');
+    } else {
+      this.isDark = false;
+      root.classList.remove('dark');
+    }
 
     // 2. Load saved language
     // const savedLang = localStorage.getItem('lang') || 'en';
