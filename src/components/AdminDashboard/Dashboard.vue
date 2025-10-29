@@ -136,14 +136,29 @@ export default {
       companyChange.value = -2;
       craftsmenChange.value = 3;
 
-      // Monthly Revenue Calculation
+      // Monthly Revenue Calculation (derive from `payments` collection)
+      const paymentsSnapshot = await getDocs(collection(db, 'payments'));
       const revenueByMonth = Array(12).fill(0); // 12 months
-      ordersSnapshot.forEach(doc => {
-        const data = doc.data();
-        const price = parseFloat(data.price);
+      paymentsSnapshot.forEach((docItem) => {
+        const data = docItem.data();
+        // support fields: amount, price
+        const price = parseFloat(data.amount ?? data.price ?? 0);
         if (!isNaN(price)) {
-          const date = data.appointmentDate ? new Date(data.appointmentDate.seconds * 1000) : new Date();
-          revenueByMonth[date.getMonth()] += price;
+          let dateObj;
+          // Firestore Timestamp
+          if (data.date && data.date.seconds) {
+            dateObj = new Date(data.date.seconds * 1000);
+          } else if (data.date) {
+            // try parsing string date
+            dateObj = new Date(data.date);
+            if (isNaN(dateObj.getTime())) dateObj = new Date();
+          } else if (data.createdAt && data.createdAt.seconds) {
+            dateObj = new Date(data.createdAt.seconds * 1000);
+          } else {
+            dateObj = new Date();
+          }
+
+          revenueByMonth[dateObj.getMonth()] += price;
         }
       });
       monthlyRevenue.value = revenueByMonth;
