@@ -70,13 +70,13 @@
             <i class="bi bi-question-circle"></i><span>Support</span>
           </router-link>
 
-          <router-link
+          <!-- <router-link
             to="/dashboard/settings"
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/settings' }"
           >
             <i class="bi bi-gear"></i><span>Settings</span>
-          </router-link>
+          </router-link> -->
 
           
           <router-link
@@ -84,7 +84,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/addoffer' }"
           >
-            <i class="bi bi-gear"></i><span>Add Offers</span>
+              <i class="bi bi-tags"></i><span>Offers</span>
           </router-link>
         </nav>
       </div>
@@ -105,12 +105,13 @@
     <div class="flex-1 flex flex-col">
       <!-- Header -->
       <header class="flex justify-end items-center bg-white shadow-sm p-4 space-x-4 relative">
-        <div
-  @click.stop="toggleUserMenu"
-  class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer"
->
-  <i class="bi bi-person text-2xl text-gray-700 hover:text-white"></i>
-</div>
+          <div
+    @click.stop="toggleUserMenu"
+    class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer overflow-hidden"
+  >
+    <img v-if="userPhoto" :src="userPhoto" alt="profile" class="w-full h-full object-cover" />
+    <i v-else class="bi bi-person text-2xl text-gray-700 hover:text-white"></i>
+  </div>
 
 
         <!-- 🔽 Profile Dropdown -->
@@ -122,11 +123,12 @@
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
-                class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border border-gray-300"
+                class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border border-gray-300 overflow-hidden"
               >
-                <i class="bi bi-person text-2xl text-gray-500"></i>
+                <img v-if="userPhoto" :src="userPhoto" alt="profile" class="w-full h-full object-cover" />
+                <i v-else class="bi bi-person text-2xl text-gray-500"></i>
               </div>
-              <h3 class="text-gray-800 font-medium mt-2">Admin</h3>
+              <h3 class="text-gray-800 font-medium mt-2">{{ userName || 'Admin' }}</h3>
               <p class="text-gray-500 text-sm">{{ userEmail }}</p>
 
             </div>
@@ -180,7 +182,9 @@ export default {
     const password = ref('')
     const isUserMenuOpen = ref(false)
     const dropdown = ref(null)
-    const userEmail = ref('') // ✅ ده اللي هنستخدمه في عرض الإيميل الحقيقي
+  const userEmail = ref('') // ✅ ده اللي هنستخدمه في عرض الإيميل الحقيقي
+  const userName = ref('')
+  const userPhoto = ref('')
 
     const auth = getAuth()
 
@@ -189,15 +193,52 @@ export default {
       const currentUser = auth.currentUser
       if (currentUser) {
         userEmail.value = currentUser.email
+        // try to load cached name/photo from localStorage
+        userName.value = localStorage.getItem('adminName') || currentUser.displayName || ''
+        userPhoto.value = localStorage.getItem('adminPhoto') || currentUser.photoURL || ''
       }
 
       // ✅ نتابع التغييرات في تسجيل الدخول (مثلاً بعد تسجيل الدخول مباشرة)
       onAuthStateChanged(auth, (user) => {
         if (user) {
           userEmail.value = user.email
+          // refresh name/photo from Firestore if not in localStorage
+          const cachedName = localStorage.getItem('adminName')
+          const cachedPhoto = localStorage.getItem('adminPhoto')
+          if (cachedName) userName.value = cachedName
+          if (cachedPhoto) userPhoto.value = cachedPhoto
+          if (!cachedName || !cachedPhoto) {
+            // fetch from Firestore admin doc
+            (async () => {
+              try {
+                const ref = doc(db, 'admin', user.uid)
+                const snap = await getDoc(ref)
+                if (snap.exists()) {
+                  const data = snap.data()
+                  if (data.name) {
+                    userName.value = data.name
+                    localStorage.setItem('adminName', data.name)
+                  }
+                  if (data.photoURL) {
+                    userPhoto.value = data.photoURL
+                    localStorage.setItem('adminPhoto', data.photoURL)
+                  }
+                }
+              } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error('Failed to load admin profile', err)
+              }
+            })()
+          }
         } else {
           userEmail.value = ''
         }
+      })
+
+      // listen to storage changes (in case AdminProfile updates localStorage)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'adminName') userName.value = e.newValue || ''
+        if (e.key === 'adminPhoto') userPhoto.value = e.newValue || ''
       })
 
       document.addEventListener('click', handleClickOutside)
@@ -282,6 +323,8 @@ export default {
       dropdown,
       goToProfile,
       userEmail, // ✅ لازم نرجّعه عشان نستخدمه في الـ template
+      userName,
+      userPhoto,
     }
   },
 }
