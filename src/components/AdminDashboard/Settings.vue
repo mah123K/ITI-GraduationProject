@@ -116,16 +116,13 @@
 </template>
 
 <script>
-import { reactive, ref, onMounted } from 'vue';
-import { auth, db } from '@/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import { normalizeName } from '@/utils/normalize';
+import { reactive, ref } from 'vue';
 
 export default {
   setup() {
     const formData = reactive({
-      name: '',
-      email: '',
+      name: 'Admin User',
+      email: 'admin@servicehub.com',
       password: '',
       emailNotifications: true,
       autoApprove: false,
@@ -144,22 +141,6 @@ export default {
     const handleSaveProfile = () => alert('Profile changes saved!');
     const handleSavePreferences = () => alert('Preferences saved!');
     const handleUpdateCommission = () => alert('Commission rate updated!');
-
-    onMounted(async () => {
-      const user = auth.currentUser;
-      if (user) {
-        formData.email = user.email;
-        
-        const docRef = doc(db, "admin", user.uid);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          formData.name = normalizeName(data.name || user.displayName);
-        } else {
-          formData.name = normalizeName(user.displayName);
-        }
-      }
-    });
 
     return {
       formData,
