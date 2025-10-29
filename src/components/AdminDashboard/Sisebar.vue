@@ -119,7 +119,7 @@
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
-            class="absolute top-16 right-4 bg-white w-60 rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+            class="absolute top-16 right-4 rtl:right-210 rtl:top-20 bg-white w-60 rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
@@ -133,7 +133,7 @@
 
             </div>
 
-            <div class="flex flex-col py-2">
+            <div class="flex flex-col py-2 ">
             <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 transition cursor-pointer">
   <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
   <span>Profile Settings</span>
@@ -225,7 +225,7 @@ export default {
                   }
                 }
               } catch (err) {
-                // eslint-disable-next-line no-console
+                 
                 console.error('Failed to load admin profile', err)
               }
             })()
