@@ -116,7 +116,7 @@
           class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
         >
           <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1761736435/search_1_kmka0a.png"
             alt="Google"
             class="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"
           />
