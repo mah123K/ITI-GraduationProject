@@ -58,6 +58,6 @@ if (orderId) {
 
 // 🔁 Redirect to My Orders
 const goToOrders = () => {
-  router.push("/userorders");
+  router.push("/my-orders");
 };
 </script>
