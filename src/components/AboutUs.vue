@@ -19,32 +19,38 @@
       },
         currentSlide:0,
       interval: null,
-          slides: [
+      
+      // --- MODIFIED ---
+      // We now store keys instead of hardcoded text.
+      // The images remain the same.
+      slides: [
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Samir Mohamed",
-          text: "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
+          nameKey: "aboutUs.feedback.samir.name",
+          textKey: "aboutUs.feedback.samir.text"
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002635_ny2rnm.png",
-          name: "Mona Adel",
-          text: "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!"
+          nameKey: "aboutUs.feedback.mona.name",
+          textKey: "aboutUs.feedback.mona.text"
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002730_y0bkp5.png",
-          name: "Mai Tarek",
-          text: "Highly recommend Tashtebaty for reliable and quality work.",
+          nameKey: "aboutUs.feedback.mai.name",
+          textKey: "aboutUs.feedback.mai.text"
         },
         {
           image:
             "https://res.cloudinary.com/dlrgf0myy/image/upload/v1760769725/Screenshot_2025-10-08_002515_zwynbi.png",
-          name: "Khaled Nabil",
-          text: "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
+          nameKey: "aboutUs.feedback.khaled.name",
+          textKey: "aboutUs.feedback.khaled.text"
         },
       ],
+      // --- END MODIFICATION ---
+      
       }
     },
     methods: {
@@ -60,6 +66,7 @@
     },
       handleScroll() {
       const section = this.$refs.numbersSection;
+      if (!section) return; // Guard clause
       const rect = section.getBoundingClientRect();
       const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
 
@@ -95,7 +102,8 @@
     },
     },
     mounted() {
-    this.interval = setInterval(this.nextFeedback, 5000);
+    // Note: You had 'nextFeedback' here, but the method is 'nextSlide'
+    this.interval = setInterval(this.nextSlide, 5000); 
      window.addEventListener("scroll", this.handleScroll);
   },
 
@@ -119,20 +127,16 @@
     <div class="blueLayer absolute inset-0 bg-[#5984C6] opacity-70"></div>
 
     <div
-      class="textContainer absolute flex flex-col w-11/12 md:w-2/3 lg:w-1/2 mx-auto text-center md:text-left"
+      class="textContainer absolute flex flex-col w-11/12 md:w-2/3 lg:w-1/2 mx-auto text-center rtl:md:text-right"
     >
-      <h2 class="text-xl md:text-2xl font-semibold my-4">About Tashtebaty</h2>
+      <h2 class="text-xl md:text-2xl font-semibold my-4">{{ $t('aboutUs.hero.title') }}</h2>
       <h1
         class="text-2xl md:text-4xl font-semibold my-4 leading-snug md:leading-tight"
       >
-        We provide the highest quality with the best Prices in the market
+        {{ $t('aboutUs.hero.subtitle') }}
       </h1>
       <p class="text-sm md:text-base leading-relaxed">
-        A leading Egyptian platform founded in 2025 by five founders united by a
-        single goal: to simplify access to the best home maintenance and
-        professional services in Egypt. Tashtebaty was born from our belief in
-        the necessity of building a bridge of trust and professionalism between
-        our valued customers and the most skilled craftsmen and technicians.
+        {{ $t('aboutUs.hero.description') }}
       </p>
     </div>
   </div>
@@ -140,26 +144,26 @@
 
   <div class="OurSpecialFeatures flex justify-center my-10">
 <div class="lg:grid lg:grid-cols-2">
-    <div class="imagesContainer   md:flex-col items-center relative hidden lg:flex">
+    <div class="imagesContainer md:flex-col items-center relative hidden lg:flex">
       <img 
         src="../images/Rectangle 19.png" 
         alt="technician with wrench"
-        class="relative rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg  z-10"
+        class="relative rounded-[40px] w-[400px] h-[300px] object-cover shadow-lg z-10"
       />
       <img 
         src="../images/Rectangle 18.png" 
         alt="electrician working"
-        class=" object-cover w-70  shadow-lg absolute top-60 left-60 z-10"
+        class=" object-cover w-70 shadow-lg absolute top-60 left-60 rtl:left-auto rtl:right-60 z-10"
       />
     </div>
 
     <div class="textContainer lg:w-xl gap-3 flex flex-col w-96 md:w-2xl justify-center">
-      <h2 class="text-xl font-semibold my-2 ">Our special features</h2>
-      <h1 class="text-4xl font-semibold text-accent-color">We don't just fix homes, we deliver an experience.</h1>
+      <h2 class="text-xl font-semibold my-2 ">{{ $t('aboutUs.features.title') }}</h2>
+      <h1 class="text-4xl font-semibold text-accent-color">{{ $t('aboutUs.features.subtitle') }}</h1>
       <ul>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">Certified Technicians</h2>Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.</li>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">24/7 Priority Support</h2>Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.</li>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">Transparent Pricing Policy</h2>No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for.</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature1Title') }}</h2>{{ $t('aboutUs.features.feature1Text') }}</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature2Title') }}</h2>{{ $t('aboutUs.features.feature2Text') }}</li>
+        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature3Title') }}</h2>{{ $t('aboutUs.features.feature3Text') }}</li>
       </ul>
     </div>
     </div>
@@ -173,25 +177,25 @@
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.services }}+
         </h1>
-        <p class="text-lg md:text-2xl">Completed services</p>
+        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.services') }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.users }}+
         </h1>
-        <p class="text-lg md:text-2xl">Registered users</p>
+        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.users') }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.orders }}%
         </h1>
-        <p class="text-lg md:text-2xl">Repeated Orders</p>
+        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.orders') }}</p>
       </div>
       <div class="number flex flex-col">
         <h1 class="font-semibold text-3xl md:text-[45px]">
           {{ animatedNumbers.rating }}+
         </h1>
-        <p class="text-lg md:text-2xl">Average rating</p>
+        <p class="text-lg md:text-2xl">{{ $t('aboutUs.stats.rating') }}</p>
       </div>
     </div>
   </div>
@@ -200,13 +204,13 @@
   <div class="WhyToChooseUs flex justify-center items-center w-full mb-15">
     <div class="grid md:grid-cols-2">
       <div class="imagesContainer flex flex-col justify-center items-center">
-        <img src="../images/Rectangle 21.png" class="rounded-[40px]  h-80 mb-5 lg:w-[400px] lg:h-[380px] object-cover shadow-lg relative  z-10" alt="">
+        <img src="../images/Rectangle 21.png" class="rounded-[40px] h-80 mb-5 lg:w-[400px] lg:h-[380px] object-cover shadow-lg relative z-10" alt="">
       </div>
 
       <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
 
-        <h2 class="text-3xl font-semibold">Why choose us?</h2>
-        <p class="md:text-md text-md">Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.</p>
+        <h2 class="text-3xl font-semibold">{{ $t('aboutUs.whyUs.title') }}</h2>
+        <p class="md:text-md text-md">{{ $t('aboutUs.whyUs.description') }}</p>
         
         <ul class="space-y-4">
         <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -217,7 +221,7 @@
             18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          Use best materials and labor in every project.
+          {{ $t('aboutUs.whyUs.point1') }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -230,7 +234,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          Integrity and honesty from top to bottom.
+          {{ $t('aboutUs.whyUs.point2') }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -243,7 +247,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          Affordable and fair prices.
+          {{ $t('aboutUs.whyUs.point3') }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -256,7 +260,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          Licensed and Insured.
+          {{ $t('aboutUs.whyUs.point4') }}
         </li>
 
         <li class="flex items-start gap-3 text-xl text-gray-800">
@@ -269,7 +273,7 @@
             179.2c7.8-10.7 
             5.4-25.7-5.3-33.5z"/>
           </svg>
-          We care about our customers and give personal attention.
+          {{ $t('aboutUs.whyUs.point5') }}
         </li>
       </ul>
       </div>
@@ -277,10 +281,8 @@
   </div>
 
   <div class="relative w-full">
-      <!-- العنوان -->
-      <h2 class="font-semibold text-accent-color text-3xl text-center mt-5  lg:main-header">Our Customers Feedback</h2>
+      <h2 class="font-semibold text-accent-color text-3xl text-center mt-5 lg:main-header">{{ $t('aboutUs.feedback.title') }}</h2>
 
-      <!-- السلايدر -->
       <div class="relative h-80 overflow-hidden rounded-lg">
         <div
           v-for="(item, index) in slides"
@@ -301,28 +303,27 @@
               alt="client"
             />
             <h2 class="text-accent-color text-2xl mb-2 font-medium">
-              {{ item.name }}
+              {{ $t(item.nameKey) }}
             </h2>
             <div class="flex justify-center text-yellow-300 mb-2">
               <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
             </div>
             <p class="text-gray-700 text-sm max-w-xl">
-              {{ item.text }}
+              {{ $t(item.textKey) }}
             </p>
           </div>
         </div>
       </div>
 
-      <!-- الأسهم -->
       <button
         @click="prevSlide"
-        class="absolute top-0 left-0 lg:top-20 lg:left-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+        class="absolute top-0 left-0 lg:top-20 lg:left-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none rtl:left-auto rtl:right-0"
       >
         <span
           class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
         >
           <svg
-            class="w-4 h-4 text-gray-800"
+            class="w-4 h-4 text-gray-800 rtl:rotate-180"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 6 10"
@@ -340,13 +341,13 @@
 
       <button
         @click="nextSlide"
-        class="absolute top-0 right-0 lg:top-20 lg:right-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none"
+        class="absolute top-0 right-0 lg:top-20 lg:right-50 z-30 flex items-center justify-center h-full px-4 group focus:outline-none rtl:right-auto rtl:left-0"
       >
         <span
           class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/40 group-hover:bg-white/70"
         >
           <svg
-            class="w-4 h-4 text-gray-800"
+            class="w-4 h-4 text-gray-800 rtl:rotate-180"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 6 10"

@@ -15,23 +15,21 @@ import App from "./assets/App.vue";
 import "./assets/main.css";
 
 
-import { createI18n } from "vue-i18n";
-import en from "@/assets/locales/en.json";
-import ar from "@/assets/locales/ar.json";
+// import { createI18n } from "vue-i18n";
+import i18n from './i18n';
 
 
 
 
-
-const i18n = createI18n({
-  legacy: false, // Use Composition API mode
-  locale: localStorage.getItem("lang") || "en", // Default locale
-  fallbackLocale: "en", // Fallback locale
-  messages: {
-    en: en, // English translations
-    ar: ar, // Arabic translations
-  },
-});
+// const i18n = createI18n({
+//   legacy: false, // Use Composition API mode
+//   locale: localStorage.getItem("lang") || "en", // Default locale
+//   fallbackLocale: "en", // Fallback locale
+//   messages: {
+//     en: en, // English translations
+//     ar: ar, // Arabic translations
+//   },
+// });
 // ================================
 // 📦 Components Imports
 // ================================

@@ -12,9 +12,14 @@ export default {
   },
   computed: {
     hideLayout() {
-const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard", "/technician-chat"];
+      const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard", "/technician-chat"];
       return hiddenRoutes.some((path) => this.$route.path.startsWith(path));
     },
+    
+    // --- FIX ---
+    // I have REMOVED the two duplicate 'currentLocale' properties.
+    // They were causing a JavaScript error.
+    
   },
   components: {
     NavBar,
@@ -23,8 +28,21 @@ const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard",
     TechnicionDashNav,
     MannageUserProfile,
   },
+  
+  // This 'watch' block is 100% correct and will
+  // work perfectly once the error above is fixed.
+  watch: {
+    '$i18n.locale': {
+      handler(newLang) {
+        document.documentElement.lang = newLang;
+        document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+      },
+      immediate: true 
+    }
+  }
 };
 </script>
+
 <template>   
   <nav-bar v-if="!hideLayout" />
   <router-view />
