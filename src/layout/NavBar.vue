@@ -51,8 +51,7 @@
                   <li
                     v-for="n in notifications"
                     :key="n.id"
-                    class="p-3 border-b last:border-none text-sm hover:bg-gray-50 cursor-pointer"
-                    @click="handleNotificationClick(n)"
+                    class="p-3 border-b last:border-none text-sm hover:bg-gray-50"
                   >
                     <p class="text-gray-800">{{ n.message }}</p>
                     <p class="text-xs text-gray-400 mt-1">
@@ -106,7 +105,7 @@
             <div
               v-if="isUserMenuOpen"
               ref="dropdown"
-              class="absolute mt-2 top-15 rtl:-right-20 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
+              class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
             >
               <div class="flex flex-col">
                 <div
@@ -272,29 +271,6 @@ export default {
       this.showNotifications = !this.showNotifications;
       if (this.showNotifications) {
         this.markNotificationsAsRead();
-      }
-    },
-    async handleNotificationClick(n) {
-      // If this notification represents an accepted order, navigate to payment
-      try {
-        if (n && n.orderId && n.status === 'unconfirmed') {
-          // mark as read
-          const ref = doc(db, "users", this.user.uid, "notifications", n.id);
-          await updateDoc(ref, { isRead: true });
-          // Navigate to payment page with normalized fields
-          this.showNotifications = false;
-          this.$router.push({
-            path: '/payment',
-            query: {
-              id: n.orderId,
-              price: n.amount || '',
-              service: n.serviceTitle || '',
-              technician: n.technicianName || '',
-            },
-          });
-        }
-      } catch (e) {
-        console.error('Notification click error:', e);
       }
     },
     async markNotificationsAsRead() {

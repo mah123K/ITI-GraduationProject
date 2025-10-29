@@ -4,7 +4,6 @@ import { useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { db } from "@/firebase/firebase";
 import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
-import { normalizeName } from "@/utils/normalize";
 
 const props = defineProps({
   active: String,
@@ -23,8 +22,6 @@ const totalEarnings = computed(() =>
     return sum + (isNaN(price) ? 0 : price);
   }, 0)
 );
-
-const normalizedName = computed(() => normalizeName(technician.value.name) || 'Technician');
 
 onMounted(async () => {
   const auth = getAuth();
@@ -79,7 +76,7 @@ const handleLogout = async () => {
           alt=""
           class="w-[90px] h-[90px] rounded-full border-4 border-white shadow-md mb-2 object-cover"
         />
-        <p class="text-base font-semibold">{{ normalizedName }}</p>
+        <p class="text-base font-semibold">{{ technician.name || 'Technician' }}</p>
 
         <div class="mt-2 text-center">
           <p class="text-sm opacity-80 font-medium">My Earnings:</p>
