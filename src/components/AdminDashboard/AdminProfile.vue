@@ -62,6 +62,11 @@
             {{ saving ? "Saving..." : "Save Changes" }}
           </button>
         </div>
+        
+        <div class="mt-3">
+          <p v-if="successMessage" class="text-green-600 text-sm">{{ successMessage }}</p>
+          <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -83,6 +88,8 @@ export default {
       file: null,
       loading: true,
       saving: false,
+      successMessage: '',
+      errorMessage: '',
     };
   },
 
@@ -121,52 +128,72 @@ export default {
       const file = e.target.files[0];
       if (file && file.type.startsWith("image/")) {
         this.file = file;
-        // ✅ عرض الصورة مباشرة قبل الحفظ
+        //  عرض الصورة مباشرة قبل الحفظ
         this.photoURL = URL.createObjectURL(file);
+        this.errorMessage = '';
       } else {
-        alert("⚠️ Please select a valid image file.");
+        this.errorMessage = 'Please select a valid image file.';
       }
     },
 
     // 🔹 تحديث الملف الشخصي
-async updateProfile() {
-  try {
-    const user = auth.currentUser;
-    if (!user) return alert("❌ Please login first");
+    async updateProfile() {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          this.errorMessage = 'Please login first.';
+          return;
+        }
 
-    this.saving = true;
-    let newPhotoURL = this.photoURL;
+        this.saving = true;
+        this.errorMessage = '';
+        this.successMessage = '';
+        let newPhotoURL = this.photoURL;
 
-    if (this.file) {
-      const fileRef = storageRef(storage, `admin/${user.uid}/profile.jpg`);
-      await uploadBytes(fileRef, this.file);
-      newPhotoURL = await getDownloadURL(fileRef);
-    }
+        if (this.file) {
+          const fileRef = storageRef(storage, `admin/${user.uid}/profile.jpg`);
+          await uploadBytes(fileRef, this.file);
+          newPhotoURL = await getDownloadURL(fileRef);
+        }
 
-    await updateProfile(user, {
-      displayName: this.name,
-      photoURL: newPhotoURL,
-    });
+        await updateProfile(user, {
+          displayName: this.name,
+          photoURL: newPhotoURL,
+        });
 
-    // 🔹 تحديث بيانات Firestore (لو المستند مش موجود، ينشئه)
-    const refDoc = doc(db, "admin", user.uid);
-    await setDoc(refDoc, {
-      name: this.name,
-      photoURL: newPhotoURL,
-    }, { merge: true }); // merge: true لتجنب استبدال المستند بالكامل
+        
+        const refDoc = doc(db, 'admin', user.uid);
+        await setDoc(
+          refDoc,
+          {
+            name: this.name,
+            photoURL: newPhotoURL,
+          },
+          { merge: true }
+        );
+        this.photoURL = newPhotoURL;
+        localStorage.setItem('adminPhoto', newPhotoURL);
+        localStorage.setItem('adminName', this.name);
 
-    // 🔹 تحديث الصورة فورًا في الواجهة
-    this.photoURL = newPhotoURL;
-    localStorage.setItem("adminPhoto", newPhotoURL);
-
-    alert("Profile updated successfully!");
-  } catch (err) {
-    console.error("Error updating profile:", err);
-    alert("Failed to update profile");
-  } finally {
-    this.saving = false;
-  }
-}
+   
+        try {
+          window.dispatchEvent(new Event('adminProfileChanged'));
+        } catch (e) {
+          // ignore
+        }
+        // also update any UI that listens to auth change
+      } catch (err) {
+        console.error('Error updating profile:', err);
+        this.errorMessage = 'Failed to update profile.';
+      } finally {
+        this.saving = false;
+        // clear messages after a short delay
+        setTimeout(() => {
+          this.successMessage = '';
+          this.errorMessage = '';
+        }, 3000);
+      }
+    },
     },
     };
 </script>

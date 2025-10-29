@@ -67,8 +67,8 @@
             <th class="py-3 px-4 text-left">Email</th>
             <th class="py-3 px-4 text-left">Phone</th>
             <th class="py-3 px-4 text-left">Address</th>
-            <th class="py-3 px-4 text-left">Status</th>
-            <th class="py-3 px-4 text-left ">Actions</th>
+            <th class="py-3 px-6 text-left">Status</th>
+            <th class="py-3 px-16 text-left ">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -80,8 +80,20 @@
             <td class="py-3 px-4">{{ company.name }}</td>
             <td class="py-3 px-4">{{ company.email }}</td>
             <td class="py-3 px-4">{{ company.phone || '-' }}</td>
-            <td class="py-3 px-4">{{ company.address || '-' }}</td>
-            <td class="py-3 px-4">
+          <td class="py-3 px-4">
+  {{
+    typeof craft.address === 'object'
+      ? (
+          craft.address.city ||
+          Object.values(craft.address)
+            .filter(v => typeof v === 'string' && v.length === 1)
+            .join('')
+        ) || '-'
+      : craft.address || '-'
+  }}
+</td>
+
+            <td class="py-3 px-6">
               <span
                 :class="[
                   'px-3 py-1 rounded-full text-xs font-semibold',
@@ -95,7 +107,7 @@
                 {{ company.status || 'active' }}
               </span>
             </td>
-            <td class="py-3 px-4 flex space-x-2">
+            <td class="py-3 px-6 flex space-x-2">
               <button @click="viewProvider(company)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 transition">
                 <i class="bi bi-eye"></i>
               </button>
@@ -140,8 +152,8 @@
             <th class="py-3 px-4 text-left">Address</th>
             <th class="py-3 px-4 text-left">Skill</th>
             <th class="py-3 px-4 text-left">Rating</th>
-            <th class="py-3 px-4 text-left">Status</th>
-            <th class="py-3 px-4  text-left">Actions</th>
+            <th class="py-3 px-8 text-left">Status</th>
+            <th class="py-3 px-16  text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -171,7 +183,7 @@
               <span>{{ craft.rating ?? 0 }}</span>
               <i class="bi bi-star-fill text-yellow-400"></i>
             </td>
-            <td class="py-3 px-4">
+            <td class="py-3 px-8">
               <span
                 :class="[
                   'px-3 py-1 rounded-full text-xs font-semibold',
