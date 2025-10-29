@@ -11,10 +11,11 @@
           : 'bg-[#DAECF6] text-gray-700 ',
       ]"
     >
-      <span v-if="tab === 'Client'"><i class="fa-solid fa-user"></i></span>
-      <span v-else-if="tab === 'Technician'"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+      <span v-if="tab === 'client'"><i class="fa-solid fa-user"></i></span>
+      <span v-else-if="tab === 'technician'"><i class="fa-solid fa-screwdriver-wrench"></i></span>
       <span v-else><i class="fa-solid fa-building"></i></span>
-      {{ tab }}
+      
+      {{ $t('signUpPage.tabs.' + tab) }}
     </button>
   </div>
 </template>

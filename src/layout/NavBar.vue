@@ -297,10 +297,10 @@ export default {
     }
 
     // 2. Load saved language
-    const savedLang = localStorage.getItem('lang') || 'en';
-    this.$i18n.locale = savedLang;
-    document.documentElement.lang = savedLang;
-    document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+    // const savedLang = localStorage.getItem('lang') || 'en';
+    // this.$i18n.locale = savedLang;
+    // document.documentElement.lang = savedLang;
+    // document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
     const auth = getAuth();
     onAuthStateChanged(auth, async (currentUser) => {
       this.loadingUser = true;
