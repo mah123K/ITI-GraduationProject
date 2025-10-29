@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { db } from "@/firebase/firebase";
 import { doc, getDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+import { useI18n } from "vue-i18n"; // 1. Import useI18n
 
 const props = defineProps({
   active: String,
@@ -12,16 +13,38 @@ const props = defineProps({
 const emit = defineEmits(["changeTab"]);
 
 const router = useRouter();
+const { locale } = useI18n(); // 2. Initialize locale
 
 const technician = ref({ name: "", earnings: 0, image: "" });
 const technicianId = ref(null);
 const orders = ref([]);
+
 const totalEarnings = computed(() =>
   orders.value.reduce((sum, order) => {
     const price = parseFloat(order.price);
     return sum + (isNaN(price) ? 0 : price);
   }, 0)
 );
+
+// *** 3. CREATE THE COMPUTED PROPERTY FOR THE NAME ***
+const technicianName = computed(() => {
+  const nameData = technician.value?.name;
+  const currentLocale = locale.value || 'en'; // Get current language
+
+  // Check if nameData is an object like { en: "...", ar: "..." }
+  if (typeof nameData === 'object' && nameData !== null) {
+    // Return the name for the current locale if it exists
+    if (nameData[currentLocale]) {
+      return nameData[currentLocale];
+    }
+    // Fallback to English if the current locale isn't in the object
+    return nameData.en || ''; // Return English or empty string
+  }
+  // If nameData is just a string (or null/undefined), return it directly
+  return nameData || 'Technician'; // Fallback
+});
+// *** END FIX ***
+
 
 onMounted(async () => {
   const auth = getAuth();
@@ -32,7 +55,7 @@ onMounted(async () => {
     const docRef = doc(db, "technicians", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      technician.value = docSnap.data();
+      technician.value = docSnap.data(); // This will fetch the name object
     }
 
     const ordersRef = collection(db, "orders");
@@ -76,7 +99,7 @@ const handleLogout = async () => {
           alt=""
           class="w-[90px] h-[90px] rounded-full border-4 border-white shadow-md mb-2 object-cover"
         />
-        <p class="text-base font-semibold">{{ technician.name || 'Technician' }}</p>
+        <p class="text-base font-semibold">{{ technicianName }}</p>
 
         <div class="mt-2 text-center">
           <p class="text-sm opacity-80 font-medium">My Earnings:</p>

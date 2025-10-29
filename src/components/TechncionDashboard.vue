@@ -509,7 +509,7 @@ watch(
             <!-- ✅ Details Button -->
             <button
               @click="order.showDetails = true"
-              class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+              class="cursor-pointer absolute left-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
             >
               Details
             </button>
