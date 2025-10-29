@@ -177,8 +177,9 @@ const updateOrderStatus = async (id, status) => {
     await updateDoc(orderRef, { status });
 
     // ✅ Create notification for the client
-    if (orderData?.userId) {
-      const notifCol = collection(db, "users", orderData.userId, "notifications");
+    if (orderData?.clientId) {
+    const notifCol = collection(db, "users", orderData.clientId, "notifications");
+
       const messages = {
         unconfirmed: "Your order has been accepted. Please complete your payment to confirm it.",
         upcoming: "Payment received successfully. Your order is now confirmed and scheduled.",
