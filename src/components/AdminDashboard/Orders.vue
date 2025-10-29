@@ -86,22 +86,25 @@
   </div>
 </td>
 
-          <td class="py-3 px-4">
-            <span
-              :class="[
-                'px-3 py-1 rounded-full text-xs font-semibold',
-                order.status === 'Completed'
-                  ? 'bg-green-100 text-green-600'
-                  : order.status === 'Pending'
-                  ? 'bg-yellow-100 text-yellow-600'
-                  : order.status === 'In Progress'
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'bg-red-100 text-red-600',
-              ]"
-            >
-              {{ order.status }}
-            </span>
-          </td>
+         
+         <td class="py-3 px-4">
+  <span
+    :class="[
+      'px-3 py-1 rounded-full text-xs font-semibold',
+      order.status === 'completed'
+        ? 'bg-green-100 text-green-700'
+        : order.status === 'unconfirmed'
+        ? 'bg-amber-100 text-amber-700'
+        : order.status === 'upcoming'
+        ? 'bg-sky-100 text-sky-700'
+        : order.status === 'new'
+        ? 'bg-indigo-100 text-indigo-700'
+        : 'bg-rose-100 text-rose-700',
+    ]"
+  >
+    {{ order.status }}
+  </span>
+</td>
 
           
           <td class="py-3 px-4 flex space-x-2">
@@ -254,7 +257,7 @@ export default {
     const modalType = ref("");
     const selectedOrder = ref({});
 
-    const statusOptions = ["All", "completed", "declined", "new", "In upcoming"];
+   const statusOptions = ["All", "completed", "unconfirmed", "upcoming", "new"];
 
     
     const fetchOrders = async () => {
