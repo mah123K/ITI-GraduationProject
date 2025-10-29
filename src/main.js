@@ -11,8 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // ================================
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
-import App from "./assets/App.vue";
-import "./assets/main.css";
+import App from "./App.vue";
 
 
 // import { createI18n } from "vue-i18n";

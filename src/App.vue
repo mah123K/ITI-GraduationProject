@@ -1,9 +1,9 @@
 <script>
-import FooterLayout from "../layout/FooterLayout.vue";
-import NavBar from "../layout/NavBar.vue";
-import TechncionDashboard from "../components/TechncionDashboard.vue";
-import TechnicionDashNav from "../layout/TechnicionDashNav.vue";
-import MannageUserProfile from "../components/MannageUserProfile.vue";
+import FooterLayout from "./layout/FooterLayout.vue";
+import NavBar from "./layout/NavBar.vue";
+import TechncionDashboard from "./components/TechncionDashboard.vue";
+import TechnicionDashNav from "./layout/TechnicionDashNav.vue";
+import MannageUserProfile from "./components/MannageUserProfile.vue";
 
 export default {
   name: "App",
@@ -17,8 +17,8 @@ export default {
     },
     
     // --- FIX ---
-    // I have REMOVED the two duplicate 'currentLocale' properties.
-    // They were causing a JavaScript error.
+    // I have removed BOTH of the duplicate 'currentLocale' properties.
+    // They are not needed because the 'watch' block below is correct.
     
   },
   components: {
@@ -29,8 +29,8 @@ export default {
     MannageUserProfile,
   },
   
-  // This 'watch' block is 100% correct and will
-  // work perfectly once the error above is fixed.
+  // This 'watch' block is perfect. It does not need the
+  // 'currentLocale' computed property to work.
   watch: {
     '$i18n.locale': {
       handler(newLang) {
