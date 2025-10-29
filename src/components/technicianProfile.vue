@@ -2,9 +2,6 @@
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { db, auth } from "@/firebase/firebase";
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
-import { normalizeName, normalizeLocation } from '@/utils/normalize';
 import {
   doc,
   getDoc,
@@ -73,45 +70,7 @@ const feedbacks = ref([
 ]);
 
 // --- Computed Properties ---
-// Normalize technician.name to a string so template code (e.g. .split)
-// can safely operate on it even if the source stores name as an object.
-const technicianName = computed(() => {
-  const n = technician.value?.name;
-  if (!n) return "Technician";
-  if (typeof n === "string") return n;
-  if (typeof n === "object") {
-    if (n.displayName) return String(n.displayName).trim();
-    if (n.fullName) return String(n.fullName).trim();
-
-    const candidates = [];
-    if (n.firstName) candidates.push(n.firstName);
-    if (n.first) candidates.push(n.first);
-    if (n.lastName) candidates.push(n.lastName);
-    if (n.last) candidates.push(n.last);
-
-    const otherStrings = Object.values(n).filter((v) => typeof v === "string");
-    for (const s of otherStrings) candidates.push(s);
-
-    const normalized = [];
-    const seen = new Set();
-    for (let part of candidates) {
-      if (!part) continue;
-      part = String(part).trim();
-      if (!part) continue;
-      if (!seen.has(part)) {
-        seen.add(part);
-        normalized.push(part);
-      }
-    }
-    if (normalized.length) return normalized.join(" ");
-    if (otherStrings.length === 1) return String(otherStrings[0]).trim();
-    if (otherStrings.length > 1)
-      return otherStrings.map((s) => String(s).trim()).filter(Boolean).join(" ");
-
-    return "Technician";
-  }
-  return String(n);
-});
+const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
 const technicianLocation = computed(
   () => technician.value?.city || "Not Specified"
@@ -222,17 +181,8 @@ const availableTimeSlots = computed(() => {
 // --- Popup, Form & Order Submission ---
 const openPopup = (service = null, price = null) => {
   if (!clientUser.value) {
-    // Show a friendly styled prompt and navigate to login on confirm
-    Swal.fire({
-      icon: 'warning',
-      title: 'Login required',
-      text: 'Please log in as a client to place an order.',
-      confirmButtonText: 'Go to Login',
-      showCancelButton: true,
-      cancelButtonText: 'Cancel',
-    }).then((res) => {
-      if (res.isConfirmed) router.push('/login');
-    });
+    alert("Please log in as a client to place an order.");
+    router.push("/login");
     return;
   }
   showPopup.value = true;
@@ -269,11 +219,7 @@ const submitOrder = async () => {
     !clientUser.value ||
     !technician.value
   ) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Incomplete',
-      text: 'Please select an available day and time.',
-    });
+    alert("Please select an available day and time.");
     return;
   }
 
@@ -288,21 +234,6 @@ const submitOrder = async () => {
     if (period === "AM" && hours === 12) hours = 0;
     selectedDate.setHours(hours, minutes, 0, 0);
 
-    // Normalize technician name and client location before saving.
-    const normalizedTechName = normalizeName(technician.value?.name || technician.value);
-    const normalizedLocation = normalizeLocation(clientData.value?.address || clientData.value?.location || clientData.value);
-
-    if (!normalizedTechName) {
-      Swal.fire({ icon: 'error', title: 'Invalid data', text: 'Technician name is invalid. Order not saved.' });
-      isSubmitting.value = false;
-      return;
-    }
-    if (!normalizedLocation) {
-      Swal.fire({ icon: 'error', title: 'Invalid data', text: 'Client location is invalid. Order not saved.' });
-      isSubmitting.value = false;
-      return;
-    }
-
     // Construct order data with all necessary fields
     const orderData = {
   // ✅ Existing fields (kept)
@@ -311,7 +242,7 @@ const submitOrder = async () => {
     clientData.value?.name || clientUser.value.email.split("@")[0],
   clientEmail: clientUser.value.email,
   technicianId: route.params.id,
-  technicianName: normalizedTechName,
+  technicianName: technician.value.name || "Technician",
   technicianSkill: technician.value.skill || "General",
   serviceTitle: serviceTitle.value || "Custom Service Request",
   description: orderDescription.value || serviceTitle.value || "",
@@ -326,7 +257,7 @@ const submitOrder = async () => {
   descreption: orderDescription.value || serviceTitle.value || "",
   date: selectedDayInfo.value.display || "",
   time: selectedTime.value || "",
-  location: normalizedLocation || "Not Specified",
+  location: clientData.value?.address || "Not Specified",
   customer: clientData.value?.name || clientUser.value.email.split("@")[0],
 };
 
@@ -335,23 +266,11 @@ const submitOrder = async () => {
     const docRef = await addDoc(collection(db, "orders"), orderData);
 
     console.log("Order submitted with ID:", docRef.id);
-    // Small toast in the top-right
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      title: 'Order submitted successfully',
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alert("Order submitted successfully!");
     closePopup();
   } catch (error) {
     console.error("Error submitting order:", error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Submission failed',
-      text: error?.message || 'Failed to submit order. Please try again.',
-    });
+    alert("Failed to submit order. Please try again.");
   } finally {
     isSubmitting.value = false;
   }
@@ -922,6 +841,7 @@ watch(selectedDayInfo, () => {
   min-height: 350px; /* Adjust as needed */
 }
 /* Basic styling for Font Awesome icons if not globally included */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 </style>
 
 

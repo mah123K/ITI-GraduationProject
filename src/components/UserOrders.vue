@@ -29,11 +29,11 @@
 
           <!-- Content -->
           <div class="space-y-2 text-gray-700">
-            <p><span class="font-semibold text-accent-color">Technician:</span> {{ formatName(order.technicianName) || "—" }}</p>
+            <p><span class="font-semibold text-accent-color">Technician:</span> {{ order.technicianName || "—" }}</p>
             <p><span class="font-semibold text-accent-color">Price:</span> {{ order.price }} EGP</p>
             <p><span class="font-semibold text-accent-color">Date:</span> {{ order.date }}</p>
             <p><span class="font-semibold text-accent-color">Time:</span> {{ order.time }}</p>
-            <p><span class="font-semibold text-accent-color">Location:</span> {{ formatLocation(order.location) || "—" }}</p>
+            <p><span class="font-semibold text-accent-color">Location:</span> {{ order.location }}</p>
           </div>
 
           <!-- 🧾 Payment Button -->
@@ -94,7 +94,7 @@
           </p>
           <p class="text-gray-700 mb-4">
             <span class="font-semibold">Technician:</span>
-            {{ formatName(selectedOrder?.technicianName) }}
+            {{ selectedOrder?.technicianName }}
           </p>
           <p class="text-gray-900 text-xl font-bold mb-6">
             Total: {{ selectedOrder?.price }} EGP
@@ -138,77 +138,6 @@ const openPaymentPopup = (order) => {
   showPopup.value = true;
 };
 
-// Helper to normalize/format a technician name that may be a string,
-// an object, or a JSON-encoded string. Returns a readable single-line name.
-const formatName = (n) => {
-  if (!n) return "";
-  if (typeof n === "string") {
-    const s = n.trim();
-    if ((s.startsWith('{') && s.endsWith('}')) || (s.startsWith('[') && s.endsWith(']'))) {
-      try {
-        const parsed = JSON.parse(s);
-        return formatName(parsed);
-      } catch (e) {
-        // not valid JSON, return raw string
-      }
-    }
-    return s;
-  }
-  if (typeof n === "object") {
-    if (n.displayName) return String(n.displayName).trim();
-    if (n.fullName) return String(n.fullName).trim();
-    const parts = [];
-    if (n.firstName) parts.push(n.firstName);
-    if (n.first) parts.push(n.first);
-    if (n.lastName) parts.push(n.lastName);
-    if (n.last) parts.push(n.last);
-    const otherStrings = Object.values(n).filter(v => typeof v === 'string');
-    for (const s of otherStrings) parts.push(s);
-    const seen = new Set();
-    const out = [];
-    for (let p of parts) {
-      if (!p) continue;
-      p = String(p).trim();
-      if (!p) continue;
-      if (!seen.has(p)) { seen.add(p); out.push(p); }
-    }
-    return out.join(' ');
-  }
-  return String(n);
-};
-
-// Helper to normalize/format location values (string, object, or JSON string)
-const formatLocation = (l) => {
-  if (!l) return "";
-  if (typeof l === "string") {
-    const s = l.trim();
-    if ((s.startsWith('{') && s.endsWith('}')) || (s.startsWith('[') && s.endsWith(']'))) {
-      try { return formatLocation(JSON.parse(s)); } catch (e) {}
-    }
-    return s;
-  }
-  if (typeof l === 'object') {
-    const parts = [];
-    if (l.address) parts.push(l.address);
-    if (l.street) parts.push(l.street);
-    if (l.city) parts.push(l.city);
-    if (l.state) parts.push(l.state);
-    if (l.country) parts.push(l.country);
-    const other = Object.values(l).filter(v => typeof v === 'string');
-    for (const s of other) parts.push(s);
-    const seen = new Set();
-    const out = [];
-    for (let p of parts) {
-      if (!p) continue;
-      p = String(p).trim();
-      if (!p) continue;
-      if (!seen.has(p)) { seen.add(p); out.push(p); }
-    }
-    return out.join(', ');
-  }
-  return String(l);
-};
-
 // 🟥 Cancel popup
 const cancelPayment = () => {
   selectedOrder.value = null;
@@ -232,7 +161,7 @@ const confirmPayment = async () => {
         amount: Number(selectedOrder.value.price) || 0,
         orderId: selectedOrder.value.id,
         serviceTitle: selectedOrder.value.serviceTitle,
-        technicianName: formatName(selectedOrder.value.technicianName),
+        technicianName: selectedOrder.value.technicianName,
       }),
     });
 
