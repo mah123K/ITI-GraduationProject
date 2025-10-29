@@ -74,9 +74,9 @@
 
 <script>
 import { auth, db, storage } from "../../firebase/firebase";
-import { getDoc, doc, updateDoc,setDoc } from "firebase/firestore";
-
+import { getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
+import { normalizeName } from "@/utils/normalize";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default {
@@ -110,7 +110,7 @@ export default {
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       const data = snap.data();
-      this.name = data.name || this.name;
+      this.name = normalizeName(data.name) || this.name;
       if (data.photoURL) this.photoURL = data.photoURL;
     }
 
