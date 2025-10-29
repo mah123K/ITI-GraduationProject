@@ -3,22 +3,19 @@
     <div class="max-w-6xl mx-auto mt-10">
       <h1 class="text-3xl font-bold text-accent-color mb-8 text-center">My Orders</h1>
 
-      <!-- 🔄 Loading -->
       <div v-if="loading" class="text-center text-gray-500 mt-10">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-color mx-auto mb-3"></div>
         Loading your orders...
       </div>
 
-      <!-- 📦 Orders Grid -->
       <div v-else-if="orders.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="order in orders"
           :key="order.id"
           class="bg-white rounded-2xl shadow-md p-6 relative transition hover:shadow-lg"
         >
-          <!-- Header -->
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-accent-color">Service:</h2>
+            <h2 class="text-lg font-semibold text-accent-color">{{ getTranslatedName(order.serviceTitle) || "Service" }}:</h2>
             <span
               class="px-3 py-1 text-sm rounded-full font-medium"
               :class="statusColor(order.status)"
@@ -27,16 +24,14 @@
             </span>
           </div>
 
-          <!-- Content -->
           <div class="space-y-2 text-gray-700">
-            <p><span class="font-semibold text-accent-color">Technician:</span> {{ order.technicianName || "—" }}</p>
+             <p><span class="font-semibold text-accent-color">Technician:</span> {{ getTranslatedName(order.technicianName) || "—" }}</p>
             <p><span class="font-semibold text-accent-color">Price:</span> {{ order.price }} EGP</p>
             <p><span class="font-semibold text-accent-color">Date:</span> {{ order.date }}</p>
             <p><span class="font-semibold text-accent-color">Time:</span> {{ order.time }}</p>
             <p><span class="font-semibold text-accent-color">Location:</span> {{ order.location }}</p>
           </div>
 
-          <!-- 🧾 Payment Button -->
           <div v-if="order.status === 'unconfirmed'" class="mt-5 text-center">
             <button
               @click="openPaymentPopup(order)"
@@ -46,12 +41,10 @@
             </button>
           </div>
 
-          <!-- ✅ Paid -->
           <div v-else-if="order.status === 'upcoming'" class="mt-5 text-center text-green-600 font-semibold">
             Payment Completed
           </div>
 
-          <!-- 🔴 Declined / Cancelled -->
           <div
             v-else-if="order.status === 'declined' || order.status === 'cancelled'"
             class="mt-5 text-center text-red-500 font-semibold"
@@ -59,7 +52,6 @@
             This order was {{ order.status }}.
           </div>
 
-          <!-- 🟢 Completed -->
           <div
             v-else-if="order.status === 'completed'"
             class="mt-5 text-center text-accent-color font-semibold"
@@ -69,13 +61,11 @@
         </div>
       </div>
 
-      <!-- ❌ No orders -->
       <div v-else class="text-center text-gray-500 mt-10">
         No orders found.
       </div>
     </div>
 
-    <!-- 💳 Payment Confirmation Popup -->
     <transition name="fade">
       <div
         v-if="showPopup"
@@ -88,13 +78,13 @@
             Confirm Your Payment
           </h2>
 
-          <p class="text-gray-700 mb-4">
+           <p class="text-gray-700 mb-4">
             <span class="font-semibold">Service:</span>
-            {{ selectedOrder?.serviceTitle }}
+            {{ getTranslatedName(selectedOrder?.serviceTitle) }}
           </p>
           <p class="text-gray-700 mb-4">
             <span class="font-semibold">Technician:</span>
-            {{ selectedOrder?.technicianName }}
+            {{ getTranslatedName(selectedOrder?.technicianName) }}
           </p>
           <p class="text-gray-900 text-xl font-bold mb-6">
             Total: {{ selectedOrder?.price }} EGP
@@ -128,9 +118,19 @@ import { collection, query, where, onSnapshot, doc, updateDoc } from "firebase/f
 
 const orders = ref([]);
 const loading = ref(true);
-
 const showPopup = ref(false);
 const selectedOrder = ref(null);
+
+const { locale } = useI18n(); // *** 2. Initialize locale ***
+
+// *** 3. Add the helper function ***
+const getTranslatedName = (nameObject) => {
+  const currentLocale = locale.value || 'en'; // Get current language
+  if (typeof nameObject === 'object' && nameObject !== null) {
+    return nameObject[currentLocale] || nameObject.en || ''; // Get current lang, fallback to 'en'
+  }
+  return nameObject || ''; // Return as-is if it's just a string
+};
 
 // 🟩 Open confirmation popup before redirecting
 const openPaymentPopup = (order) => {
@@ -149,6 +149,7 @@ const confirmPayment = async () => {
   if (!selectedOrder.value) return;
 
   try {
+    // *** 4. Use helper function when sending data to backend ***
     // 🟩 أولًا: حدث الحالة في Firestore إلى "upcoming"
     const orderRef = doc(db, "orders", selectedOrder.value.id);
     await updateDoc(orderRef, { status: "upcoming" });
@@ -160,8 +161,8 @@ const confirmPayment = async () => {
       body: JSON.stringify({
         amount: Number(selectedOrder.value.price) || 0,
         orderId: selectedOrder.value.id,
-        serviceTitle: selectedOrder.value.serviceTitle,
-        technicianName: selectedOrder.value.technicianName,
+        serviceTitle: getTranslatedName(selectedOrder.value.serviceTitle), // <-- FIX
+        technicianName: getTranslatedName(selectedOrder.value.technicianName), // <-- FIX
       }),
     });
 
@@ -196,7 +197,7 @@ const statusColor = (status) => {
   }
 };
 
-// ⚡ Load user's orders from Firestore
+// ⚡ Load user's orders from Firestore (unchanged)
 onMounted(() => {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
@@ -214,6 +215,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Unchanged */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

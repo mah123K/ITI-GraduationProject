@@ -39,13 +39,13 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
     <!-- Details button -->
     <button
       @click="showDetails = true"
-      class="cursor-pointer absolute right-4 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+      class="cursor-pointer absolute left-2 top-2 bg-[#133B5D] text-white rounded-lg p-1 px-2"
     >
       Details
     </button>
 
     <!-- Order -->
-    <div class="element flex m-1 text-lg">
+    <div class="element flex m-1 text-lg mt-5">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[25px] h-[25px]">
         <path
           fill="#2574b9"
@@ -144,12 +144,12 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
     </div>
 
     <!-- Action -->
-    <div class="flex justify-center mt-6">
+    <div class="flex justify-center gap-2 mt-6">
       <button
         @click="handleMarkCompleted"
         :disabled="!isConfirmed"
         :class="[
-          'font-semibold px-6 py-2 rounded-xl transition',
+          'font-semibold px-3 py-2 rounded-xl transition',
           isConfirmed
             ? 'cursor-pointer bg-[#133B5D] hover:bg-[#0f2d47] text-white'
             : 'cursor-not-allowed bg-gray-300 text-gray-500'
