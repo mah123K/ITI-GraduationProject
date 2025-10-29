@@ -47,7 +47,7 @@
           class="text-2xl font-bold transition-colors duration-500"
           :class="isHovered ? 'text-white' : 'text-[#0B161B]'"
         >
-          {{ profile.name }}
+          {{ displayName }}
         </h2>
 
         <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
@@ -99,7 +99,7 @@
       />
       <div class="flex flex-col flex-1 mt-4 sm:mt-0 text-left rtl:text-right">
         <div>
-          <h2 class="text-lg md:text-xl font-bold text-[#0B161B]">{{ profile.name }}</h2>
+          <h2 class="text-lg md:text-xl font-bold text-[#0B161B]">{{ displayName }}</h2>
           <div class="flex items-center gap-2 text-sm text-gray-600">
             <span class="font-medium text-[#0369F0]">{{ profile.service }}</span>
           </div>
@@ -152,6 +152,54 @@ export default {
     viewType: {
       type: String,
       default: "grid",
+    },
+  },
+  computed: {
+    // Return a safe display name string. Handles cases where profile.name
+    // might be a string or an object (e.g. { firstName, lastName } or { displayName }).
+    displayName() {
+      const n = this.profile && this.profile.name;
+      if (!n) return this.$t ? this.$t('profilesPage.fallbackNA') : '';
+      if (typeof n === 'string') return n;
+      if (typeof n === 'object') {
+        // Common possible fields. We collect candidate string parts and dedupe
+        // so fields like `firstName` and `first` (sometimes both present) don't
+        // cause duplicated words in the final display name.
+        if (n.displayName) return String(n.displayName).trim();
+        if (n.fullName) return String(n.fullName).trim();
+
+        const candidates = [];
+        if (n.firstName) candidates.push(n.firstName);
+        if (n.first) candidates.push(n.first);
+        if (n.lastName) candidates.push(n.lastName);
+        if (n.last) candidates.push(n.last);
+
+        // Also include any other string values as a fallback
+        const otherStrings = Object.values(n).filter(v => typeof v === 'string');
+        for (const s of otherStrings) candidates.push(s);
+
+        // Normalize, trim and dedupe while preserving order
+        const normalized = [];
+        const seen = new Set();
+        for (let part of candidates) {
+          if (!part) continue;
+          part = String(part).trim();
+          if (!part) continue;
+          if (!seen.has(part)) {
+            seen.add(part);
+            normalized.push(part);
+          }
+        }
+
+        if (normalized.length) return normalized.join(' ');
+
+        // Fallback to first string value if any
+        if (otherStrings.length === 1) return String(otherStrings[0]).trim();
+        if (otherStrings.length > 1) return otherStrings.map(s => String(s).trim()).filter(Boolean).join(' ');
+
+        return '';
+      }
+      return String(n);
     },
   },
   async mounted() {

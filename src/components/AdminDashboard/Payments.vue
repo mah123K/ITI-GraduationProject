@@ -270,7 +270,7 @@ export default {
         this.loading = false;
       },
       (err) => {
-        // eslint-disable-next-line no-console
+         
         console.error('orders onSnapshot error', err);
         this.loading = false;
       }
@@ -309,7 +309,7 @@ export default {
           await setDoc(doc(db, 'payments', p.id), p, { merge: true });
         }
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error('Failed to sync payments to Firestore', err);
       }
     },
@@ -330,7 +330,7 @@ export default {
       try {
         await setDoc(doc(db, 'payments', payment.id), payment, { merge: true });
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error('Failed to update payment', err);
       }
     },
@@ -341,7 +341,7 @@ export default {
       try {
         await deleteDoc(doc(db, 'payments', payment.id));
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error('Failed to delete payment from Firestore', err);
       }
     },
@@ -368,7 +368,7 @@ export default {
 
         this.closeModal();
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error('Failed to save payment changes', err);
       }
     },
@@ -379,7 +379,7 @@ export default {
         this.payments = this.payments.filter((p) => p.id !== this.selectedPayment.id);
         this.closeModal();
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error('Failed to delete payment', err);
       }
     },
