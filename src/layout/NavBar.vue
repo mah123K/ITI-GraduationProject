@@ -94,12 +94,18 @@
           <span class="font-medium text-black hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
 
           <div
-            ref="profileButton"
-            class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
-            @click="toggleUserMenu"
-          >
-            <i class="bi bi-person text-gray-500 text-xl"></i>
-          </div>
+              ref="profileButton"
+              class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden"
+              @click="toggleUserMenu"
+            >
+        <img
+          v-if="userImage"
+          :src="userImage"
+          alt="User"
+          class="w-full h-full object-cover"
+          />
+        <i v-else class="bi bi-person text-gray-500 text-xl"></i>
+        </div>
 
           <transition name="fade-slide">
             <div
@@ -111,7 +117,13 @@
                 <div
                   class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
                 >
-                  <i class="bi bi-person text-gray-500 text-xl"></i>
+                   <img
+          v-if="userImage"
+          :src="userImage"
+          alt="User"
+          class="w-full h-full object-cover  rounded-full"
+          />
+        <i v-else class="bi bi-person text-gray-500 text-xl"></i>
                 </div>
 
                 <div id="content" class="px-4 pb-4">
@@ -213,6 +225,7 @@ export default {
       isDark: false,
       user: null,
       firstName: "",
+      userImage: null,
       loadingUser: true,
       notifications: [],
       unreadCount: 0,
@@ -296,6 +309,19 @@ export default {
       root.classList.remove('dark');
     }
 
+
+      window.addEventListener("userUpdated", (event) => {
+        const updated = event.detail;
+        if (updated.image) {
+          this.userImage = updated.image;
+          localStorage.setItem("userImage", updated.image);
+        }
+        if (updated.name) {
+          this.firstName = updated.name.split(" ")[0];
+          localStorage.setItem("userName", updated.name);
+        }
+      });
+
     // 2. Load saved language
     // const savedLang = localStorage.getItem('lang') || 'en';
     // this.$i18n.locale = savedLang;
@@ -313,6 +339,7 @@ export default {
           if (docSnap.exists()) {
             const fullName = docSnap.data().name || "";
             this.firstName = fullName.split(" ")[0] || "";
+            this.userImage = docSnap.data().image || null;
             break;
           }
         }
