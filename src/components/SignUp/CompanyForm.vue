@@ -148,7 +148,7 @@
           <input
             v-model="form.address"
             type="text"
-            placeholder="Address *"
+            placeholder="Street Address *"
             :class="inputClass(errors.address)"
             @input="clearError('address')"
           />
@@ -165,27 +165,42 @@
           />
           <p v-if="errors.city" class="text-red-500 text-sm mt-1">{{ errors.city }}</p>
         </div>
-
-        <input
-          v-model="form.website"
-          type="text"
-          placeholder="Website / Social Links"
-          class="p-4 border border-gray-300 rounded-xl"
-        />
-
-        <input
+        <div>
+          <input
+            v-model="form.website"
+            type="text"
+            placeholder="Website *"
+            :class="inputClass(errors.website)"
+            @input="clearError('website')"
+          />
+          <p v-if="errors.website" class="text-red-500 text-sm mt-1">{{ errors.country }}</p>
+        </div>
+        <!-- <input
           v-model="form.teamSize"
           type="text"
           placeholder="Team Size"
           class="p-4 border border-gray-300 rounded-xl"
-        />
-
-        <input
-          v-model="form.crn"
-          type="text"
-          placeholder="Company Registration Number (CRN)"
-          class="p-4 border border-gray-300 rounded-xl"
-        />
+        /> -->
+        <div>
+          <input
+            v-model="form.teamSize"
+            type="text"
+            placeholder="Team Size *"
+            :class="inputClass(errors.teamSize)"
+            @input="clearError('teamSize')"
+          />
+          <p v-if="errors.teamSize" class="text-red-500 text-sm mt-1">{{ errors.teamSize }}</p>
+        </div>
+        <div>
+          <input
+            v-model="form.crn"
+            type="text"
+            placeholder="Company Registration Number (CRN) *"
+            :class="inputClass(errors.crn)"
+            @input="clearError('crn')"
+          />
+          <p v-if="errors.crn" class="text-red-500 text-sm mt-1">{{ errors.crn }}</p>
+        </div>
 
         <input
           v-model="form.description"
@@ -197,10 +212,11 @@
 
     <!-- 🔹 Submit -->
     <button
-      @click="submit"
+      @click="handleSubmit"
       class="mt-10 mx-auto bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer"
+      :disabled="isSubmitting"
     >
-      Sign Up
+      {{ isSubmitting ? "Submitting..." : "Sign Up" }}
     </button>
 
     <p class="text-center mt-4 text-gray-500">
@@ -219,6 +235,7 @@ export default {
       showConfirmPassword: false,
       logoPreview: null,
       crnPreview: null,
+      isSubmitting: false,
       errors: {},
       form: {
         companyName: "",
@@ -239,11 +256,11 @@ export default {
     };
   },
   methods: {
-    inputClass(error, pad = false) {
+    inputClass(error, hasPadding = false) {
       return [
-        "p-4 border rounded-xl w-full focus:ring-2 focus:ring-accent-color focus:outline-none transition",
-        pad ? "pr-12" : "",
-        error ? "border-red-500" : "border-gray-300",
+        "w-full p-4 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200",
+        hasPadding ? "pr-12" : "",
+        error ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-[#5984C6]",
       ];
     },
     clearError(field) {
@@ -266,13 +283,16 @@ export default {
       }
     },
     validatePasswordLive() {
-      if (this.form.password.length < 8)
-        this.errors.password = "Password must be at least 8 characters";
-      else this.errors.password = "";
-
-      if (this.form.confirmPassword && this.form.password !== this.form.confirmPassword)
+      this.errors.password = "";
+      this.errors.confirmPassword = "";
+      if (!this.form.password) {
+        this.errors.password = "Password is required";
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(this.form.password)) {
+        this.errors.password = "Password must include uppercase, lowercase, number, and symbol";
+      }
+      if (this.form.confirmPassword && this.form.password !== this.form.confirmPassword) {
         this.errors.confirmPassword = "Passwords do not match";
-      else this.errors.confirmPassword = "";
+      }
     },
     validateForm() {
       this.errors = {};
@@ -285,11 +305,15 @@ export default {
         this.errors.email = "Invalid email";
         valid = false;
       }
-      if (!this.form.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)) {
-        this.errors.password = "Password must contain upper, lower, and a number (min 8 chars)";
+      if (!this.form.password.trim()) {
+        this.errors.password = "Password is required";
         valid = false;
       }
-      if (this.form.password !== this.form.confirmPassword) {
+
+      if (!this.form.confirmPassword.trim()) {
+        this.errors.confirmPassword = "Confirm your password";
+        valid = false;
+      } else if (this.form.password !== this.form.confirmPassword) {
         this.errors.confirmPassword = "Passwords do not match";
         valid = false;
       }
@@ -301,27 +325,31 @@ export default {
         this.errors.city = "City is required";
         valid = false;
       }
+      if (!this.form.address.trim()) {
+        this.errors.address = "Address is required";
+        valid = false;
+      }
+      if (!this.form.website.trim()) {
+        this.errors.website = "Website is required";
+        valid = false;
+      }
+      if (!this.form.teamSize.trim()) {
+        this.errors.teamSize = "Team size is required";
+        valid = false;
+      }
+      if (!this.form.crn.trim()) {
+        this.errors.crn = "CRN is required";
+        valid = false;
+      }
       return valid;
     },
-    submit() {
-      if (!this.validateForm()) return;
-      const payload = {
-        companyName: this.form.companyName,
-        username: this.form.username || this.form.companyName.toLowerCase().replace(/\s+/g, "_"),
-        email: this.form.email,
-        password: this.form.password,
-        phone: this.form.phone,
-        address: this.form.address,
-        city: this.form.city,
-        website: this.form.website || "",
-        teamSize: this.form.teamSize || "",
-        crn: this.form.crn || "",
-        description: this.form.description || "",
-        portfolio: this.form.portfolio || "",
-        logoImage: this.form.logoImage,
-        crnImage: this.form.crnImage,
-      };
-      this.$emit("submit", payload);
+    handleSubmit() {
+      const isValid = this.validateForm();
+      if (isValid) {
+        this.$emit("submit-form", this.form);
+      } else {
+        this.$forceUpdate();
+      }
     },
   },
 };
@@ -340,5 +368,16 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* ✅ يمنع أي أيقونات تلقائية داخل حقول الباسورد */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"] {
+  background-image: none !important;
+  background-position: right !important;
+  background-repeat: no-repeat !important;
 }
 </style>
