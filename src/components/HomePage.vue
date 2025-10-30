@@ -270,7 +270,7 @@
               </div>
         
               <img
-                :src="offer.imageUrl"
+                :src="offer.image"
                 :alt="offer.title"
                 class="w-full rounded-t-2xl h-48 object-cover" 
                 />
