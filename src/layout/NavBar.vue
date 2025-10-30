@@ -162,13 +162,13 @@
         <div v-else class="hidden lg:flex items-center gap-x-3">
           <router-link
             to="/signup"
-            class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
+            class="btn btn-white  btn-sm rounded-[10px] bg-accent-color text-white border-none hover:bg-[#497bb3]"
           >
             {{ $t('navbar.signup') }}
           </router-link>
           <router-link
             to="/login"
-            class="btn btn-outline btn-sm text-accent-color rounded-[10px] hover:bg-white"
+            class="btn btn-outline  btn-sm text-accent-color rounded-[10px] hover:bg-white border-accent-color border-2"
           >
             {{ $t('navbar.login') }}
           </router-link>
