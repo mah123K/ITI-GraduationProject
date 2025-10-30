@@ -31,7 +31,7 @@
     <div class="flex justify-center mb-10">
       <div class="grid grid-cols-2 gap-20 md:grid-cols-4">
         <div
-          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
@@ -46,7 +46,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
@@ -61,7 +61,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
@@ -76,7 +76,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>
@@ -93,7 +93,7 @@
       </div>
     </div>
 
-    <section id="how-it-works" class="relative isolate bg-white py-8">
+    <section id="how-it-works" class="relative isolate bg-white py-8 dark:bg-dark-blue">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <header class="text-center ">
@@ -199,7 +199,7 @@
 
           <!-- Text List Section -->
           <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <li class="bg-[#f6f6f6] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <div class="text-4xl shrink-0">
                 <img
                   class="w-10"
@@ -212,21 +212,21 @@
               </p>
             </li>
 
-            <li class="bg-[#f6f6f6] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-people-group text-accent-color text-3xl shrink-0"></i>
               <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
                 {{ $t('home.whyUs.point2') }}
               </p>
             </li>
 
-            <li class="bg-[#f6f6f6] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-secondary-blue dark:bg-white  p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-address-card text-accent-color text-3xl shrink-0"></i>
               <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
                 {{ $t('home.whyUs.point3') }}
               </p>
             </li>
 
-            <li class="bg-[#f6f6f6] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-headphones text-accent-color text-3xl shrink-0"></i>
               <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
                 {{ $t('home.whyUs.point4') }}
@@ -364,7 +364,7 @@
       </div>
     </section>
 
-    <section class="work-gallery py-16 bg-gray-50">
+    <section class="work-gallery py-16 bg-gray-50 dark:bg-dark-blue">
       <div class="text-center mb-10">
         <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
           {{ $t('home.gallery.title') }}

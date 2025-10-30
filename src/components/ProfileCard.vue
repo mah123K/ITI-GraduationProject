@@ -21,7 +21,7 @@
         <path
           class="transition-all duration-500"
           :class="{
-            'fill-[#0099FF]': isHovered,
+            'fill-accent-color': isHovered,
             'fill-white': !isHovered,
           }"
           d="
@@ -117,7 +117,7 @@
 
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-[#0369F0]"></i>
-              <span>{{ profile.location }}</span>
+              <span class="dark:text-accent-color">{{ profile.location }}</span>
             </div>
           </div>
           <button

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white shadow-2xl rounded-3xl p-8 pt-6 w-[1200px] min-h-[600px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
+    class="bg-white shadow-2xl dark:text-black rounded-3xl p-8 pt-6 w-[1200px] min-h-[600px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
   >
     <h2 class="text-3xl font-bold mb-8 text-center text-accent-color">Company Registration</h2>
 
