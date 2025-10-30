@@ -235,6 +235,22 @@ export default {
         }
       })
 
+      // Listen for admin profile changes
+      window.addEventListener('adminProfileChanged', (e) => {
+        if (e.detail.name) {
+          userName.value = e.detail.name;
+          localStorage.setItem('adminName', e.detail.name);
+        }
+        if ('photoURL' in e.detail) {
+          userPhoto.value = e.detail.photoURL || '';
+          if (e.detail.photoURL) {
+            localStorage.setItem('adminPhoto', e.detail.photoURL);
+          } else {
+            localStorage.removeItem('adminPhoto');
+          }
+        }
+      });
+
       // listen to storage changes (in case AdminProfile updates localStorage)
       window.addEventListener('storage', (e) => {
         if (e.key === 'adminName') userName.value = e.newValue || ''
