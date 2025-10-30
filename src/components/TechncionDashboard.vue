@@ -1021,7 +1021,7 @@ watch(
   <button
     v-if="technicianId && mainTab !== 'chat'"
     @click="handleTabChange('chat')"
-    class="sticky bottom-5 left-300 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 relative"
+    class="cursor-pointer sticky bottom-5 left-360 z-50 bg-[#133B5D] text-white rounded-full p-4 shadow-lg hover:bg-[#1b5383] transition-transform hover:scale-110 "
   >
     <i class="fa-solid fa-comments text-3xl"></i>
 
