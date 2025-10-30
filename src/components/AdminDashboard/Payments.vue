@@ -76,9 +76,14 @@
           <td class="py-3 px-4">{{ payment.id }}</td>
           <td class="py-3 px-4">{{ payment.customer }}</td>
           <td class="py-3 px-4">{{ payment.orderId }}</td>
-          <td class="py-3 px-4 font-semibold">${{ payment.amount }}</td>
+          <td class="py-3 px-4 font-semibold">{{ payment.amount }}EGP</td>
          
-          <td class="py-3 px-4">{{ payment.date }}</td>
+          <td class="py-3 px-4">
+            <div class="flex flex-col">
+              <span class="text-gray-700 font-medium">{{ payment.date }}</span>
+              <span class="text-gray-500 text-xs">{{ payment.time }}</span>
+            </div>
+          </td>
           <td class="py-3 px-4">
             <span
               :class="[
@@ -177,11 +182,15 @@
 
           <div>
             <label class="text-sm font-medium text-gray-600">Status</label>
-            <input
+            <select
               v-model="selectedPayment.status"
               :disabled="modalType === 'view'"
-              class="w-full p-2 border rounded-lg text-sm"
-            />
+              class="w-full p-2 border rounded-lg text-sm bg-white"
+            >
+              <option v-for="status in statusOptions" :key="status" :value="status.toLowerCase()">
+                {{ status }}
+              </option>
+            </select>
           </div>
 
           <div class="flex justify-end mt-4" v-if="modalType === 'edit'">
@@ -240,7 +249,7 @@ export default {
       searchQuery: '',
       filterStatus: 'All',
       showFilter: false,
-      statusOptions: ['All', 'completed', 'unconfirmed', 'upcoming', 'new'],
+      statusOptions: ['Completed', 'Pending', 'Failed', 'Refunded', 'Processing'],
     };
   },
   created() {
@@ -260,7 +269,11 @@ export default {
             orderId: `ORD-${String(o.id).padStart(3, '0')}`,
             amount: o.price ?? o.amount ?? 0,
             method: o.paymentMethod || 'Cash',
-            date: o.date || '',
+            date: o.appointmentDate?.toDate().toLocaleDateString() || '',
+            time: o.appointmentDate?.toDate().toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit'
+            }) || '',
             status: rawStatus.toString().toLowerCase(),
           };
         });

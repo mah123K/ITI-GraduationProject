@@ -82,14 +82,14 @@
             <td class="py-3 px-4">{{ company.phone || '-' }}</td>
           <td class="py-3 px-4">
   {{
-    typeof craft.address === 'object'
+    typeof company.address === 'object'
       ? (
-          craft.address.city ||
-          Object.values(craft.address)
+          company.address.city ||
+          Object.values(company.address)
             .filter(v => typeof v === 'string' && v.length === 1)
             .join('')
         ) || '-'
-      : craft.address || '-'
+      : company.address || '-'
   }}
 </td>
 

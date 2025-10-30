@@ -8,22 +8,40 @@
 
       <!-- Content -->
       <div v-else>
-        <!-- ✅ Profile Picture -->
+        <!-- Profile Picture Section -->
         <div class="flex flex-col items-center mb-6">
-          <div
-            @click="triggerFileInput"
-            class="w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center bg-gray-100 overflow-hidden cursor-pointer hover:opacity-80 transition"
-          >
-            <img
-              v-if="photoURL"
-              :src="photoURL"
-              alt="Profile"
-              class="w-full h-full object-cover"
-            />
-            <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
+          <div class="relative">
+            <div
+              @click="triggerFileInput"
+              class="w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center bg-gray-100 overflow-hidden cursor-pointer hover:opacity-80 transition"
+            >
+              <img
+                v-if="photoURL"
+                :src="photoURL"
+                alt="Profile"
+                class="w-full h-full object-cover"
+              />
+              <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
+            </div>
+            
+            <!-- Delete Image Button -->
+         <button
+  v-if="photoURL"
+  @click="deleteProfileImage"
+  class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm"
+  title="Remove profile picture"
+>
+  <i class="fa-solid fa-xmark text-[10px]"></i>
+</button>
+
           </div>
 
-          <!-- 🔹 Hidden Input for image -->
+          <!-- Upload Instructions -->
+          <p class="text-sm text-gray-500 mt-2">
+            {{ photoURL ? 'Click to change picture' : 'Click to add picture' }}
+          </p>
+
+          <!-- Hidden Input for image -->
           <input
             ref="fileInput"
             type="file"
@@ -64,7 +82,7 @@
         </div>
         
         <div class="mt-3">
-          <p v-if="successMessage" class="text-green-600 text-sm">{{ successMessage }}</p>
+          
           <p v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</p>
         </div>
       </div>
@@ -123,12 +141,11 @@ export default {
       this.$refs.fileInput.click();
     },
 
-    // 🔹 عند اختيار صورة جديدة
-    onFileChange(e) {
+    // Handle image selection and upload to Cloudinary
+    async onFileChange(e) {
       const file = e.target.files[0];
       if (file && file.type.startsWith("image/")) {
         this.file = file;
-        //  عرض الصورة مباشرة قبل الحفظ
         this.photoURL = URL.createObjectURL(file);
         this.errorMessage = '';
       } else {
@@ -136,7 +153,57 @@ export default {
       }
     },
 
-    // 🔹 تحديث الملف الشخصي
+    // Update profile with Cloudinary image
+    // Delete profile image
+    async deleteProfileImage() {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          this.errorMessage = 'Please login first.';
+          return;
+        }
+
+        this.saving = true;
+        this.errorMessage = '';
+        this.successMessage = '';
+
+        // Update Firebase Auth profile
+        await updateProfile(user, {
+          photoURL: null
+        });
+
+        // Update Firestore
+        const refDoc = doc(db, 'admin', user.uid);
+        await setDoc(
+          refDoc,
+          {
+            photoURL: null
+          },
+          { merge: true }
+        );
+
+        // Clear local state and storage
+        this.photoURL = null;
+        this.file = null;
+        localStorage.removeItem('adminPhoto');
+
+        // Dispatch event for header update
+        const event = new CustomEvent('adminProfileChanged', {
+          detail: {
+            photoURL: null
+          }
+        });
+        window.dispatchEvent(event);
+
+        this.successMessage = 'Profile picture removed successfully';
+      } catch (error) {
+        console.error('Error removing profile picture:', error);
+        this.errorMessage = 'Failed to remove profile picture';
+      } finally {
+        this.saving = false;
+      }
+    },
+
     async updateProfile() {
       try {
         const user = auth.currentUser;
@@ -151,9 +218,15 @@ export default {
         let newPhotoURL = this.photoURL;
 
         if (this.file) {
-          const fileRef = storageRef(storage, `admin/${user.uid}/profile.jpg`);
-          await uploadBytes(fileRef, this.file);
-          newPhotoURL = await getDownloadURL(fileRef);
+          try {
+            const { uploadImageOnly } = await import('../../composables/useImageUpload');
+            newPhotoURL = await uploadImageOnly(this.file);
+          } catch (uploadError) {
+            console.error('Error uploading to Cloudinary:', uploadError);
+            this.errorMessage = 'Failed to upload image. Please try again.';
+            this.saving = false;
+            return;
+          }
         }
 
         await updateProfile(user, {
@@ -161,7 +234,6 @@ export default {
           photoURL: newPhotoURL,
         });
 
-        
         const refDoc = doc(db, 'admin', user.uid);
         await setDoc(
           refDoc,
@@ -171,9 +243,19 @@ export default {
           },
           { merge: true }
         );
+        
         this.photoURL = newPhotoURL;
         localStorage.setItem('adminPhoto', newPhotoURL);
         localStorage.setItem('adminName', this.name);
+        
+        // Dispatch event for header update
+        const event = new CustomEvent('adminProfileChanged', {
+          detail: {
+            name: this.name,
+            photoURL: newPhotoURL
+          }
+        });
+        window.dispatchEvent(event);
 
    
         try {
