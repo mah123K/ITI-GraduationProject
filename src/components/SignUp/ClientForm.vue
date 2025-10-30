@@ -38,6 +38,10 @@
         @change="previewClientProfile"
         class="hidden"
       />
+
+      <p v-if="errors.profileImage" class="text-red-500 text-sm mt-1">
+        {{ errors.profileImage }}
+      </p>
     </div>
 
     <!-- Form -->
@@ -192,10 +196,11 @@
     </div>
 
     <button
-      @click="submit"
-      class="mt-10 mx-auto bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer"
+      @click="handleSubmit"
+      :disabled="isSubmitting"
+      class="mt-10 mx-auto bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      Sign Up
+      {{ isSubmitting ? "Submitting..." : "Sign Up" }}
     </button>
 
     <p class="text-center mt-4 text-gray-500">
@@ -206,8 +211,6 @@
 </template>
 
 <script>
-import { uploadImageOnly } from '@/composables/useImageUpload';
-
 export default {
   props: {
     loginRoute: { type: String, required: true },
@@ -217,10 +220,10 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       profileClientPreview: null,
+      isSubmitting: false,
       errors: {},
       form: {
         name: "",
-        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -239,9 +242,9 @@ export default {
   methods: {
     inputClass(error, hasPadding = false) {
       return [
-        "w-full p-4 border rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none",
+        "w-full p-4 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200",
         hasPadding ? "pr-12" : "",
-        error ? "border-red-500" : "border-gray-300",
+        error ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-[#5984C6]",
       ];
     },
     togglePassword() {
@@ -255,40 +258,38 @@ export default {
         this.errors[field] = "";
       }
     },
-   async previewClientProfile(e) {
-  const file = e.target.files[0];
-  if (file) {
-    if (file.size > 5 * 1024 * 1024) {
-      this.errors.profileImage = "Image should be less than 5MB";
-      return;
-    }
+    setSubmitting(value) {
+      this.isSubmitting = value;
+    },
+    handleSubmit() {
+      const isValid = this.validateForm();
+      if (isValid) {
+        this.$emit("submit-form", this.form);
+      } else {
+        this.$forceUpdate();
+      }
+    },
 
-    // عرض معاينة مؤقتة
-    this.profileClientPreview = URL.createObjectURL(file);
-    this.errors.profileImage = "";
-
-    try {
-      // رفع الصورة إلى Cloudinary
-      const imageUrl = await uploadImageOnly(file);
-      this.form.profileImage = imageUrl; // حفظ اللينك بدلاً من الملف
-      console.log("✅ Profile image uploaded:", imageUrl);
-    } catch (err) {
-      this.errors.profileImage = "Failed to upload image";
-      console.error(err);
-    }
-  }
-},
-
+    async previewClientProfile(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          this.errors.profileImage = "Image should be less than 5MB";
+          return;
+        }
+        this.profileClientPreview = URL.createObjectURL(file);
+        this.errors.profileImage = "";
+        this.form.profileImage = file;
+      }
+    },
     validatePasswordLive() {
       this.errors.password = "";
       this.errors.confirmPassword = "";
-
       if (!this.form.password) {
         this.errors.password = "Password is required";
-      } else if (this.form.password.length < 6) {
-        this.errors.password = "Password must be at least 6 characters";
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(this.form.password)) {
+        this.errors.password = "Password must include uppercase, lowercase, number, and symbol";
       }
-
       if (this.form.confirmPassword && this.form.password !== this.form.confirmPassword) {
         this.errors.confirmPassword = "Passwords do not match";
       }
@@ -314,14 +315,8 @@ export default {
         newErrors.email = "Please enter a valid email address";
         valid = false;
       }
-
-      // 🔒 Password
       if (!this.form.password.trim()) {
         newErrors.password = "Password is required";
-        valid = false;
-      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(this.form.password)) {
-        newErrors.password =
-          "Password must have uppercase, lowercase, number, and special character";
         valid = false;
       }
 
@@ -363,14 +358,14 @@ export default {
       return valid && Object.keys(newErrors).length === 0;
     },
 
-    submit() {
-      if (this.validateForm()) {
-        if (!this.form.username) {
-          this.form.username = this.form.name.toLowerCase().replace(/\s+/g, "_");
-        }
-        this.$emit("submit", this.form);
-      }
-    },
+    // submit() {
+    //   if (this.validateForm()) {
+    //     if (!this.form.username) {
+    //       this.form.username = this.form.name.toLowerCase().replace(/\s+/g, "_");
+    //     }
+    //     this.$emit("submit", this.form);
+    //   }
+    // },
   },
 };
 </script>
@@ -388,5 +383,16 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* ✅ يمنع أي أيقونات تلقائية داخل حقول الباسورد */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"] {
+  background-image: none !important;
+  background-position: right !important;
+  background-repeat: no-repeat !important;
 }
 </style>
