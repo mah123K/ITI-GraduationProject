@@ -78,7 +78,7 @@
           <td class="py-3 px-4">{{ order.customer }}</td>
           <td class="py-3 px-4">{{ order.service }}</td>
           <td class="py-3 px-4">{{ order.provider }}</td>
-          <td class="py-3 px-4 font-semibold">${{ order.amount }}</td>
+          <td class="py-3 px-4 font-semibold">{{ order.amount }}EGP</td>
         <td class="py-3 px-4">
   <div class="flex flex-col">
     <span class="text-gray-700 font-medium">{{ order.date }}</span>
@@ -196,14 +196,17 @@
           </div>
 
          <div>
-  <label class="text-sm font-medium text-gray-600">Status</label>
- <input
-    v-model="selectedOrder.status"
-    :disabled="modalType === 'view'"
-    class="w-full p-2 border rounded-lg text-sm"
- />
-
-</div>
+            <label class="text-sm font-medium text-gray-600">Status</label>
+            <select
+              v-model="selectedOrder.status"
+              :disabled="modalType === 'view'"
+              class="w-full p-2 border rounded-lg text-sm bg-white"
+            >
+              <option v-for="status in statusOptions" :key="status" :value="status.toLowerCase()">
+                {{ status }}
+              </option>
+            </select>
+          </div>
 
 
           <div class="flex justify-end mt-4" v-if="modalType === 'edit'">
@@ -257,7 +260,7 @@ export default {
     const modalType = ref("");
     const selectedOrder = ref({});
 
-   const statusOptions = ["All", "completed", "unconfirmed", "upcoming", "new"];
+   const statusOptions = ["Completed", "Pending", "In Progress", "Cancelled", "New"];
 
     
     const fetchOrders = async () => {
