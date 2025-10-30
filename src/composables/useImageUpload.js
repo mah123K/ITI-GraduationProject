@@ -75,9 +75,12 @@ export async function uploadImageOnly(file) {
       formData
     );
 
-    const imageUrl = uploadRes.data.secure_url;
-    console.log("✅ Uploaded to Cloudinary:", imageUrl);
-    return imageUrl;
+    const result = {
+      url: uploadRes.data.secure_url,
+      publicId: uploadRes.data.public_id
+    };
+    console.log("✅ Uploaded to Cloudinary:", result);
+    return result;
   } catch (error) {
     console.error("❌ Image upload failed:", error);
     throw error;
