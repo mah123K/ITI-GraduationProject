@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white-100 flex flex-col md:flex-row mt-15">
     <!-- Sidebar -->
     <aside
-      class="w-full md:w-1/4 bg-[#ffffff] shadow-2xl p-6 flex flex-col items-center relative border border-gray-300"
+      class="w-full md:w-1/4 bg-[#ffffff] shadow-2xl p-6 dark:bg-dark-blue  flex flex-col items-center relative border dark:border-none border-gray-300"
     >
       <div class="relative group">
         <img
@@ -14,7 +14,7 @@
 
         <div
           v-if="isEditing"
-          class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+          class="absolute inset-0  bg-black bg-opacity-40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
           @click="triggerImageUpload"
         >
           <i class="fa-solid fa-camera text-white text-2xl"></i>
@@ -31,8 +31,8 @@
 
       <!-- User Info -->
       <div class="mt-5 text-center break-words">
-        <h2 class="text-xl sm:text-2xl font-bold text-black">{{ tempClient.name }}</h2>
-        <p class="text-gray-500 text-sm break-all">{{ tempClient.email }}</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-black dark:text-white">{{ tempClient.name }}</h2>
+        <p class="text-gray-500 text-sm break-all dark:text-white dark:text-white">{{ tempClient.email }}</p>
       </div>
 
       <div class="flex flex-col gap-3 mt-6 w-full">
@@ -128,7 +128,7 @@
 
       <section v-else class="space-y-6">
         <!-- Personal Info Box -->
-        <div class="bg-white/30 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20">
+        <div class="bg-white/30 dark:bg-accent-color backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20">
           <h3 class="text-xl sm:text-2xl font-semibold text-accent-color mb-4">Personal Information</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -214,7 +214,7 @@
         </div>
 
         <div
-          class="bg-white/30 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
+          class="bg-white/30 dark:bg-accent-color backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
         >
           <div class="flex-1 space-y-4">
             <h3 class="text-lg sm:text-xl font-semibold text-accent-color mb-4 flex items-center gap-2">

@@ -86,9 +86,6 @@
 
 
 <style scoped>
-.contact-page {
-  background-color: #f8fafc;
-}
 </style>
 <script setup>
 import { ref } from "vue";

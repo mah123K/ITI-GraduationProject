@@ -1,21 +1,21 @@
 <template>
   <div>
-    <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full">
+    <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full  dark:bg-dark-blue ">
       <!-- START -->
       <div class="navbar-start items-center gap-2">
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2 rtl:space-x-reverse">
-          <img src="../images/site logo.png" alt="Logo" class="w-[180px] mt-3" />
+          <img :src="logoSrc" alt="Logo" class="w-[180px] mt-3" />
         </router-link>
       </div>
 
       <!-- CENTER (desktop only) -->
       <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal text-black px-1 text-lg space-x-4 rtl:space-x-reverse">
-          <li><router-link to="/" active-class="font-semibold text-black">{{ $t('navbar.home') }}</router-link></li>
+        <ul class="menu menu-horizontal text-accent-color dark:text-white px-1 text-lg space-x-4 rtl:space-x-reverse">
+          <li><router-link to="/" active-class="font-semibold  dark:text-white">{{ $t('navbar.home') }}</router-link></li>
 
           <li class="relative group">
-            <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse hover:text-accent-color transition-colors duration-200">{{ $t('navbar.services') }}</a>
+            <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse  transition-colors duration-200">{{ $t('navbar.services') }}</a>
             <ul class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl">
               <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">{{ $t('navbar.plumbing') }}</router-link></li>
               <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">{{ $t('navbar.electrical') }}</router-link></li>
@@ -24,21 +24,21 @@
             </ul>
           </li>
 
-          <li><router-link to="/offers" active-class="font-semibold text-black">{{ $t('navbar.offers') }}</router-link></li>
-          <li><router-link to="/about" active-class="font-semibold text-black">{{ $t('navbar.about') }}</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-semibold text-black">{{ $t('navbar.contact') }}</router-link></li>
+          <li><router-link to="/offers" active-class="font-semibold dark:text-white">{{ $t('navbar.offers') }}</router-link></li>
+          <li><router-link to="/about" active-class="font-semibold dark:text-white">{{ $t('navbar.about') }}</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-semibold dark:text-white">{{ $t('navbar.contact') }}</router-link></li>
         </ul>
       </div>
 
       <!-- END -->
-      <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center">
+      <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center ">
         <div class="flex items-center me-4 gap-x-3">
           <div class="relative" v-if="user">
             <button @click="toggleNotifications" class="relative cursor-pointer">
-              <i class="fa-solid fa-bell text-xl text-accent-color"></i>
+              <i class="fa-solid fa-bell text-xl text-accent-color dark:text-white"></i>
               <span
                 v-if="unreadCount > 0"
-                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                class="absolute -top-1 -right-1  bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
               >
                 {{ unreadCount }}
               </span>
@@ -47,21 +47,21 @@
             <transition name="fade-slide">
               <div
                 v-if="showNotifications"
-                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50"
+                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-dark-blue  z-50"
               >
-                <div class="p-3 font-semibold text-[#133B5D] border-b">{{ $t('navbar.notifications') }}</div>
+                <div class="p-3 font-semibold text-[#133B5D] border-b dark:text-white">{{ $t('navbar.notifications') }}</div>
                 <ul class="max-h-64 overflow-y-auto">
                   <li
                     v-for="n in notifications"
                     :key="n.id"
-                    class="p-3 border-b last:border-none text-sm hover:bg-gray-50"
+                    class="p-3 border-b last:border-none text-sm hover:bg-secondary-blue dark:text-white"
                   >
-                    <p class="text-gray-800">{{ n.message }}</p>
+                    <p class="text-gray-500 ">{{ n.message }}</p>
                     <p class="text-xs text-gray-400 mt-1">
                       {{ n.timestamp?.toDate?.().toLocaleString?.() || "Just now" }}
                     </p>
                   </li>
-                  <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
+                  <li v-if="!notifications.length" class="p-3 text-gray-400 text-center dark:text-white">
                     {{ $t('navbar.noNotifications') }}
                   </li>
                 </ul>
@@ -75,16 +75,16 @@
             class="relative cursor-pointer"
             :title="$t('navbar.myOrdersTitle')"
           >
-            <i class="text-accent-color fa-solid fa-cart-shopping"></i>
+            <i class="text-accent-color fa-solid fa-cart-shopping dark:text-white"></i>
           </router-link>
 
           <button @click="toggleLanguage" class="cursor-pointer text-xl text-accent-color">
-            <i class="fa-solid fa-globe"></i>
+            <i class="fa-solid fa-globe dark:text-white"></i>
           </button>
 
-          <button @click="toggleDarkMode" class="cursor-pointer">
+          <button @click="toggleDarkMode" class="cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
             <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-            <i v-else class="fa-solid fa-moon text-accent-color text-xl"></i>
+            <i v-else class="fa-solid fa-moon text-accent-color dark:text-white text-xl"></i>
           </button>
         </div>
 
@@ -94,7 +94,7 @@
         </div>
 
         <div v-else-if="user" class="relative flex items-center">
-          <span class="font-medium text-black hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
+          <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
 
           <div
             ref="profileButton"
@@ -257,7 +257,7 @@ export default {
     return {
       isSidebarOpen: false,
       isUserMenuOpen: false,
-      isDark: false,
+      isDark: false, // reactive theme flag
       user: null,
       firstName: "",
       userImage: null,
@@ -265,9 +265,17 @@ export default {
       notifications: [],
       unreadCount: 0,
       showNotifications: false,
+      mql: null, // media query listener reference
+      lightLogo: new URL('../images/site logo.png', import.meta.url).href,
+      darkLogo: new URL('../images/white logo.png', import.meta.url).href,
+
     };
   },
-
+  computed: {
+    logoSrc() {
+      return this.isDark ? this.darkLogo : this.lightLogo;
+    },
+  },
   watch: {
     isSidebarOpen(v) {
       document.documentElement.classList.toggle("sidebar-open", v);
@@ -297,15 +305,29 @@ export default {
       this.isUserMenuOpen = false;
       this.$router.push("/login");
     },
-    toggleDarkMode() {
-      this.isDark = !this.isDark;
+
+    applyTheme(theme) {
+      // theme: 'dark' or 'light'
       const root = document.documentElement;
-      if (this.isDark) {
-        root.classList.add("dark");
-        localStorage.setItem("theme", "dark");
+      if (theme === 'dark') {
+        root.setAttribute('data-theme', 'dark'); // recommended data-attribute approach
+        root.classList.add('dark'); // keep compatibility with Tailwind setups that rely on .dark
+        this.isDark = true;
       } else {
-        root.classList.remove("dark");
-        localStorage.setItem("theme", "light");
+        root.removeAttribute('data-theme');
+        root.classList.remove('dark');
+        this.isDark = false;
+      }
+    },
+
+    toggleDarkMode() {
+      // Toggle and persist
+      const next = this.isDark ? 'light' : 'dark';
+      this.applyTheme(next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        // ignore
       }
     },
 
@@ -334,34 +356,51 @@ export default {
   },
 
   mounted() {
-    const savedTheme = localStorage.getItem("theme");
-    const root = document.documentElement;
-    if (savedTheme === "dark") {
-      this.isDark = true;
-      root.classList.add("dark");
-    } else {
-      this.isDark = false;
-      root.classList.remove("dark");
+    // THEME: initialize from saved choice or system preference
+    try {
+      const saved = localStorage.getItem('theme'); // 'light' | 'dark' | null
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        this.applyTheme('dark');
+      } else {
+        this.applyTheme('light');
+      }
+
+      // Listen to system changes only if user hasn't manually selected a theme
+      if (window.matchMedia) {
+        this.mql = window.matchMedia('(prefers-color-scheme: dark)');
+        this.mqlListener = (e) => {
+          try {
+            const savedNow = localStorage.getItem('theme');
+            if (!savedNow) {
+              this.applyTheme(e.matches ? 'dark' : 'light');
+            }
+          } catch (err) {}
+        };
+        if (this.mql.addEventListener) {
+          this.mql.addEventListener('change', this.mqlListener);
+        } else if (this.mql.addListener) {
+          this.mql.addListener(this.mqlListener);
+        }
+      }
+    } catch (e) {
+      // ignore localStorage errors
     }
 
+    // existing user updated event listener
+    window.addEventListener("userUpdated", (event) => {
+      const updated = event.detail;
+      if (updated.image) {
+        this.userImage = updated.image;
+        localStorage.setItem("userImage", updated.image);
+      }
+      if (updated.name) {
+        this.firstName = updated.name.split(" ")[0];
+        localStorage.setItem("userName", updated.name);
+      }
+    });
 
-      window.addEventListener("userUpdated", (event) => {
-        const updated = event.detail;
-        if (updated.image) {
-          this.userImage = updated.image;
-          localStorage.setItem("userImage", updated.image);
-        }
-        if (updated.name) {
-          this.firstName = updated.name.split(" ")[0];
-          localStorage.setItem("userName", updated.name);
-        }
-      });
-
-    // 2. Load saved language
-    // const savedLang = localStorage.getItem('lang') || 'en';
-    // this.$i18n.locale = savedLang;
-    // document.documentElement.lang = savedLang;
-    // document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+    // Auth listener + notifications (unchanged)
     const auth = getAuth();
     onAuthStateChanged(auth, async (currentUser) => {
       this.loadingUser = true;
@@ -392,6 +431,7 @@ export default {
       this.loadingUser = false;
     });
 
+    // close dropdowns if click outside
     document.addEventListener("click", (e) => {
       const profileButton = this.$refs.profileButton;
       const dropdown = this.$refs.dropdown;
@@ -405,6 +445,19 @@ export default {
         this.isUserMenuOpen = false;
       }
     });
+  },
+
+  beforeUnmount() {
+    // cleanup matchMedia listener
+    if (this.mql) {
+      try {
+        if (this.mql.removeEventListener) {
+          this.mql.removeEventListener('change', this.mqlListener);
+        } else if (this.mql.removeListener) {
+          this.mql.removeListener(this.mqlListener);
+        }
+      } catch (e) {}
+    }
   },
 };
 </script>
@@ -451,6 +504,8 @@ export default {
   opacity: 0;
   transform: translateY(-10px);
 }
+.logo-light { display: inline-block; }
+.logo-dark  { display: none; }
 
 /* الوضع الحالي للـ aside */
 [dir="rtl"] aside {

@@ -4,7 +4,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <div class="min-h-screen flex flex-col lg:flex-row bg-white mt-2 rtl:lg:flex-row-reverse">
+  <div class="min-h-screen dark:bg-dark-blue flex flex-col lg:flex-row bg-white mt-2 rtl:lg:flex-row-reverse">
     <div
       class="relative lg:w-1/2 w-full flex items-center justify-center overflow-hidden min-h-[45vh] md:min-h-[50vh] lg:min-h-screen"
     >
@@ -40,7 +40,7 @@
 
         <form @submit.prevent="handleSignIn" class="space-y-5">
           <div class="mb-6 lg:mb-8 text-left rtl:text-right">
-            <label for="email" class="block text-sm font-medium text-black mb-2"
+            <label for="email" class="block text-sm font-medium text-black dark:text-white mb-2"
               >{{ $t('loginPage.emailLabel') }}</label
             >
             <div class="relative">
@@ -63,7 +63,7 @@
           </div>
 
           <div class="text-left rtl:text-right">
-            <label for="password" class="block text-sm font-medium text-black mb-2">
+            <label for="password" class="block text-sm font-medium text-black mb-2 dark:text-white">
               {{ $t('loginPage.passwordLabel') }}
             </label>
 
@@ -98,7 +98,7 @@
 
           <button
             type="submit"
-            class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-[#5984C6] hover:bg-[#4a73b1] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5984C6]"
+            class="w-full  py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-[#5984C6] hover:bg-[#4a73b1] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5984C6]"
           >
             {{ $t('loginPage.signInButton') }}
           </button>
@@ -113,17 +113,17 @@
         <button
           @click="handleGoogleSignIn"
           type="button"
-          class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
+          class="w-full  flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
         >
           <img
             src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1761736435/search_1_kmka0a.png"
             alt="Google"
             class="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"
           />
-          <span class="text-gray-700 font-medium">{{ $t('loginPage.googleButton') }}</span>
+          <span class="text-gray-700 font-medium dark:text-white">{{ $t('loginPage.googleButton') }}</span>
         </button>
 
-        <p class="mt-6 text-center text-gray-600 text-sm">
+        <p class="mt-6 text-center text-gray-600 text-sm dark:text-white">
           {{ $t('loginPage.promptSignup') }}
           <router-link
             to="/signup"
