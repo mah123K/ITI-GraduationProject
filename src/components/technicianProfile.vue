@@ -17,7 +17,24 @@ import { onAuthStateChanged } from "firebase/auth";
 
 // 🟩 Import card component
 import UserServiceCard from "../components/UserServiceCard.vue";
+// NEW: Import the custom alert popup
+import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path if needed
 
+// ... (your existing code) ...
+
+// NEW: Refs for the custom alert popup
+const showPopupMessage = ref(false);
+const popupMessageContent = ref("");
+
+// NEW: Helper functions for custom alert popup
+const triggerAlert = (message) => {
+  popupMessageContent.value = message;
+  showPopupMessage.value = true;
+};
+const closeAlert = () => {
+  showPopupMessage.value = false;
+  popupMessageContent.value = "";
+};
 // 🟦 Dynamic service list from Firestore
 const serviceList = ref([]);
 
@@ -213,7 +230,7 @@ const availableTimeSlots = computed(() => {
 // --- Popup, Form & Order Submission ---
 const openPopup = (service = null, price = null) => {
   if (!clientUser.value) {
-    alert("Please log in as a client to place an order.");
+triggerAlert("Please select an available day and time.");
     router.push("/login");
     return;
   }
@@ -251,7 +268,7 @@ const submitOrder = async () => {
     !clientUser.value ||
     !technician.value
   ) {
-    alert("Please select an available day and time.");
+    triggerAlert("Please select an available day and time.");
     return;
   }
 
@@ -298,11 +315,11 @@ const submitOrder = async () => {
     const docRef = await addDoc(collection(db, "orders"), orderData);
 
     console.log("Order submitted with ID:", docRef.id);
-    alert("Order submitted successfully!");
+    triggerAlert("Order submitted successfully!");
     closePopup();
   } catch (error) {
     console.error("Error submitting order:", error);
-    alert("Failed to submit order. Please try again.");
+    triggerAlert("Failed to submit order. Please try again.");
   } finally {
     isSubmitting.value = false;
   }
@@ -906,7 +923,14 @@ watch(selectedDayInfo, () => {
         </div>
       </div>
       <div v-else class="text-gray-500 mt-10">No feedback available yet.</div>
+
+    <AlertPopup
+  :show="showPopupMessage"
+  :message="popupMessageContent"
+  @close="closeAlert"
+/>
     </div>
+    
   </div>
 </template>
 
