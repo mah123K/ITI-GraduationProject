@@ -5,7 +5,7 @@
       :key="tab"
       @click="$emit('tab-change', tab)"
       :class="[
-        'flex-1 px-8 py-3 font-semibold text-lg flex items-center justify-center gap-2 transition-all duration-300',
+        'flex-1  px-8 py-3 font-semibold text-lg flex items-center justify-center gap-2 transition-all duration-300',
         activeTab === tab
           ? 'bg-accent-color text-white'
           : 'bg-[#DAECF6] text-gray-700 ',

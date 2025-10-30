@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:text-black shadow-2xl rounded-3xl p-8 pt-4 w-[1200px] min-h-[500px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
+    class="bg-white dark:text-white dark:bg-dark-blue shadow-2xl rounded-3xl p-8 pt-4 w-[1200px] min-h-[500px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
   >
     <h2 class="text-3xl font-bold mb-3 text-center text-accent-color">Client Registration</h2>
 
@@ -29,7 +29,7 @@
         </svg>
       </div>
 
-      <p class="text-lg font-semibold text-gray-600">Profile Picture (Optional)</p>
+      <p class="text-lg font-semibold text-gray-600 dark:text-white">Profile Picture (Optional)</p>
 
       <input
         ref="clientProfileInput"
@@ -203,7 +203,7 @@
       {{ isSubmitting ? "Submitting..." : "Sign Up" }}
     </button>
 
-    <p class="text-center mt-4 text-gray-500">
+    <p class="text-center mt-4 text-gray-500 dark:text-white">
       Already have an account?
       <a :href="loginRoute" class="text-accent-color font-semibold hover:underline"> Login here </a>
     </p>
