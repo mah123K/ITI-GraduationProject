@@ -100,7 +100,7 @@
           <h2 class="main-header text-accent-color">
             {{ $t('home.howItWorks.title') }}
           </h2>
-          <p class="mt-3 text-base sm:text-lg text-gray-600">
+          <p class="mt-3 text-base sm:text-lg text-gray-600 dark:text-white">
             {{ $t('home.howItWorks.subtitle') }}
           </p>
         </header>
@@ -246,7 +246,7 @@
           <div>
         <h2 class="text-center main-header">{{ $t('home.offers.title') }}</h2>
         </div>
-        <div class="text-accent-color flex justify-end rtl:justify-end me-60 rtl:ms-10 rtl:me-60">
+        <div class="text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60">
           <router-link to="/offers">{{ $t('home.offers.seeMore') }}</router-link>
         </div>
         <div v-if="loading" class="flex justify-center mt-10">
@@ -327,7 +327,7 @@
               <div class="flex justify-center text-yellow-300 mb-2">
                 <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
               </div>
-              <p class="text-gray-700 max-w-xl">
+              <p class="text-gray-700 max-w-xl dark:text-white">
                 {{ item.text }}
               </p>
             </div>
@@ -369,7 +369,7 @@
         <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
           {{ $t('home.gallery.title') }}
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto text-base">
+        <p class="text-gray-600 max-w-2xl mx-auto text-base dark:text-white">
           {{ $t('home.gallery.description') }}
         </p>
       </div>
