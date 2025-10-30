@@ -3,8 +3,6 @@
     <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full  dark:bg-dark-blue ">
       <!-- START -->
       <div class="navbar-start items-center gap-2">
-       
-
         <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2 rtl:space-x-reverse">
           <img :src="logoSrc" alt="Logo" class="w-[180px] mt-3" />
@@ -99,18 +97,18 @@
           <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
 
           <div
-              ref="profileButton"
-              class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden"
-              @click="toggleUserMenu"
-            >
-        <img
-          v-if="userImage"
-          :src="userImage"
-          alt="User"
-          class="w-full h-full object-cover"
-          />
-        <i v-else class="bi bi-person text-gray-500 text-xl"></i>
-        </div>
+            ref="profileButton"
+            class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden"
+            @click="toggleUserMenu"
+          >
+            <img
+              v-if="userImage"
+              :src="userImage"
+              alt="User"
+              class="w-full h-full object-cover"
+            />
+            <i v-else class="bi bi-person text-gray-500 text-xl"></i>
+          </div>
 
           <transition name="fade-slide">
             <div
@@ -122,13 +120,13 @@
                 <div
                   class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
                 >
-                   <img
-          v-if="userImage"
-          :src="userImage"
-          alt="User"
-          class="w-full h-full object-cover  rounded-full"
-          />
-        <i v-else class="bi bi-person text-gray-500 text-xl"></i>
+                  <img
+                    v-if="userImage"
+                    :src="userImage"
+                    alt="User"
+                    class="w-full h-full object-cover  rounded-full"
+                  />
+                  <i v-else class="bi bi-person text-gray-500 text-xl"></i>
                 </div>
 
                 <div id="content" class="px-4 pb-4">
@@ -160,7 +158,8 @@
           </transition>
         </div>
 
-        <div v-else class="flex items-center gap-x-3">
+        <!-- Hide login/signup on mobile -->
+        <div v-else class="hidden lg:flex items-center gap-x-3">
           <router-link
             to="/signup"
             class="btn btn-white btn-sm rounded-[10px] bg-accent-color text-white"
@@ -175,7 +174,7 @@
           </router-link>
         </div>
 
-        <!-- (Optional) second burger on the right for mobile comfort -->
+        <!-- Burger -->
         <button
           class="lg:hidden p-2 rounded-xl border border-gray-200 hover:bg-gray-100 focus:outline-none focus:ring ml-2"
           @click="isSidebarOpen = true"
@@ -223,6 +222,24 @@
             <li><router-link to="/about" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.about') }}</router-link></li>
             <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.contact') }}</router-link></li>
           </ul>
+
+          <!-- Login/Signup shown only inside sidebar -->
+          <div v-if="!user" class="flex flex-col items-center gap-3 mt-6">
+            <router-link
+              to="/signup"
+              @click="isSidebarOpen = false"
+              class="btn btn-white w-full rounded-[10px] bg-accent-color text-white"
+            >
+              {{ $t('navbar.signup') }}
+            </router-link>
+            <router-link
+              to="/login"
+              @click="isSidebarOpen = false"
+              class="btn btn-outline w-full text-accent-color rounded-[10px] hover:bg-white"
+            >
+              {{ $t('navbar.login') }}
+            </router-link>
+          </div>
         </aside>
       </transition>
     </div>
@@ -453,6 +470,8 @@ export default {
 .slide-fade-leave-active {
   transition: all 0.3s ease;
 }
+
+/* 🔹 الاتجاه الافتراضي (الإنجليزي): من اليمين لليسار */
 .slide-fade-enter-from {
   transform: translateX(100%);
   opacity: 0.3;
@@ -462,6 +481,17 @@ export default {
   opacity: 0;
 }
 
+/* 🔹 في اللغة العربية (dir='rtl'): نعكس الاتجاه — من الشمال لليمين */
+[dir="rtl"] .slide-fade-enter-from {
+  transform: translateX(-100%) !important;
+  opacity: 0.3;
+}
+[dir="rtl"] .slide-fade-leave-to {
+  transform: translateX(-100%) !important;
+  opacity: 0;
+}
+
+/* باقي الحركات */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -477,6 +507,7 @@ export default {
 .logo-light { display: inline-block; }
 .logo-dark  { display: none; }
 
+/* الوضع الحالي للـ aside */
 [dir="rtl"] aside {
   right: auto;
   left: 0;
