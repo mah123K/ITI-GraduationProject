@@ -1,131 +1,37 @@
 <template>
   <div class="theme-bg theme-text text-left rtl:text-right">
     <section class="hero relative w-full h-[90vh] overflow-hidden mt-20">
-  <!-- Hero Images -->
-  <transition-group name="fade" tag="div" class="absolute inset-0">
-    <img
-      v-for="(img, index) in heroImages"
-      :key="index"
-      v-show="currentHeroIndex === index"
-      :src="img"
-      alt="Hero"
-      class="absolute inset-0 h-full w-full object-contain transition-opacity duration-1000"
-    />
-  </transition-group>
+      <!-- Hero Images -->
+      <transition-group name="fade" tag="div" class="absolute inset-0">
+        <img
+          v-for="(img, index) in heroImages"
+          :key="index"
+          v-show="currentHeroIndex === index"
+          :src="img"
+          alt="Hero"
+          class="absolute inset-0 h-full w-full object-contain transition-opacity duration-1000"
+        />
+      </transition-group>
 
-  
+      
 
-  <!-- Indicators -->
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
-    <span
-      v-for="(img, index) in heroImages"
-      :key="'dot-' + index"
-      @click="goToHero(index)"
-      class="w-4 h-4 rounded-full cursor-pointer transition-all duration-500"
-      :class="currentHeroIndex === index ? 'bg-[#5984C6] scale-110' : 'bg-white/60 hover:bg-white/90'"
-    ></span>
-  </div>
-</section>
-
-
-
-  <section id="how-it-works" class="relative isolate bg-white py-16">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
-    <header class="text-center mb-12">
-      <h2 class="main-header text-[#5984C6]">
-        {{ $t('home.howItWorks.title') }}
-      </h2>
-      <p class="mt-3 text-base sm:text-lg text-gray-600">
-        {{ $t('home.howItWorks.subtitle') }}
-      </p>
-    </header>
-
-    <div class="relative flex flex-col lg:flex-row items-center justify-center gap-6">
-      <!-- Step 1 -->
-      <div
-        class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
-      >
-        <img src="../images/1.png" alt="" class="w-36 h-36 object-contain mb-4" />
-        <h3 class="text-xl font-semibold text-[#5984C6]">
-          {{ $t('home.howItWorks.step1.title') }}
-        </h3>
-        <p class="mt-2 text-sm text-gray-600">
-          {{ $t('home.howItWorks.step1.text') }}
-        </p>
+      <!-- Indicators -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
+        <span
+          v-for="(img, index) in heroImages"
+          :key="'dot-' + index"
+          @click="goToHero(index)"
+          class="w-4 h-4 rounded-full cursor-pointer transition-all duration-500"
+          :class="currentHeroIndex === index ? 'bg-accent-color scale-110' : 'bg-white/60 hover:bg-white/90'"
+        ></span>
       </div>
-
-      <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
-        </svg>
-      </div>
-
-      <!-- Step 2 -->
-      <div
-        class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
-      >
-        <img src="../images/2.png" alt="" class="w-36 h-36 object-contain mb-4" />
-        <h3 class="text-xl font-semibold text-[#5984C6]">
-          {{ $t('home.howItWorks.step2.title') }}
-        </h3>
-        <p class="mt-2 text-sm text-gray-600">
-          {{ $t('home.howItWorks.step2.text') }}
-        </p>
-      </div>
-
-      <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
-        </svg>
-      </div>
-
-      <!-- Step 3 -->
-      <div
-        class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
-      >
-        <img src="../images/3.png" alt="" class="w-36 h-36 object-contain mb-4" />
-        <h3 class="text-xl font-semibold text-[#5984C6]">
-          {{ $t('home.howItWorks.step3.title') }}
-        </h3>
-        <p class="mt-2 text-sm text-gray-600">
-          {{ $t('home.howItWorks.step3.text') }}
-        </p>
-      </div>
-
-      <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
-        </svg>
-      </div>
-
-      <!-- Step 4 -->
-      <div
-        class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
-      >
-        <img src="../images/4.png" alt="" class="w-36 h-36 object-contain mb-4" />
-        <h3 class="text-xl font-semibold text-[#5984C6]">
-          {{ $t('home.howItWorks.step4.title') }}
-        </h3>
-        <p class="mt-2 text-sm text-gray-600">
-          {{ $t('home.howItWorks.step4.text') }}
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
+    </section>
 
     <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
-    <div class="flex justify-center">
-      <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
+    <div class="flex justify-center mb-10">
+      <div class="grid grid-cols-2 gap-20 md:grid-cols-4">
         <div
-          class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
+          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
@@ -140,7 +46,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
+          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
@@ -155,7 +61,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
+          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
@@ -170,7 +76,7 @@
           </router-link>
         </div>
         <div
-          class="card cursor-pointer bg-[#DAECF6] image-full w-45 rounded-2xl shadow-sm h-55 hover:scale-105 transition duration-300"
+          class="card cursor-pointer bg-[#f8f8f8] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>
@@ -187,10 +93,99 @@
       </div>
     </div>
 
-   
-    <div v-if="loading" class="flex justify-center mt-10">
-      <p class="text-lg">{{ $t('home.offers.loading') }}</p>
+  <section id="how-it-works" class="relative isolate bg-white py-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="text-center ">
+        <h2 class="main-header text-accent-color">
+          {{ $t('home.howItWorks.title') }}
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-gray-600">
+          {{ $t('home.howItWorks.subtitle') }}
+        </p>
+      </header>
+
+      <div class="relative flex flex-col lg:flex-row items-center justify-center gap-6">
+        <!-- Step 1 -->
+        <div
+          class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+        >
+          <img src="../images/1.png" alt="" class="w-32 h-36 object-contain mb-4" />
+          <h3 class="text-xl font-semibold text-accent-color">
+            {{ $t('home.howItWorks.step1.title') }}
+          </h3>
+          <p class="mt-2 text-sm text-gray-600">
+            {{ $t('home.howItWorks.step1.text') }}
+          </p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="hidden lg:flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+          </svg>
+        </div>
+
+        <!-- Step 2 -->
+        <div
+          class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+        >
+          <img src="../images/2.png" alt="" class="w-32 h-36 object-contain mb-4" />
+          <h3 class="text-xl font-semibold text-accent-color">
+            {{ $t('home.howItWorks.step2.title') }}
+          </h3>
+          <p class="mt-2 text-sm text-gray-600">
+            {{ $t('home.howItWorks.step2.text') }}
+          </p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="hidden lg:flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+          </svg>
+        </div>
+
+        <!-- Step 3 -->
+        <div
+          class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+        >
+          <img src="../images/3.png" alt="" class="w-32 h-36 object-contain mb-4" />
+          <h3 class="text-xl font-semibold text-accent-color">
+            {{ $t('home.howItWorks.step3.title') }}
+          </h3>
+          <p class="mt-2 text-sm text-gray-600">
+            {{ $t('home.howItWorks.step3.text') }}
+          </p>
+        </div>
+
+        <!-- Arrow -->
+        <div class="hidden lg:flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+          </svg>
+        </div>
+
+        <!-- Step 4 -->
+        <div
+          class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+        >
+          <img src="../images/4.png" alt="" class="w-32 h-36 object-contain mb-4" />
+          <h3 class="text-xl font-semibold text-accent-color">
+            {{ $t('home.howItWorks.step4.title') }}
+          </h3>
+          <p class="mt-2 text-sm text-gray-600">
+            {{ $t('home.howItWorks.step4.text') }}
+          </p>
+        </div>
+      </div>
     </div>
+  </section>
+
+   
+  <div v-if="loading" class="flex justify-center mt-10">
+    <p class="text-lg">{{ $t('home.offers.loading') }}</p>
+  </div>
 
    <div>
   <h2 class="text-center main-header">{{ $t('home.offers.title') }}</h2>

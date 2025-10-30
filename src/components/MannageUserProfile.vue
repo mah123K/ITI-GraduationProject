@@ -8,7 +8,7 @@
       <div class="relative group">
         <img
           :src="tempClient.image"
-          class="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full object-cover border-4 border-[#5984C6] shadow-xl transition-transform duration-300"
+          class="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full object-cover border-4 border-accent-color shadow-xl transition-transform duration-300"
           :class="{ 'group-hover:scale-105 cursor-pointer': isEditing }"
           @click="isEditing && triggerImageUpload"
         />
@@ -41,28 +41,28 @@
       <div class="flex flex-col gap-3 mt-6 w-full">
         <button
           @click="openEditProfile"
-          class="bg-[#5984c6] w-full text-white font-semibold py-2 sm:py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class="bg-accent-color w-full text-white font-semibold py-2 sm:py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-pen-to-square"></i> Edit Profile
         </button>
 
         <button
           @click="openOrders"
-          class="bg-[#5984c6] text-white font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class="bg-accent-color text-white font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-box"></i> My Recent Orders
         </button>
 
         <button
           @click="goBack"
-          class="bg-[#5984c6] text-[#ffffff] font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class="bg-accent-color text-[#ffffff] font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-arrow-left"></i> Back
         </button>
       </div>
 
       <!-- Background Glow Circle -->
-      <div class="absolute bottom-0 w-24 h-24 sm:w-32 sm:h-32 bg-[#5984C6] opacity-20 blur-3xl rounded-full"></div>
+      <div class="absolute bottom-0 w-24 h-24 sm:w-32 sm:h-32 bg-accent-color opacity-20 blur-3xl rounded-full"></div>
     </aside>
 
     <!-- Main Content -->
@@ -72,14 +72,14 @@
         v-if="showOrders"
         class="transition-transform hover:scale-[1.01] duration-300 bg-white/30 backdrop-blur-md shadow-xl rounded-3xl p-4 sm:p-6 border border-white/20 overflow-x-auto"
       >
-        <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-[#5984C6] flex items-center gap-2">
-          <i class="fa-solid fa-box text-[#5984C6]"></i> Recent Orders
+        <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-accent-color flex items-center gap-2">
+          <i class="fa-solid fa-box text-accent-color"></i> Recent Orders
         </h3>
 
         <div class="overflow-x-auto">
           <table class="w-full min-w-[600px] border-collapse text-sm sm:text-base">
             <thead>
-              <tr class="bg-[#5984C6] text-white text-left sticky top-0">
+              <tr class="bg-accent-color text-white text-left sticky top-0">
                 <th class="p-3">Order ID</th>
                 <th class="p-3">Date</th>
                 <th class="p-3">Status</th>
@@ -105,7 +105,7 @@
                   <div class="mt-2 h-2 w-full bg-gray-200 rounded-full">
                     <div
                       :style="{ width: progressWidth(order.status) }"
-                      class="h-2 rounded-full bg-gradient-to-r from-[#5984C6] to-[#003481] transition-all"
+                      class="h-2 rounded-full bg-gradient-to-r from-accent-color to-[#003481] transition-all"
                     ></div>
                   </div>
                 </td>
@@ -113,7 +113,7 @@
                 <td class="p-3 text-center">
                   <button
                     @click="openModal(order)"
-                    class="bg-[#5984C6] text-white px-3 py-1 rounded-lg hover:bg-[#002c74] transition-all duration-200 text-sm"
+                    class="bg-accent-color text-white px-3 py-1 rounded-lg hover:bg-[#002c74] transition-all duration-200 text-sm"
                   >
                     View
                   </button>
@@ -125,7 +125,7 @@
 
         <div class="mt-6 text-right text-gray-700 font-semibold text-sm sm:text-base">
           Total Delivered Sales:
-          <span class="text-[#5984C6]">${{ totalSales }}</span>
+          <span class="text-accent-color">${{ totalSales }}</span>
         </div>
       </section>
 
@@ -133,54 +133,54 @@
       <section v-else class="space-y-6">
         <!-- Personal Info Box -->
         <div class="bg-white/30 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20">
-          <h3 class="text-xl sm:text-2xl font-semibold text-[#5984C6] mb-4">Personal Information</h3>
+          <h3 class="text-xl sm:text-2xl font-semibold text-accent-color mb-4">Personal Information</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-user mr-2 text-[#5984C6]"></i> Name
+                <i class="fa-solid fa-user mr-2 text-accent-color"></i> Name
               </label>
               <input
                 v-model="tempClient.name"
                 type="text"
                 :disabled="!isEditing"
-                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
               />
             </div>
 
             <div>
               <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-envelope mr-2 text-[#5984C6]"></i> Email
+                <i class="fa-solid fa-envelope mr-2 text-accent-color"></i> Email
               </label>
               <input
                 v-model="tempClient.email"
                 type="email"
                 :disabled="!isEditing"
-                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
               />
             </div>
 
             <div>
               <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-phone mr-2 text-[#5984C6]"></i> Phone
+                <i class="fa-solid fa-phone mr-2 text-accent-color"></i> Phone
               </label>
               <input
                 v-model="tempClient.phone"
                 type="text"
                 :disabled="!isEditing"
-                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
               />
             </div>
 
             <div>
               <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-lock mr-2 text-[#5984C6]"></i> Password
+                <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Password
               </label>
               <div class="relative">
                 <input
                   v-model="tempClient.password"
                   :type="showPassword ? 'text' : 'password'"
                   :disabled="!isEditing"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
                 />
                 <i
                   @click="togglePassword"
@@ -192,14 +192,14 @@
 
             <div>
               <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-lock-keyhole mr-2 text-[#5984C6]"></i> Confirm Password
+                <i class="fa-solid fa-lock-keyhole mr-2 text-accent-color"></i> Confirm Password
               </label>
               <div class="relative">
                 <input
                   v-model="tempClient.confirmPassword"
                   :type="showConfirmPassword ? 'text' : 'password'"
                   :disabled="!isEditing"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
                 />
                 <i
                   @click="toggleConfirmPassword"
@@ -216,54 +216,54 @@
           class="bg-white/30 backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
         >
           <div class="flex-1 space-y-4">
-            <h3 class="text-lg sm:text-xl font-semibold text-[#5984C6] mb-4 flex items-center gap-2">
+            <h3 class="text-lg sm:text-xl font-semibold text-accent-color mb-4 flex items-center gap-2">
               <i class="fa-solid fa-location-dot"></i> Address
             </h3>
             
             <div class="space-y-4">
               <div>
                 <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
-                  <i class="fa-solid fa-road text-[#5984C6] mr-2"></i>Street
+                  <i class="fa-solid fa-road text-accent-color mr-2"></i>Street
                 </label>
                 <input
                   v-model="tempClient.address.street"
                   type="text"
                   :disabled="!isEditing"
                   placeholder="Enter your street address"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
                 />
               </div>
 
               <div>
                 <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
-                  <i class="fa-solid fa-city text-[#5984C6] mr-2"></i>City
+                  <i class="fa-solid fa-city text-accent-color mr-2"></i>City
                 </label>
                 <input
                   v-model="tempClient.address.city"
                   type="text"
                   :disabled="!isEditing"
                   placeholder="Enter your city"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
                 />
               </div>
 
               <div>
                 <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
-                  <i class="fa-solid fa-globe text-[#5984C6] mr-2"></i>Country
+                  <i class="fa-solid fa-globe text-accent-color mr-2"></i>Country
                 </label>
                 <input
                   v-model="tempClient.address.country"
                   type="text"
                   :disabled="!isEditing"
                   placeholder="Enter your country"
-                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5984C6] focus:outline-none text-sm sm:text-base"
+                  class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-accent-color focus:outline-none text-sm sm:text-base"
                 />
               </div>
             </div>
           </div>
           <div class="flex-1 h-56 sm:h-64 w-full rounded-2xl overflow-hidden border border-white/20 shadow-md relative">
             <div v-if="isUpdatingMap" class="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
-              <div class="text-[#5984C6] flex flex-col items-center">
+              <div class="text-accent-color flex flex-col items-center">
                 <i class="fa-solid fa-map-location-dot animate-bounce text-xl sm:text-2xl"></i>
                 <span class="mt-2 text-xs sm:text-sm font-medium">Updating map location...</span>
               </div>
