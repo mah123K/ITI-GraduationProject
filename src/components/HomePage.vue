@@ -28,8 +28,8 @@
     </section>
 
     <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
-    <div class="flex justify-center mb-10">
-      <div class="grid grid-cols-2 gap-20 md:grid-cols-4">
+    <div class="flex justify-center mb-10 p-5 items-center mx-auto">
+      <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
           class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
@@ -449,7 +449,6 @@
 </template>
 
 <script setup>
-// --- YOUR SCRIPT IS UNCHANGED AND CORRECT ---
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { db } from '@/firebase/firebase';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
@@ -463,43 +462,53 @@ const slides = ref([]);
 const works = ref([]);
 let interval = null;
 const offers = ref([]);
-// 🟦 Hero carousel logic with smooth fade + indicators
-const heroImages = [
+
+// 🟦 Responsive Hero Images Logic
+const heroImagesDesktop = [
   new URL("../images/hero img.png", import.meta.url).href,
   new URL("../images/hero img2.png", import.meta.url).href,
   new URL("../images/hero img3.png", import.meta.url).href,
 ];
 
+const heroImagesMobile = [
+  new URL("../images/hero img mob.png", import.meta.url).href,
+  new URL("../images/hero img2 mob.png", import.meta.url).href,
+  new URL("../images/hero img3 mob.png", import.meta.url).href,
+];
+
+const heroImages = ref(heroImagesDesktop);
 const currentHeroIndex = ref(0);
 let heroInterval = null;
+
+const updateHeroImages = () => {
+  // Use mobile images if width <= 768px (you can adjust breakpoint)
+  if (window.innerWidth <= 768) {
+    heroImages.value = heroImagesMobile;
+  } else {
+    heroImages.value = heroImagesDesktop;
+  }
+};
 
 const goToHero = (index) => {
   currentHeroIndex.value = index;
 };
 
 onMounted(() => {
+  updateHeroImages();
+  window.addEventListener('resize', updateHeroImages);
+
   heroInterval = setInterval(() => {
-    currentHeroIndex.value = (currentHeroIndex.value + 1) % heroImages.length;
-  }, 7000); // every 7 seconds
+    currentHeroIndex.value = (currentHeroIndex.value + 1) % heroImages.value.length;
+  }, 7000);
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateHeroImages);
   clearInterval(heroInterval);
 });
 
 
-onMounted(() => {
-  let index = 0;
-  heroInterval = setInterval(() => {
-    index = (index + 1) % heroImages.length;
-    currentHero.value = heroImages[index];
-  }, 7000); // every 7 seconds
-});
-
-onBeforeUnmount(() => {
-  clearInterval(heroInterval);
-});
-
+// 🔹 Feedback + Offers logic (unchanged)
 const loading = ref(true);
 
 const nextSlide = () => {
@@ -605,6 +614,7 @@ onBeforeUnmount(() => {
   clearInterval(interval);
 });
 </script>
+
 
 <style scoped>
 .offer {

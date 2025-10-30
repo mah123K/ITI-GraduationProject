@@ -1,12 +1,12 @@
 <template>
   <div
-    class="bg-white dark:text-black shadow-2xl rounded-3xl p-8 pt-4 w-[1200px] min-h-[500px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
+    class="bg-white dark:text-white dark:bg-dark-blue shadow-2xl rounded-3xl p-8 pt-4 w-[1200px] min-h-[500px] flex flex-col justify-start animate-fade-in mt-3 mb-3"
   >
     <h2 class="text-3xl font-bold mb-3 text-center text-accent-color">Technician Registration</h2>
 
-    <div class="flex justify-between mb-6 max-w-6xl mx-auto w-full">
+    <div class="flex justify-center gap-40 mb-6 w-full">
       <!-- ID Card -->
-      <div class="flex flex-col items-start ml-40">
+      <div class="flex flex-col items-center mr-40">
         <label class="font-semibold mb-2">ID Card</label>
         <div
           @click.stop="$refs.idCardInput.click()"
@@ -34,7 +34,7 @@
       </div>
 
       <!-- Profile Picture -->
-      <div class="flex flex-col items-end mr-40">
+      <div class="flex flex-col items-center ml-40">
         <label class="font-semibold mb-2">Profile Picture</label>
         <div
           @click.stop="$refs.profileInput.click()"
@@ -56,6 +56,9 @@
           </template>
         </div>
         <input ref="profileInput" type="file" @change="previewProfile" class="hidden" />
+        <p v-if="errors.profileImage" class="text-red-500 text-sm mt-1">
+          {{ errors.profileImage }}
+        </p>
       </div>
     </div>
 
@@ -250,19 +253,14 @@
     </div>
 
     <button
-      @click="submit"
+      @click="handleSubmit"
       :disabled="isSubmitting"
-      :class="[
-        'mt-10 mx-auto text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer',
-        isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-accent-color',
-      ]"
+      class="mt-10 mx-auto bg-accent-color text-white text-[20px] px-3 py-2 rounded-xl font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <span v-if="!isSubmitting">Sign Up</span>
-      <span v-else>Submitting...</span>
-      <!-- ✅ added -->
+      {{ isSubmitting ? "Submitting..." : "Sign Up" }}
     </button>
 
-    <p class="text-center mt-4 text-gray-500">
+    <p class="text-center mt-4 text-gray-500 dark:text-white">
       Already have an account?
       <a :href="loginRoute" class="text-accent-color font-semibold hover:underline"> Login here </a>
     </p>
@@ -270,8 +268,6 @@
 </template>
 
 <script>
-import { uploadImageOnly } from "@/composables/useImageUpload"; // ✅ استدعاء الفنكشن من الملف الخارجي
-
 export default {
   props: {
     loginRoute: { type: String, required: true },
@@ -294,6 +290,8 @@ export default {
           street: "",
           city: "",
           country: "Egypt",
+          lat: 30.0444,
+          lng: 31.2357,
         },
         skill: "",
         bio: "",
@@ -306,10 +304,22 @@ export default {
   methods: {
     inputClass(error, hasPadding = false) {
       return [
-        "w-full p-4 border rounded-xl focus:ring-2 focus:ring-accent-color focus:outline-none",
+        "w-full p-4 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200",
         hasPadding ? "pr-12" : "",
-        error ? "border-red-500" : "border-gray-300",
+        error ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-[#5984C6]",
       ];
+    },
+    setSubmitting(value) {
+      this.isSubmitting = value;
+    },
+
+    handleSubmit() {
+      const isValid = this.validateForm();
+      if (isValid) {
+        this.$emit("submit-form", this.form);
+      } else {
+        this.$forceUpdate(); 
+      }
     },
     togglePassword() {
       this.showPassword = !this.showPassword;
@@ -321,51 +331,23 @@ export default {
       if (this.errors[field]) this.errors[field] = "";
     },
 
-    // ✅ رفع صورة البروفايل إلى Cloudinary
     async previewProfile(e) {
       const file = e.target.files[0];
       if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          this.errors.profileImage = "Image should be less than 5MB";
-          return;
-        }
-
-        // عرض المعاينة المحلية مؤقتاً
+        if (file.size > 5 * 1024 * 1024)
+          return (this.errors.profileImage = "Image must be under 5MB");
         this.profilePreview = URL.createObjectURL(file);
-        this.errors.profileImage = "";
-
-        try {
-          // رفع الصورة إلى Cloudinary
-          const imageUrl = await uploadImageOnly(file);
-          this.form.profileImage = imageUrl; // حفظ اللينك بدلاً من الملف
-          console.log("✅ Profile image uploaded:", imageUrl);
-        } catch (err) {
-          this.errors.profileImage = "Failed to upload image";
-          console.error(err);
-        }
+        this.form.profileImage = file; // نحفظ الملف نفسه، مش URL
       }
     },
 
-    // ✅ رفع صورة بطاقة الهوية إلى Cloudinary
     async previewIdCard(e) {
       const file = e.target.files[0];
       if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          this.errors.idCardImage = "ID image must be less than 5MB";
-          return;
-        }
-
+        if (file.size > 5 * 1024 * 1024)
+          return (this.errors.idCardImage = "Image must be under 5MB");
         this.idCardPreview = URL.createObjectURL(file);
-        this.errors.idCardImage = "";
-
-        try {
-          const imageUrl = await uploadImageOnly(file);
-          this.form.idCardImage = imageUrl;
-          console.log("✅ ID card uploaded:", imageUrl);
-        } catch (err) {
-          this.errors.idCardImage = "Failed to upload ID image";
-          console.error(err);
-        }
+        this.form.idCardImage = file; // نحفظ الملف نفسه، مش URL
       }
     },
 
@@ -453,16 +435,16 @@ export default {
       return valid;
     },
 
-    async submit() {
-      if (this.validateForm()) {
-        this.isSubmitting = true;
-        this.$emit("submit", this.form);
+    // async submit() {
+    //   if (this.validateForm()) {
+    //     this.isSubmitting = true;
+    //     this.$emit("submit", this.form);
 
-        setTimeout(() => {
-          this.isSubmitting = false;
-        }, 3000);
-      }
-    },
+    //     setTimeout(() => {
+    //       this.isSubmitting = false;
+    //     }, 3000);
+    //   }
+    // },
   },
 };
 </script>
@@ -480,5 +462,16 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* ✅ يمنع أي أيقونات تلقائية داخل حقول الباسورد */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"] {
+  background-image: none !important;
+  background-position: right !important;
+  background-repeat: no-repeat !important;
 }
 </style>
