@@ -1,49 +1,375 @@
 <template>
   <div class="bg-white rounded-lg shadow-md p-5 flex flex-col items-center text-center relative">
     <!-- Status Badge -->
-    <span :class="{'bg-green-100 text-green-700': category.status === 'Active'}"
-          class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full">
+    <span
+      :class="{
+        'bg-green-100 text-green-700': category.status === 'Active',
+        'bg-gray-100 text-gray-500': category.status !== 'Active'
+      }"
+      class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full"
+    >
       {{ category.status }}
     </span>
 
-    <!-- Icon -->
-    <div class="text-4xl mb-3 mt-6">
-      {{ category.icon }} <!-- Using emoji as icon for simplicity -->
+    <!-- Action Buttons -->
+    <div class="absolute top-4 left-4 flex gap-2">
+      <button 
+        @click="openEditModal(category)"
+        class="text-blue-500 hover:text-blue-700"
+      >
+        <i class="fas fa-edit"></i>
+      </button>
+
+      <button 
+        @click="openDeleteModal(category)"
+        class="text-red-500 hover:text-red-700"
+      >
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+
+    <!-- Icon/Image -->
+    <div class="mb-3 mt-6">
+      <img v-if="isImage(category.icon)" :src="category.icon" alt="category icon" class="w-12 h-12 object-contain rounded" />
+      <div v-else class="text-4xl">{{ category.icon }}</div>
     </div>
 
     <!-- Category Name -->
     <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ category.name }}</h3>
 
     <!-- Provider Count -->
-    <p class="text-sm text-gray-500 mb-4">{{ category.providers }} providers</p>
+    <p class="text-sm text-gray-500 mb-4">
+      {{ category.providers > 0 ? category.providers + ' providers' : 'No providers yet' }}
+    </p>
 
     <!-- View Providers Button -->
-    <button @click="$emit('view-providers', category.id)"
-            class="flex items-center justify-center text-blue-600 hover:text-blue-800 font-medium py-2 px-4 rounded-md border border-blue-600 hover:border-blue-800 transition-colors duration-200">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
+    <button 
+      @click="showProviders = true"
+      class="bg-[#5984C6] text-white px-4 py-2 rounded-lg hover:bg-[#4968a0] transition-colors duration-200 flex items-center gap-2"
+    >
+      <i class="fas fa-eye"></i>
       View Providers
     </button>
+
+    <!-- Providers Modal -->
+    <div v-if="showProviders" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div class="p-6 border-b">
+          <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold text-gray-800">
+              {{ category.name }} Providers
+            </h2>
+            <button @click="showProviders = false" class="text-gray-500 hover:text-gray-700">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
+          <div v-if="loading" class="text-center py-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5984C6] mx-auto"></div>
+            <p class="mt-4 text-gray-600">Loading providers...</p>
+          </div>
+
+          <div v-else-if="!providers.length" class="text-center py-8">
+            <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
+            <p class="text-gray-600">No providers found for this service</p>
+          </div>
+
+          <div v-else class="grid gap-6">
+            <div v-for="provider in providers" :key="provider.id" 
+                class="bg-gray-50 rounded-lg p-4 flex items-center gap-4 hover:bg-gray-100 transition-colors">
+              <img 
+                :src="provider.profileImage || provider.logoImage || 'https://via.placeholder.com/50'" 
+                :alt="provider.name"
+                class="w-12 h-12 rounded-full object-cover"
+              >
+              <div class="flex-1">
+                <h3 class="font-semibold text-gray-800">{{ provider.name }}</h3>
+                <p class="text-sm text-gray-600">
+                  {{ provider.userType === 'company' ? 'Company' : 'Technician' }}
+                </p>
+                <p class="text-xs text-gray-500">
+                  <i class="fas fa-map-marker-alt text-xs mr-1"></i>
+                  {{ formatAddress(provider) }}
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span :class="{
+                  'bg-green-100 text-green-700': provider.status === 'active',
+                  'bg-red-100 text-red-700': provider.status === 'suspended',
+                  'bg-gray-100 text-gray-700': !provider.status
+                }" class="px-2 py-1 rounded-full text-xs font-semibold capitalize">
+                  {{ provider.status || 'Active' }}
+                </span>
+                <button 
+                  @click="viewProviderDetails(provider)"
+                  class="text-[#5984C6] hover:text-[#4968a0]"
+                >
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Provider Details Modal -->
+    <div v-if="selectedProvider" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div class="p-6 border-b flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800">Provider Details</h2>
+          <button @click="selectedProvider = null" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto">
+          <div class="flex items-center gap-4 mb-6">
+            <img 
+              :src="selectedProvider.profileImage || selectedProvider.logoImage || 'https://via.placeholder.com/100'" 
+              :alt="selectedProvider.name"
+              class="w-24 h-24 rounded-full object-cover"
+            >
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800">{{ selectedProvider.name }}</h3>
+              <p class="text-gray-600">{{ selectedProvider.userType === 'company' ? 'Company' : 'Technician' }}</p>
+            </div>
+          </div>
+
+          <div class="grid gap-4">
+            <div v-if="selectedProvider.description" class="space-y-2">
+              <h4 class="font-semibold text-gray-700">About</h4>
+              <p class="text-gray-600">{{ selectedProvider.description }}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <h4 class="font-semibold text-gray-700">Contact</h4>
+                <p class="text-gray-600">
+                  <i class="fas fa-envelope mr-2"></i>{{ selectedProvider.email }}
+                </p>
+                <p v-if="selectedProvider.phone" class="text-gray-600">
+                  <i class="fas fa-phone mr-2"></i>{{ selectedProvider.phone }}
+                </p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="font-semibold text-gray-700">
+                  <i class="fas fa-map-marker-alt mr-2"></i>Location
+                </h4>
+                <div class="bg-gray-50 rounded-lg p-3 space-y-2">
+                  <p class="text-gray-600">{{ formatAddress(selectedProvider) }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="selectedProvider.userType !== 'company'" class="space-y-2">
+              <h4 class="font-semibold text-gray-700">Experience</h4>
+              <p class="text-gray-600">{{ selectedProvider.experience }} years</p>
+            </div>
+
+            <div v-if="selectedProvider.portfolio" class="space-y-2">
+              <h4 class="font-semibold text-gray-700">Portfolio</h4>
+              <a :href="selectedProvider.portfolio" target="_blank" 
+                class="text-[#5984C6] hover:text-[#4968a0] inline-flex items-center gap-2">
+                <i class="fas fa-external-link-alt"></i>
+                View Portfolio
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Service Modal -->
+    <div 
+      v-if="editModal" 
+      class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    >
+      <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Service</h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700">Name</label>
+            <input v-model="editableService.name" type="text" class="w-full border rounded-md p-2" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700">Status</label>
+            <select v-model="editableService.status" class="w-full border rounded-md p-2">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700">Image URL</label>
+            <input v-model="editableService.icon" type="url" class="w-full border rounded-md p-2" />
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-6 gap-3">
+          <button @click="editModal = false" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            Cancel
+          </button>
+          <button @click="updateService" class="px-4 py-2 bg-[#5984C6] text-white rounded-lg hover:bg-[#4968a0]">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!--  Delete Service Modal -->
+    <div 
+      v-if="showDeleteModal" 
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
+    >
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+        <h3 class="text-xl font-semibold text-red-600 mb-4">Delete Service</h3>
+        <p class="text-gray-600 mb-6">
+          Are you sure you want to delete "<strong>{{ selectedDeleteService?.name }}</strong>"?
+        </p>
+        <div class="flex justify-center space-x-4">
+          <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+          <button @click="closeDeleteModal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { ref, watch } from 'vue';
+import { db } from '@/firebase/firebase';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+
 export default {
   name: 'ServiceCategoryCard',
-  props: {
-    category: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return ['id', 'name', 'providers', 'icon', 'status'].every(prop => Object.prototype.hasOwnProperty.call(value, prop));
-      },
-    },
+  props: { category: Object },
+  setup(props, { emit }) {
+    const isImage = (value) => {
+      if (typeof value !== 'string') return false;
+      if (!/^https?:\/\//i.test(value)) return false;
+      return /(\.png|\.jpe?g|\.gif|\.webp|\.svg)(\?.*)?$/i.test(value) || true;
+    };
+    const showProviders = ref(false);
+    const providers = ref([]);
+    const loading = ref(false);
+    const selectedProvider = ref(null);
+
+    const editModal = ref(false);
+    const editableService = ref({});
+    const showDeleteModal = ref(false);
+    const selectedDeleteService = ref(null);
+
+    const openEditModal = (service) => {
+      editableService.value = { ...service };
+      editModal.value = true;
+    };
+
+    const updateService = async () => {
+      try {
+        const docRef = doc(db, 'services', editableService.value.id);
+        await updateDoc(docRef, editableService.value);
+        editModal.value = false;
+        emit('updated');
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    // ✅ Delete modal logic
+    const openDeleteModal = (service) => {
+      selectedDeleteService.value = service;
+      showDeleteModal.value = true;
+    };
+
+    const closeDeleteModal = () => {
+      showDeleteModal.value = false;
+      selectedDeleteService.value = null;
+    };
+
+    const confirmDelete = async () => {
+      try {
+        await deleteDoc(doc(db, 'services', selectedDeleteService.value.id));
+        emit('deleted', selectedDeleteService.value.id);
+        closeDeleteModal();
+      } catch (error) {
+        console.error('Error deleting service:', error);
+      }
+    };
+
+    const fetchProviders = async () => {
+      loading.value = true;
+      try {
+        const allProviders = [];
+        if (props.category.name.toLowerCase() === 'finishing') {
+          const companiesSnap = await getDocs(collection(db, 'companies'));
+          companiesSnap.forEach(doc => {
+            allProviders.push({ id: doc.id, userType: 'company', ...doc.data() });
+          });
+        } else {
+          const techniciansSnap = await getDocs(collection(db, 'technicians'));
+          techniciansSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.skill?.toLowerCase() === props.category.name.toLowerCase()) {
+              allProviders.push({ id: doc.id, userType: 'technician', ...data });
+            }
+          });
+        }
+        providers.value = allProviders;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const viewProviderDetails = (provider) => (selectedProvider.value = provider);
+
+    watch(showProviders, async (val) => val && fetchProviders());
+
+    const formatAddress = (provider) => {
+      if (!provider) return 'Location N/A';
+      const parts = new Set();
+      if (typeof provider.address === 'object' && provider.address)
+        ['street', 'city', 'country'].forEach(f => provider.address[f] && parts.add(provider.address[f]));
+      else if (typeof provider.address === 'string' && provider.address.trim()) parts.add(provider.address.trim());
+      if (provider.city) parts.add(provider.city);
+      return parts.size ? [...parts].join(', ') : 'Cairo, Egypt';
+    };
+
+    return {
+      showProviders,
+      providers,
+      loading,
+      selectedProvider,
+      viewProviderDetails,
+      formatAddress,
+      isImage,
+      editModal,
+      editableService,
+      openEditModal,
+      updateService,
+      showDeleteModal,
+      openDeleteModal,
+      closeDeleteModal,
+      confirmDelete,
+      selectedDeleteService,
+    };
   },
 };
 </script>
 
 <style scoped>
-/* No specific styles needed if relying on Tailwind for this component */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
 </style>
