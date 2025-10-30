@@ -7,6 +7,99 @@
         class="h-screen w-full"
       />
     </section>
+
+  <section id="how-it-works" class="relative isolate bg-white py-16">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h2 class="main-header text-[#5984C6]">
+        {{ $t('home.howItWorks.title') }}
+      </h2>
+      <p class="mt-3 text-base sm:text-lg text-gray-600">
+        {{ $t('home.howItWorks.subtitle') }}
+      </p>
+    </header>
+
+    <div class="relative flex flex-col lg:flex-row items-center justify-center gap-6">
+      <!-- Step 1 -->
+      <div
+        class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
+      >
+        <img src="../images/1.png" alt="" class="w-36 h-36 object-contain mb-4" />
+        <h3 class="text-xl font-semibold text-[#5984C6]">
+          {{ $t('home.howItWorks.step1.title') }}
+        </h3>
+        <p class="mt-2 text-sm text-gray-600">
+          {{ $t('home.howItWorks.step1.text') }}
+        </p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+        </svg>
+      </div>
+
+      <!-- Step 2 -->
+      <div
+        class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
+      >
+        <img src="../images/2.png" alt="" class="w-36 h-36 object-contain mb-4" />
+        <h3 class="text-xl font-semibold text-[#5984C6]">
+          {{ $t('home.howItWorks.step2.title') }}
+        </h3>
+        <p class="mt-2 text-sm text-gray-600">
+          {{ $t('home.howItWorks.step2.text') }}
+        </p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+        </svg>
+      </div>
+
+      <!-- Step 3 -->
+      <div
+        class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
+      >
+        <img src="../images/3.png" alt="" class="w-36 h-36 object-contain mb-4" />
+        <h3 class="text-xl font-semibold text-[#5984C6]">
+          {{ $t('home.howItWorks.step3.title') }}
+        </h3>
+        <p class="mt-2 text-sm text-gray-600">
+          {{ $t('home.howItWorks.step3.text') }}
+        </p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#5984C6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
+        </svg>
+      </div>
+
+      <!-- Step 4 -->
+      <div
+        class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-6 w-full max-w-[280px]"
+      >
+        <img src="../images/4.png" alt="" class="w-36 h-36 object-contain mb-4" />
+        <h3 class="text-xl font-semibold text-[#5984C6]">
+          {{ $t('home.howItWorks.step4.title') }}
+        </h3>
+        <p class="mt-2 text-sm text-gray-600">
+          {{ $t('home.howItWorks.step4.text') }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
     <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
     <div class="flex justify-center">
       <div class="grid grid-cols-2 gap-10 md:grid-cols-4">

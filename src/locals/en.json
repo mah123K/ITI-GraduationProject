@@ -50,6 +50,26 @@
       "electrical": "Electrical",
       "carpentry": "Carpentry"
     },
+    "howItWorks": {
+  "title": "Our Working Progress",
+  "subtitle": "Book trusted home maintenance in four simple steps.",
+  "step1": {
+    "title": "Browse Services",
+    "text": "Explore categories like plumbing, electrical, etc."
+  },
+  "step2": {
+    "title": "Book a Technician",
+    "text": "Choose a verified technician, set time & location."
+  },
+  "step3": {
+    "title": "Pay Securely",
+    "text": "Pay online via Paymob or cash; track everything in your order."
+  },
+  "step4": {
+    "title": "Job Done & Rated",
+    "text": "Technician completes the task, you confirm & leave a rating."
+  }
+},
     "offers": {
       "title": "Exclusive Offers",
       "seeMore": "see more",

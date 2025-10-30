@@ -52,10 +52,10 @@ export default {
   computed: {
     // UPDATED: New computed property to translate the service name
     translatedServiceName() {
-      if (!this.serviceName || this.serviceName.toLowerCase() === "all") {
+      if (!this.serviceName || this.serviceName === "all") {
         return 'profilesPage.allProfiles';
       }
-      const key = this.serviceName.toLowerCase();
+      const key = this.serviceName;
       
       // Map route param to your existing navbar translation keys
       if (key === 'plumbing') return 'navbar.plumbing';
@@ -71,16 +71,16 @@ export default {
 
       if (this.serviceName && this.serviceName !== "All") {
         results = results.filter(
-          (p) => p.service.toLowerCase() === this.serviceName.toLowerCase()
+          (p) => p.service === this.serviceName
         );
       }
 
       if (this.searchKeyword.trim()) {
-        const kw = this.searchKeyword.toLowerCase();
+        const kw = this.searchKeyword;
         results = results.filter(
           (p) =>
-            p.name.toLowerCase().includes(kw) ||
-            p.bio.toLowerCase().includes(kw)
+            p.name.includes(kw) ||
+            p.bio.includes(kw)
         );
       }
 
