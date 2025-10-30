@@ -29,7 +29,7 @@
                 class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
               />
             </div>
-            <div>
+            <!-- <div>
               <label class="block text-gray-700 font-medium mb-1">Image URL</label>
               <input
                 v-model="newOffer.image"
@@ -38,7 +38,17 @@
                 required
                 class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
               />
-            </div>
+            </div> -->
+            <div>
+            <label class="block text-gray-700 font-medium mb-1">Upload Image</label>
+            <input
+            type="file"
+            accept="image/*"
+            @change="handleFileChange"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
+            />
+          </div>
+
             <button
               type="submit"
               :disabled="isSaving"
@@ -104,11 +114,13 @@ import { db } from "../../firebase/firebase";
 // ✅ Firestore functions are imported from 'firebase/firestore'
 // The error means 'db' was incorrectly added to this line.
 import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { uploadImageOnly } from '@/composables/useImageUpload';
 
 // --- Reactive State ---
 const offers = ref([]);
 const isLoading = ref(true);
 const isSaving = ref(false);
+const selectedFile = ref(null);
 
 const newOffer = ref({
   title: '',
@@ -133,6 +145,10 @@ const fetchOffers = async () => {
     isLoading.value = false;
   }
 };
+const handleFileChange = (event) => {
+  selectedFile.value = event.target.files[0];
+};
+
 
 /**
  * Adds a new offer document to Firestore.
@@ -147,6 +163,7 @@ const addOffer = async () => {
   
   isSaving.value = true;
   try {
+    newOffer.value.image = await uploadImageOnly(selectedFile.value);
     await addDoc(offersCollection, {
       title: newOffer.value.title,
       description: newOffer.value.description,

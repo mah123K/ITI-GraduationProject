@@ -182,6 +182,7 @@ import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uploadImageOnly } from "@/composables/useImageUpload";
 
 const emit = defineEmits(['showNotification']);
 
@@ -264,12 +265,10 @@ const saveChanges = async () => {
 
   try {
     if (newImageFile.value) {
-      const storage = getStorage();
-      const sRef = storageRef(storage, `technicians/${technicianId.value}/profile.jpg`);
-      const snapshot = await uploadBytes(sRef, newImageFile.value);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      tempTechnician.value.profileImage = downloadURL;
-    }
+  const imageUrl = await uploadImageOnly(newImageFile.value);
+  tempTechnician.value.profileImage = imageUrl;
+}
+
 
     const docRef = doc(db, "technicians", technicianId.value);
     await updateDoc(docRef, {
@@ -280,6 +279,11 @@ const saveChanges = async () => {
       profileImage: tempTechnician.value.profileImage,
       address: tempTechnician.value.address,
     });
+    // 🔹 بعد updateDoc مباشرة
+    window.dispatchEvent(new CustomEvent("profile-updated", {
+    detail: { image: tempTechnician.value.profileImage }
+    }));
+
 
     originalTechnician.value = JSON.parse(JSON.stringify(tempTechnician.value));
     emit('showNotification', 'Profile saved successfully!', 'success');
