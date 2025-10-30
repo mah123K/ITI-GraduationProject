@@ -109,7 +109,13 @@
     @click.stop="toggleUserMenu"
     class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer overflow-hidden"
   >
-    <img v-if="userPhoto" :src="userPhoto" alt="profile" class="w-full h-full object-cover" />
+    <img 
+      v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
+      :src="userPhoto" 
+      alt="profile" 
+      class="w-full h-full object-cover"
+      @error="handleImageError" 
+    />
     <i v-else class="bi bi-person text-2xl text-gray-700 hover:text-white"></i>
   </div>
 
@@ -125,7 +131,13 @@
               <div
                 class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border border-gray-300 overflow-hidden"
               >
-                <img v-if="userPhoto" :src="userPhoto" alt="profile" class="w-full h-full object-cover" />
+                <img 
+                  v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
+                  :src="userPhoto" 
+                  alt="profile" 
+                  class="w-full h-full object-cover"
+                  @error="handleImageError" 
+                />
                 <i v-else class="bi bi-person text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-gray-800 font-medium mt-2">{{ userName || 'Admin' }}</h3>
@@ -237,17 +249,40 @@ export default {
 
       // Listen for admin profile changes
       window.addEventListener('adminProfileChanged', (e) => {
+        console.log('Received adminProfileChanged event:', e.detail);
+        
+        // Handle name updates
         if (e.detail.name) {
           userName.value = e.detail.name;
           localStorage.setItem('adminName', e.detail.name);
         }
-        if ('photoURL' in e.detail) {
-          userPhoto.value = e.detail.photoURL || '';
-          if (e.detail.photoURL) {
-            localStorage.setItem('adminPhoto', e.detail.photoURL);
-          } else {
+        
+        // Handle photo updates (including null)
+        if (e.detail.hasOwnProperty('photoURL')) {
+          if (e.detail.photoURL === null) {
+            // Clear photo
+            userPhoto.value = null;
             localStorage.removeItem('adminPhoto');
+            
+            // Force update all profile images
+            document.querySelectorAll('img[alt="profile"]').forEach(img => {
+              img.style.display = 'none';
+            });
+          } else if (e.detail.photoURL) {
+            userPhoto.value = e.detail.photoURL;
+            localStorage.setItem('adminPhoto', e.detail.photoURL);
+            
+            // Show images if they were hidden
+            document.querySelectorAll('img[alt="profile"]').forEach(img => {
+              img.style.display = '';
+            });
           }
+        }
+        
+        // Force immediate UI update if requested
+        if (e.detail.forceUpdate) {
+          // Force Vue to re-render the profile elements
+          userPhoto.value = e.detail.photoURL;
         }
       });
 
@@ -327,6 +362,68 @@ export default {
       }
     }
 
+    // Handle image load errors
+    const handleImageError = (event) => {
+      console.log('Image load error in sidebar');
+      userPhoto.value = null;
+      localStorage.removeItem('adminPhoto');
+      event.target.style.display = 'none';
+      
+      // Show default icon
+      const parentDiv = event.target.parentElement;
+      if (parentDiv) {
+        const icon = parentDiv.querySelector('i.bi-person');
+        if (icon) {
+          icon.style.display = 'block';
+        }
+      }
+    }
+
+    // Validate photo URL
+    const validatePhotoURL = (url) => {
+      return url && url !== 'null' && !url.startsWith('undefined');
+    }
+
+    // Update photo with validation
+    const updateUserPhoto = (newPhotoURL) => {
+      console.log('Updating user photo:', newPhotoURL);
+      if (validatePhotoURL(newPhotoURL)) {
+        userPhoto.value = newPhotoURL;
+        localStorage.setItem('adminPhoto', newPhotoURL);
+        
+        // Show all profile images
+        document.querySelectorAll('img[alt="profile"]').forEach(img => {
+          img.style.display = '';
+        });
+      } else {
+        userPhoto.value = null;
+        localStorage.removeItem('adminPhoto');
+        
+        // Hide all profile images and show icons
+        document.querySelectorAll('img[alt="profile"]').forEach(img => {
+          img.style.display = 'none';
+          const parentDiv = img.parentElement;
+          if (parentDiv) {
+            const icon = parentDiv.querySelector('i.bi-person');
+            if (icon) {
+              icon.style.display = 'block';
+            }
+          }
+        });
+      }
+    }
+
+    // Update initial photo URL with validation
+    onMounted(() => {
+      const storedPhoto = localStorage.getItem('adminPhoto');
+      if (validatePhotoURL(storedPhoto)) {
+        userPhoto.value = storedPhoto;
+      } else {
+        userPhoto.value = null;
+        localStorage.removeItem('adminPhoto');
+      }
+    });
+
     return {
       email,
       password,
@@ -338,9 +435,10 @@ export default {
       isUserMenuOpen,
       dropdown,
       goToProfile,
-      userEmail, // ✅ لازم نرجّعه عشان نستخدمه في الـ template
+      userEmail,
       userName,
       userPhoto,
+      handleImageError
     }
   },
 }
