@@ -151,13 +151,61 @@
           {{ modalType === 'view' ? 'View Payment' : modalType === 'edit' ? 'Edit Payment' : 'Delete Confirmation' }}
         </h3>
 
-        <!-- View / Edit Form -->
-        <div v-if="modalType !== 'delete'" class="space-y-3">
+        <!-- View (read-only) or Edit Form -->
+        <div v-if="modalType === 'view'" class="space-y-3">
+          <div class="grid grid-cols-1 gap-2">
+            <div>
+              <div class="text-sm text-gray-500">Payment ID</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.id }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Customer</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.customer }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Order ID</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.orderId }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Amount</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.amount }}EGP</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Method</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.method || '—' }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Date & Time</div>
+              <div class="font-medium text-gray-800">{{ selectedPayment.date }} <span class="text-gray-500 text-xs">{{ selectedPayment.time }}</span></div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Status</div>
+              <div>
+                <span
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-semibold',
+                    selectedPayment.status === 'completed'
+                      ? 'bg-green-100 text-green-700'
+                      : selectedPayment.status === 'unconfirmed'
+                      ? 'bg-amber-100 text-amber-700'
+                      : selectedPayment.status === 'upcoming'
+                      ? 'bg-sky-100 text-sky-700'
+                      : selectedPayment.status === 'new'
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'bg-rose-100 text-rose-700',
+                  ]"
+                >
+                  {{ selectedPayment.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="modalType === 'edit'" class="space-y-3">
           <div>
             <label class="text-sm font-medium text-gray-600">Customer</label>
             <input
               v-model="selectedPayment.customer"
-              :readonly="modalType === 'view'"
               class="w-full p-2 border rounded-lg text-sm"
             />
           </div>
@@ -166,7 +214,6 @@
             <label class="text-sm font-medium text-gray-600">Order ID</label>
             <input
               v-model="selectedPayment.orderId"
-              :readonly="modalType === 'view'"
               class="w-full p-2 border rounded-lg text-sm"
             />
           </div>
@@ -175,25 +222,19 @@
             <label class="text-sm font-medium text-gray-600">Amount</label>
             <input
               v-model="selectedPayment.amount"
-              :readonly="modalType === 'view'"
               class="w-full p-2 border rounded-lg text-sm"
             />
           </div>
 
           <div>
             <label class="text-sm font-medium text-gray-600">Status</label>
-            <select
+            <input
               v-model="selectedPayment.status"
-              :disabled="modalType === 'view'"
-              class="w-full p-2 border rounded-lg text-sm bg-white"
-            >
-              <option v-for="status in statusOptions" :key="status" :value="status.toLowerCase()">
-                {{ status }}
-              </option>
-            </select>
+              class="w-full p-2 border rounded-lg text-sm"
+            />
           </div>
 
-          <div class="flex justify-end mt-4" v-if="modalType === 'edit'">
+          <div class="flex justify-end mt-4">
             <button
               @click="saveChanges"
               class="bg-[#5984C6] text-white px-4 py-2 rounded-lg hover:bg-[#4369a4] transition text-sm"
@@ -249,7 +290,7 @@ export default {
       searchQuery: '',
       filterStatus: 'All',
       showFilter: false,
-      statusOptions: ['Completed', 'Pending', 'Failed', 'Refunded', 'Processing'],
+      statusOptions: ['All', 'completed', 'unconfirmed', 'upcoming', 'new'],
     };
   },
   created() {
@@ -269,11 +310,13 @@ export default {
             orderId: `ORD-${String(o.id).padStart(3, '0')}`,
             amount: o.price ?? o.amount ?? 0,
             method: o.paymentMethod || 'Cash',
-            date: o.appointmentDate?.toDate().toLocaleDateString() || '',
-            time: o.appointmentDate?.toDate().toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit'
-            }) || '',
+            // format date/time similar to Orders.vue (support Firestore Timestamp or plain fields)
+            date: o.appointmentDate && o.appointmentDate.toDate
+              ? o.appointmentDate.toDate().toLocaleDateString()
+              : (o.date || ''),
+            time: o.appointmentDate && o.appointmentDate.toDate
+              ? o.appointmentDate.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : (o.time || ''),
             status: rawStatus.toString().toLowerCase(),
           };
         });

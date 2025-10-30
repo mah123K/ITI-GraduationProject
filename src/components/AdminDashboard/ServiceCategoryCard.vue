@@ -81,11 +81,11 @@
                 class="bg-gray-50 rounded-lg p-4 flex items-center gap-4 hover:bg-gray-100 transition-colors">
               <img 
                 :src="provider.profileImage || provider.logoImage || 'https://via.placeholder.com/50'" 
-                :alt="provider.name"
+                :alt="provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name"
                 class="w-12 h-12 rounded-full object-cover"
               >
               <div class="flex-1">
-                <h3 class="font-semibold text-gray-800">{{ provider.name }}</h3>
+                <h3 class="font-semibold text-gray-800">{{ provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name }}</h3>
                 <p class="text-sm text-gray-600">
                   {{ provider.userType === 'company' ? 'Company' : 'Technician' }}
                 </p>
@@ -133,7 +133,9 @@
               class="w-24 h-24 rounded-full object-cover"
             >
             <div>
-              <h3 class="text-xl font-semibold text-gray-800">{{ selectedProvider.name }}</h3>
+              <h3 class="text-xl font-semibold text-gray-800">
+                {{ selectedProvider.userType === 'company' ? (selectedProvider.companyName || selectedProvider.name) : selectedProvider.name }}
+              </h3>
               <p class="text-gray-600">{{ selectedProvider.userType === 'company' ? 'Company' : 'Technician' }}</p>
             </div>
           </div>
@@ -281,7 +283,7 @@ export default {
       }
     };
 
-    // ✅ Delete modal logic
+    // Delete modal logic
     const openDeleteModal = (service) => {
       selectedDeleteService.value = service;
       showDeleteModal.value = true;
