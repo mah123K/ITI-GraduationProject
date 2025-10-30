@@ -1,12 +1,33 @@
 <template>
   <div class="theme-bg theme-text text-left rtl:text-right">
-    <section class="hero relative w-full">
-      <img
-        src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760692341/image_jmqili.jpg"
-        alt="Hero"
-        class="h-screen w-full"
-      />
-    </section>
+    <section class="hero relative w-full h-[90vh] overflow-hidden mt-20">
+  <!-- Hero Images -->
+  <transition-group name="fade" tag="div" class="absolute inset-0">
+    <img
+      v-for="(img, index) in heroImages"
+      :key="index"
+      v-show="currentHeroIndex === index"
+      :src="img"
+      alt="Hero"
+      class="absolute inset-0 h-full w-full object-contain transition-opacity duration-1000"
+    />
+  </transition-group>
+
+  
+
+  <!-- Indicators -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
+    <span
+      v-for="(img, index) in heroImages"
+      :key="'dot-' + index"
+      @click="goToHero(index)"
+      class="w-4 h-4 rounded-full cursor-pointer transition-all duration-500"
+      :class="currentHeroIndex === index ? 'bg-[#5984C6] scale-110' : 'bg-white/60 hover:bg-white/90'"
+    ></span>
+  </div>
+</section>
+
+
 
   <section id="how-it-works" class="relative isolate bg-white py-16">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -484,6 +505,43 @@ const slides = ref([]);
 const works = ref([]);
 let interval = null;
 const offers = ref([]);
+// 🟦 Hero carousel logic with smooth fade + indicators
+const heroImages = [
+  new URL("../images/hero img.png", import.meta.url).href,
+  new URL("../images/hero img2.png", import.meta.url).href,
+  new URL("../images/hero img3.png", import.meta.url).href,
+];
+
+const currentHeroIndex = ref(0);
+let heroInterval = null;
+
+const goToHero = (index) => {
+  currentHeroIndex.value = index;
+};
+
+onMounted(() => {
+  heroInterval = setInterval(() => {
+    currentHeroIndex.value = (currentHeroIndex.value + 1) % heroImages.length;
+  }, 7000); // every 7 seconds
+});
+
+onBeforeUnmount(() => {
+  clearInterval(heroInterval);
+});
+
+
+onMounted(() => {
+  let index = 0;
+  heroInterval = setInterval(() => {
+    index = (index + 1) % heroImages.length;
+    currentHero.value = heroImages[index];
+  }, 7000); // every 7 seconds
+});
+
+onBeforeUnmount(() => {
+  clearInterval(heroInterval);
+});
+
 const loading = ref(true);
 
 const nextSlide = () => {
