@@ -46,6 +46,11 @@ onMounted(async () => {
       window.history.pushState(null, "", window.location.href);
     });
   }
+    window.addEventListener("profile-updated", (event) => {
+    if (event.detail?.image) {
+      technician.value.profileImage = event.detail.image;
+    }
+  });
 });
 
 const handleLogout = async () => {

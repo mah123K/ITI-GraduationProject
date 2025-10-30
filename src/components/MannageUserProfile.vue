@@ -466,6 +466,14 @@ const saveChanges = async () => {
       await updateDoc(docRef, updateData);
       client.value = JSON.parse(JSON.stringify(tempClient.value));
       isEditing.value = false;
+       // 🔹 بعد حفظ التعديلات بنجاح
+      const event = new CustomEvent('userUpdated', {
+      detail: {
+      image: tempClient.value.image,
+      name: tempClient.value.name,
+      },
+      });
+      window.dispatchEvent(event);
       // UPDATED
       triggerPopup("Changes saved successfully!");
     }
