@@ -1,12 +1,9 @@
 <template>
-    <div class="bg-white shadow-lg rounded-2xl p-6">
- 
-   <!-- Section Header -->
+  <div class="bg-white shadow-lg rounded-2xl p-6">
     <div class="mb-6">
       <h2 class="text-2xl font-bold text-[#5984C6]">Order Management</h2>
       <p class="text-gray-600">Track and manage all service orders</p>
     </div>
-
 
     <h3 class="text-xl font-semibold text-gray-800 mb-4 p-4">All Orders</h3>
 
@@ -82,37 +79,64 @@
         </tr>
       </tbody>
     </table>
+
+    <AlertPopup
+      :show="showPopup"
+      :message="popupMessage"
+      @close="closePopup"
+    />
   </div>
 </template>
 
 <script>
+// NEW: Import the popup component
+import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path if needed
+
 export default {
+  // NEW: Register the component
+  components: {
+    AlertPopup,
+  },
   data() {
     return {
+      // NEW: Add data properties for the popup
+      showPopup: false,
+      popupMessage: "",
+      // Existing data
       orders: [
         {
-          id: 'ORD-001',
-          customer: 'Mohammed Ali',
-          service: 'Plumbing',
-          provider: 'Ali Mahmoud',
+          id: "ORD-001",
+          customer: "Mohammed Ali",
+          service: "Plumbing",
+          provider: "Ali Mahmoud",
           amount: 150,
-          date: '2024-03-15',
-          time: '10:00 AM',
-          status: 'Completed',
+          date: "2024-03-15",
+          time: "10:00 AM",
+          status: "Completed",
         },
-      
       ],
     };
   },
   methods: {
+    // NEW: Methods to control the popup
+    triggerPopup(message) {
+      this.popupMessage = message;
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+      this.popupMessage = "";
+    },
+
+    // UPDATED: Original methods now use triggerPopup
     viewOrder(order) {
-      alert(`Viewing details for ${order.id}`);
+      this.triggerPopup(`Viewing details for ${order.id}`);
     },
     editOrder(order) {
-      alert(`Editing ${order.id}`);
+      this.triggerPopup(`Editing ${order.id}`);
     },
     deleteOrder(order) {
-      alert(`Deleting ${order.id}`);
+      this.triggerPopup(`Deleting ${order.id}`);
     },
   },
 };
