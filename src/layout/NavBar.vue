@@ -459,6 +459,9 @@ export default {
       } catch (e) {}
     }
   },
+  onUnmounted() {
+    window.removeEventListener('userUpdated');
+  }
 };
 </script>
 
