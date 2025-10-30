@@ -16,10 +16,11 @@
               class="w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center bg-gray-100 overflow-hidden cursor-pointer hover:opacity-80 transition"
             >
               <img
-                v-if="photoURL"
+                v-if="photoURL && photoURL !== 'null' && !photoURL.startsWith('undefined')"
                 :src="photoURL"
                 alt="Profile"
                 class="w-full h-full object-cover"
+                @error="handleImageError"
               />
               <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
             </div>
@@ -91,11 +92,10 @@
 </template>
 
 <script>
-import { auth, db, storage } from "../../firebase/firebase";
-import { getDoc, doc, updateDoc,setDoc } from "firebase/firestore";
 
-import { updateProfile } from "firebase/auth";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db } from "../../firebase/firebase";
+import { getDoc, doc, setDoc } from "firebase/firestore";
+import { updateProfile, reload } from "firebase/auth";
 
 export default {
   data() {
@@ -103,11 +103,12 @@ export default {
       name: "",
       email: "",
       photoURL: "",
+      photoPublicId: "", // Add public ID tracking
       file: null,
       loading: true,
       saving: false,
-      successMessage: '',
-      errorMessage: '',
+      successMessage: "",
+      errorMessage: "",
     };
   },
 
@@ -118,167 +119,380 @@ export default {
       return;
     }
 
-    // 🔹 بيانات من Firebase Auth
+    // ✅ Refresh the user data to get the latest photoURL from Firebase Auth
+    await reload(user);
+
+    // 🔹 Get data from Firebase Auth
     this.email = user.email;
-    this.photoURL = user.photoURL || "";
     this.name = user.displayName || "Admin";
 
-    // 🔹 بيانات إضافية من Firestore
+    // 🔹 Get additional data from Firestore
     const docRef = doc(db, "admin", user.uid);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       const data = snap.data();
       this.name = data.name || this.name;
-      if (data.photoURL) this.photoURL = data.photoURL;
+      
+      // Check for valid photo URL from Firestore
+      if (data.photoURL && data.photoURL !== 'null' && !data.photoURL.startsWith('undefined')) {
+        this.photoURL = data.photoURL;
+      } else {
+        this.photoURL = null;
+      }
+      
+      if (data.photoPublicId) {
+        this.photoPublicId = data.photoPublicId;
+      }
+    } else {
+      // If no Firestore data, check Firebase Auth photoURL
+      if (user.photoURL && user.photoURL !== 'null' && !user.photoURL.startsWith('undefined')) {
+        this.photoURL = user.photoURL;
+      } else {
+        this.photoURL = null;
+      }
     }
 
     this.loading = false;
   },
 
   methods: {
-    // 🔹 عند الضغط على الصورة
+    // Handle image load errors
+    handleImageError(event) {
+      // If image fails to load, set photoURL to null to show default icon
+      this.photoURL = null;
+      event.target.style.display = 'none';
+    },
+
+    // Clear all image caches and states
+    async clearImageCaches() {
+      // Clear browser cache for the image
+      if (this.photoURL) {
+        // Add timestamp to force cache invalidation
+        const timestamp = Date.now();
+        await updateProfile(auth.currentUser, {
+          photoURL: `null?t=${timestamp}`
+        });
+        
+        // Clear all storages
+        localStorage.removeItem("adminPhoto");
+        sessionStorage.removeItem("adminPhoto");
+        
+        // Clear blob URLs
+        if (this.photoURL.startsWith('blob:')) {
+          URL.revokeObjectURL(this.photoURL);
+        }
+        
+        // Force reload the image element
+        const img = document.querySelector('img[alt="Profile"]');
+        if (img) {
+          img.src = '';
+        }
+      }
+      
+      // Clear file input
+      if (this.$refs.fileInput) {
+        this.$refs.fileInput.value = '';
+      }
+      
+      this.photoURL = null;
+      this.file = null;
+    },
+    
+    // 🔹 When clicking the profile image
     triggerFileInput() {
       this.$refs.fileInput.click();
     },
 
-    // Handle image selection and upload to Cloudinary
+    // 🔹 Handle image selection
     async onFileChange(e) {
       const file = e.target.files[0];
-      if (file && file.type.startsWith("image/")) {
+      if (!file) {
+        this.errorMessage = "No file selected.";
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        this.errorMessage = "Please select a valid image file.";
+        this.$refs.fileInput.value = '';
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        this.errorMessage = "Image size should be less than 5MB.";
+        this.$refs.fileInput.value = '';
+        return;
+      }
+
+      try {
         this.file = file;
-        this.photoURL = URL.createObjectURL(file);
-        this.errorMessage = '';
-      } else {
-        this.errorMessage = 'Please select a valid image file.';
+        const tempURL = URL.createObjectURL(file);
+        
+        // Create an image element to check if it loads correctly
+        const img = new Image();
+        img.onload = async () => {
+          // After successful load, start the upload process immediately
+          try {
+            const { uploadImageOnly } = await import("../../composables/useImageUpload");
+            const uploadResult = await uploadImageOnly(file);
+            
+            if (uploadResult && uploadResult.url) {
+              const user = auth.currentUser;
+              if (user) {
+                // Update Firebase Auth
+                await updateProfile(user, {
+                  photoURL: uploadResult.url
+                });
+
+                // Update Firestore
+                const refDoc = doc(db, "admin", user.uid);
+                await setDoc(refDoc, {
+                  photoURL: uploadResult.url,
+                  photoPublicId: uploadResult.publicId || null,
+                  lastImageUpdate: Date.now()
+                }, { merge: true });
+
+                // Update local state and storage
+                this.photoURL = uploadResult.url;
+                this.photoPublicId = uploadResult.publicId;
+                localStorage.setItem("adminPhoto", uploadResult.url);
+
+                // Dispatch event for immediate header update
+                const event = new CustomEvent("adminProfileChanged", {
+                  detail: {
+                    photoURL: uploadResult.url,
+                    timestamp: Date.now()
+                  }
+                });
+                window.dispatchEvent(event);
+
+                this.successMessage = "Profile picture updated successfully!";
+              }
+            }
+          } catch (uploadError) {
+            console.error("Error uploading image:", uploadError);
+            this.errorMessage = "Failed to upload image. Please try again.";
+          } finally {
+            URL.revokeObjectURL(tempURL);
+          }
+        };
+
+        img.onerror = () => {
+          this.errorMessage = "Failed to load image. Please try another file.";
+          this.file = null;
+          this.photoURL = null;
+          URL.revokeObjectURL(tempURL);
+          this.$refs.fileInput.value = '';
+        };
+
+        // Show the temporary URL while uploading
+        this.photoURL = tempURL;
+        img.src = tempURL;
+        this.errorMessage = "";
+        
+      } catch (error) {
+        console.error("Error handling file:", error);
+        this.errorMessage = "Error processing image. Please try again.";
+        this.file = null;
+        this.photoURL = null;
+        this.$refs.fileInput.value = '';
       }
     },
 
-    // Update profile with Cloudinary image
-    // Delete profile image
+    // 🔹 Delete profile image
     async deleteProfileImage() {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = 'Please login first.';
+          this.errorMessage = "Please login first.";
           return;
         }
 
         this.saving = true;
-        this.errorMessage = '';
-        this.successMessage = '';
+        this.errorMessage = "";
+        this.successMessage = "";
 
-        // Update Firebase Auth profile
-        await updateProfile(user, {
-          photoURL: null
-        });
+        const timestamp = Date.now();
 
-        // Update Firestore
-        const refDoc = doc(db, 'admin', user.uid);
-        await setDoc(
-          refDoc,
-          {
-            photoURL: null
-          },
-          { merge: true }
-        );
-
-        // Clear local state and storage
+        // Immediately clear local state and UI
         this.photoURL = null;
+        this.photoPublicId = null;
         this.file = null;
+        
+        // Immediately clear storages
         localStorage.removeItem('adminPhoto');
+        sessionStorage.removeItem('adminPhoto');
 
-        // Dispatch event for header update
-        const event = new CustomEvent('adminProfileChanged', {
-          detail: {
-            photoURL: null
+        // Force immediate UI update in all components
+        window.dispatchEvent(new CustomEvent('adminProfileChanged', { 
+          detail: { 
+            name: this.name,
+            photoURL: null,
+            timestamp,
+            forceUpdate: true
+          } 
+        }));
+
+        // Clear any blob URLs and force image updates
+        document.querySelectorAll('img[alt="Profile"]').forEach(img => {
+          if (img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
           }
+          img.src = '';
+          img.style.display = 'none'; // Force hide images
         });
-        window.dispatchEvent(event);
 
-        this.successMessage = 'Profile picture removed successfully';
+        // Clear file input
+        if (this.$refs.fileInput) {
+          this.$refs.fileInput.value = '';
+        }
+
+        try {
+          // Update Firebase Auth first
+          await updateProfile(user, { 
+            photoURL: null
+          });
+
+          // Then update Firestore
+          const refDoc = doc(db, 'admin', user.uid);
+          await setDoc(refDoc, { 
+            photoURL: null, 
+            photoPublicId: null,
+            lastImageUpdate: timestamp
+          }, { merge: true });
+
+          // Force reload user data
+          await reload(user);
+
+          // Dispatch another event after backend update
+          window.dispatchEvent(new CustomEvent('adminProfileChanged', { 
+            detail: { 
+              name: this.name,
+              photoURL: null,
+              timestamp: Date.now(),
+              forceUpdate: true
+            } 
+          }));
+
+          this.successMessage = 'Profile picture removed successfully';
+        } catch (error) {
+          throw error; // Re-throw to be caught by outer try-catch
+        }
       } catch (error) {
         console.error('Error removing profile picture:', error);
-        this.errorMessage = 'Failed to remove profile picture';
+        this.errorMessage = 'Failed to remove profile picture.';
+        
+        // Try to revert changes if backend operations fail
+        try {
+          const storedPhoto = localStorage.getItem('adminPhoto');
+          if (storedPhoto) {
+            this.photoURL = storedPhoto;
+            window.dispatchEvent(new CustomEvent('adminProfileChanged', { 
+              detail: { 
+                name: this.name,
+                photoURL: storedPhoto,
+                timestamp: Date.now(),
+                forceUpdate: true
+              } 
+            }));
+          }
+        } catch (e) {
+          console.error('Failed to revert changes:', e);
+        }
       } finally {
         this.saving = false;
       }
     },
 
+    // 🔹 Update profile info (name + photo)
     async updateProfile() {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = 'Please login first.';
+          this.errorMessage = "Please login first.";
           return;
         }
 
         this.saving = true;
-        this.errorMessage = '';
-        this.successMessage = '';
-        let newPhotoURL = this.photoURL;
+        this.errorMessage = "";
+        this.successMessage = "";
 
+        let newPhotoURL = this.photoURL;
+        let newPhotoPublicId = this.photoPublicId;
+
+        // Upload new image if selected
         if (this.file) {
           try {
-            const { uploadImageOnly } = await import('../../composables/useImageUpload');
-            newPhotoURL = await uploadImageOnly(this.file);
+            const { uploadImageOnly } = await import("../../composables/useImageUpload");
+            console.log("Starting image upload...");
+            const uploadResult = await uploadImageOnly(this.file);
+            console.log("Upload result:", uploadResult);
+            
+            if (uploadResult && uploadResult.url) {
+              newPhotoURL = uploadResult.url;
+              newPhotoPublicId = uploadResult.publicId || null;
+              console.log("New photo URL:", newPhotoURL);
+            } else {
+              throw new Error("Invalid upload result");
+            }
           } catch (uploadError) {
-            console.error('Error uploading to Cloudinary:', uploadError);
-            this.errorMessage = 'Failed to upload image. Please try again.';
+            console.error("Error uploading to Cloudinary:", uploadError);
+            this.errorMessage = "Failed to upload image. Please try again.";
             this.saving = false;
             return;
           }
         }
 
+        // Update Firebase Auth
         await updateProfile(user, {
           displayName: this.name,
           photoURL: newPhotoURL,
         });
 
-        const refDoc = doc(db, 'admin', user.uid);
-        await setDoc(
-          refDoc,
-          {
-            name: this.name,
-            photoURL: newPhotoURL,
-          },
-          { merge: true }
-        );
-        
+        // Update Firestore with both URL and public ID
+        const refDoc = doc(db, "admin", user.uid);
+        await setDoc(refDoc, { 
+          name: this.name, 
+          photoURL: newPhotoURL,
+          photoPublicId: newPhotoPublicId 
+        }, { merge: true });
+
+        // Update local storage
         this.photoURL = newPhotoURL;
-        localStorage.setItem('adminPhoto', newPhotoURL);
-        localStorage.setItem('adminName', this.name);
-        
+        localStorage.setItem("adminPhoto", newPhotoURL);
+        localStorage.setItem("adminName", this.name);
+
         // Dispatch event for header update
-        const event = new CustomEvent('adminProfileChanged', {
-          detail: {
-            name: this.name,
-            photoURL: newPhotoURL
-          }
+        const event = new CustomEvent("adminProfileChanged", {
+          detail: { name: this.name, photoURL: newPhotoURL },
         });
         window.dispatchEvent(event);
 
-   
         try {
-          window.dispatchEvent(new Event('adminProfileChanged'));
+          window.dispatchEvent(new Event("adminProfileChanged"));
         } catch (e) {
           // ignore
         }
-        // also update any UI that listens to auth change
+
+        this.successMessage = "Profile updated successfully!";
       } catch (err) {
-        console.error('Error updating profile:', err);
-        this.errorMessage = 'Failed to update profile.';
+        console.error("Error updating profile:", err);
+        this.errorMessage = "Failed to update profile.";
       } finally {
         this.saving = false;
-        // clear messages after a short delay
+        // Clear messages after delay
         setTimeout(() => {
-          this.successMessage = '';
-          this.errorMessage = '';
+          this.successMessage = "";
+          this.errorMessage = "";
         }, 3000);
       }
     },
-    },
-    };
+  },
+};
 </script>
+
 
 <style scoped>
 input[type="file"] {
