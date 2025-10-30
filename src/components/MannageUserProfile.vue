@@ -373,6 +373,7 @@ import { useRouter } from 'vue-router';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { uploadImageOnly } from "@/composables/useImageUpload";
 
 const isEditing = ref(false);
 const showOrders = ref(false);
@@ -462,6 +463,22 @@ const fetchUserData = async (uid) => {
   }
 };
 
+async function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  
+  const reader = new FileReader();
+  reader.onload = () => {
+    tempClient.value.image = reader.result; 
+  };
+  reader.readAsDataURL(file);
+
+  // خزّن الملف عشان نرفعه وقت الحفظ
+  tempClient.value.newImageFile = file;
+}
+
+
 // تحميل بيانات المستخدم عند تحميل المكون
 onMounted(() => {
   const auth = getAuth();
@@ -491,13 +508,17 @@ const saveChanges = async () => {
       } catch (e) {
         console.warn("Geocode before save failed:", e);
       }
+      let imageUrl = tempClient.value.image;
+    if (tempClient.value.newImageFile) {
+      imageUrl = await uploadImageOnly(tempClient.value.newImageFile);
+    }
 
       // تحضير البيانات للحفظ
       const updateData = {
         name: tempClient.value.name,
         email: tempClient.value.email,
         phone: tempClient.value.phone,
-        image: tempClient.value.image,
+        image: imageUrl,
         address: {
           street: tempClient.value.address.street || "",
           city: tempClient.value.address.city || "",
@@ -512,6 +533,16 @@ const saveChanges = async () => {
       await updateDoc(docRef, updateData);
       client.value = JSON.parse(JSON.stringify(tempClient.value));
       isEditing.value = false;
+      // بعد الحفظ بنجاح، نجيب آخر بيانات المستخدم من Firebase
+      const updatedSnap = await getDoc(docRef);
+      const updatedData = updatedSnap.data();
+
+      // نحفظها مؤقتًا في localStorage أو نحطها في store لو عندك (اختياري)
+      localStorage.setItem("userImage", updatedData.image || "");
+
+      // 🔔 نطلق حدث مخصص
+      window.dispatchEvent(new CustomEvent("userUpdated", { detail: updatedData }));
+
       alert("Changes saved successfully!"); // إضافة رسالة نجاح
     }
   } catch (error) {
@@ -586,22 +617,22 @@ const closeModal = () => (selectedOrder.value = null);
 // الصورة
 const imageInput = ref(null);
 const triggerImageUpload = () => imageInput.value.click();
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+// const handleImageUpload = (event) => {
+//   const file = event.target.files[0];
+//   if (!file) return;
 
-  // Check file size (max 5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    alert("Image size should be less than 5MB");
-    return;
-  }
+//   // Check file size (max 5MB)
+//   if (file.size > 5 * 1024 * 1024) {
+//     alert("Image size should be less than 5MB");
+//     return;
+//   }
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    tempClient.value.image = e.target.result;
-  };
-  reader.readAsDataURL(file);
-};
+//   const reader = new FileReader();
+//   reader.onload = (e) => {
+//     tempClient.value.image = e.target.result;
+//   };
+//   reader.readAsDataURL(file);
+// };
 
 // تحديث الإحداثيات عند تغيير العنوان
 watch(
