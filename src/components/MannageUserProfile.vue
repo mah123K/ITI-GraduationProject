@@ -1,10 +1,8 @@
 <template>
   <div class="min-h-screen bg-white-100 flex mt-15">
-    <!-- Sidebar -->
     <aside
       class="w-full md:w-1/4 bg-[#ffffff] shadow-2xl p-6 flex flex-col items-center relative border border-gray-300"
     >
-      <!-- Profile Image Section -->
       <div class="relative group">
         <img
           :src="tempClient.image"
@@ -13,7 +11,6 @@
           @click="isEditing && triggerImageUpload"
         />
 
-        <!-- Overlay عند التعديل -->
         <div
           v-if="isEditing"
           class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
@@ -31,13 +28,11 @@
         />
       </div>
 
-      <!-- User Info -->
       <div class="mt-5 text-center">
         <h2 class="text-2xl font-bold text-black">{{ tempClient.name }}</h2>
         <p class="text-black-300 text-sm">{{ tempClient.email }}</p>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex flex-col gap-3 mt-6 w-full">
         <button
           @click="openEditProfile"
@@ -61,18 +56,19 @@
         </button>
       </div>
 
-      <!-- Background Glow Circle -->
-      <div class="absolute bottom-0 w-32 h-32 bg-[#5984C6] opacity-20 blur-3xl rounded-full"></div>
+      <div
+        class="absolute bottom-0 w-32 h-32 bg-[#5984C6] opacity-20 blur-3xl rounded-full"
+      ></div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 p-8 space-y-8">
-      <!-- Orders Section -->
       <section
         v-if="showOrders"
         class="transition-transform hover:scale-[1.01] duration-300 bg-white/30 backdrop-blur-md shadow-xl rounded-3xl p-6 border border-white/20"
       >
-        <h3 class="text-2xl font-semibold mb-6 text-[#5984C6] flex items-center gap-2">
+        <h3
+          class="text-2xl font-semibold mb-6 text-[#5984C6] flex items-center gap-2"
+        >
           <i class="fa-solid fa-box text-[#5984C6]"></i> Recent Orders
         </h3>
 
@@ -129,11 +125,13 @@
         </div>
       </section>
 
-      <!-- Profile Section -->
       <section v-else class="space-y-6">
-        <!-- Personal Info Box -->
-        <div class="bg-white/30 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20">
-          <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">Personal Information</h3>
+        <div
+          class="bg-white/30 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20"
+        >
+          <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">
+            Personal Information
+          </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-gray-700 font-medium mb-1">
@@ -185,7 +183,9 @@
                 <i
                   @click="togglePassword"
                   class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500"
-                  :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+                  :class="
+                    showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'
+                  "
                 ></i>
               </div>
             </div>
@@ -205,22 +205,27 @@
                 <i
                   @click="toggleConfirmPassword"
                   class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500"
-                  :class="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+                  :class="
+                    showConfirmPassword
+                      ? 'fa-solid fa-eye-slash'
+                      : 'fa-solid fa-eye'
+                  "
                 ></i>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Location Box -->
         <div
           class="bg-white/30 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
         >
           <div class="flex-1 space-y-4">
-            <h3 class="text-xl font-semibold text-[#5984C6] mb-4 flex items-center gap-2">
+            <h3
+              class="text-xl font-semibold text-[#5984C6] mb-4 flex items-center gap-2"
+            >
               <i class="fa-solid fa-location-dot"></i> Address
             </h3>
-            
+
             <div class="space-y-4">
               <div class="relative">
                 <label class="block text-gray-700 font-medium mb-2">
@@ -267,11 +272,20 @@
               Address will automatically update the map location
             </div>
           </div>
-          <div class="flex-1 h-64 w-full rounded-2xl overflow-hidden border border-white/20 shadow-md relative">
-            <div v-if="isUpdatingMap" class="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+          <div
+            class="flex-1 h-64 w-full rounded-2xl overflow-hidden border border-white/20 shadow-md relative"
+          >
+            <div
+              v_if="isUpdatingMap"
+              class="absolute inset-0 bg-white/80 flex items-center justify-center z-10"
+            >
               <div class="text-[#5984C6] flex flex-col items-center">
-                <i class="fa-solid fa-map-location-dot animate-bounce text-2xl"></i>
-                <span class="mt-2 text-sm font-medium">Updating map location...</span>
+                <i
+                  class="fa-solid fa-map-location-dot animate-bounce text-2xl"
+                ></i>
+                <span class="mt-2 text-sm font-medium"
+                  >Updating map location...</span
+                >
               </div>
             </div>
             <iframe
@@ -285,7 +299,6 @@
           </div>
         </div>
 
-        <!-- Save / Cancel Buttons -->
         <div v-if="isEditing" class="flex justify-center gap-4 mt-6">
           <button
             @click="saveChanges"
@@ -303,7 +316,6 @@
         </div>
       </section>
 
-      <!-- Order Modal -->
       <transition name="fade">
         <div
           v-if="selectedOrder"
@@ -318,7 +330,9 @@
             >
               <i class="fa-solid fa-xmark text-xl"></i>
             </button>
-            <h3 class="text-2xl font-bold mb-4">Order #{{ selectedOrder.id }}</h3>
+            <h3 class="text-2xl font-bold mb-4">
+              Order #{{ selectedOrder.id }}
+            </h3>
             <div class="space-y-2">
               <p><strong>Date:</strong> {{ selectedOrder.date }}</p>
               <p><strong>Status:</strong> {{ selectedOrder.status }}</p>
@@ -363,17 +377,24 @@
           </div>
         </div>
       </transition>
+
+      <AlertPopup
+        :show="showPopup"
+        :message="popupMessage"
+        @close="closePopup"
+      />
     </main>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { uploadImageOnly } from "@/composables/useImageUpload";
+// NEW: Import the new component
+import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path if needed
 
 const isEditing = ref(false);
 const showOrders = ref(false);
@@ -385,8 +406,24 @@ const tempClient = ref(null);
 const isUpdatingMap = ref(false);
 let geocodeTimeout = null;
 
+// NEW: Refs for custom popup
+const showPopup = ref(false);
+const popupMessage = ref("");
+
+// NEW: Functions to control the custom popup
+const triggerPopup = (message) => {
+  popupMessage.value = message;
+  showPopup.value = true;
+};
+
+const closePopup = () => {
+  showPopup.value = false;
+  popupMessage.value = "";
+};
+
 const togglePassword = () => (showPassword.value = !showPassword.value);
-const toggleConfirmPassword = () => (showConfirmPassword.value = !showConfirmPassword.value);
+const toggleConfirmPassword = () =>
+  (showConfirmPassword.value = !showConfirmPassword.value);
 // router for navigation (used by Back button)
 const router = useRouter();
 
@@ -403,7 +440,7 @@ const openOrders = () => {
 
 const goBack = () => {
   // Navigate back to home page from the profile sidebar
-  router.push('/');
+  router.push("/");
 };
 
 // جلب بيانات المستخدم من Firebase
@@ -422,7 +459,7 @@ const fetchUserData = async (uid) => {
         city: userData.address?.city || "",
         country: userData.address?.country || "",
         lat: userData.address?.lat || 30.0444,
-        lng: userData.address?.lng || 31.2357
+        lng: userData.address?.lng || 31.2357,
       };
 
       // Merge all data
@@ -432,7 +469,7 @@ const fetchUserData = async (uid) => {
         phone: userData.phone || "",
         image: userData.image || defaultClient.image,
         address: address,
-        orders: userData.orders || []
+        orders: userData.orders || [],
       };
 
       // Update tempClient with the merged data
@@ -463,22 +500,6 @@ const fetchUserData = async (uid) => {
   }
 };
 
-async function handleImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  
-  const reader = new FileReader();
-  reader.onload = () => {
-    tempClient.value.image = reader.result; 
-  };
-  reader.readAsDataURL(file);
-
-  // خزّن الملف عشان نرفعه وقت الحفظ
-  tempClient.value.newImageFile = file;
-}
-
-
 // تحميل بيانات المستخدم عند تحميل المكون
 onMounted(() => {
   const auth = getAuth();
@@ -491,7 +512,8 @@ onMounted(() => {
 
 const saveChanges = async () => {
   if (tempClient.value.password !== tempClient.value.confirmPassword) {
-    alert("Passwords do not match!");
+    // UPDATED
+    triggerPopup("Passwords do not match!");
     return;
   }
 
@@ -508,24 +530,20 @@ const saveChanges = async () => {
       } catch (e) {
         console.warn("Geocode before save failed:", e);
       }
-      let imageUrl = tempClient.value.image;
-    if (tempClient.value.newImageFile) {
-      imageUrl = await uploadImageOnly(tempClient.value.newImageFile);
-    }
 
       // تحضير البيانات للحفظ
       const updateData = {
         name: tempClient.value.name,
         email: tempClient.value.email,
         phone: tempClient.value.phone,
-        image: imageUrl,
+        image: tempClient.value.image,
         address: {
           street: tempClient.value.address.street || "",
           city: tempClient.value.address.city || "",
           country: tempClient.value.address.country || "",
           lat: tempClient.value.address.lat || 30.0444,
-          lng: tempClient.value.address.lng || 31.2357
-        }
+          lng: tempClient.value.address.lng || 31.2357,
+        },
       };
 
       console.log("Saving data:", updateData); // Debug log
@@ -533,22 +551,14 @@ const saveChanges = async () => {
       await updateDoc(docRef, updateData);
       client.value = JSON.parse(JSON.stringify(tempClient.value));
       isEditing.value = false;
-      // بعد الحفظ بنجاح، نجيب آخر بيانات المستخدم من Firebase
-      const updatedSnap = await getDoc(docRef);
-      const updatedData = updatedSnap.data();
-
-      // نحفظها مؤقتًا في localStorage أو نحطها في store لو عندك (اختياري)
-      localStorage.setItem("userImage", updatedData.image || "");
-
-      // 🔔 نطلق حدث مخصص
-      window.dispatchEvent(new CustomEvent("userUpdated", { detail: updatedData }));
-
-      alert("Changes saved successfully!"); // إضافة رسالة نجاح
+      // UPDATED
+      triggerPopup("Changes saved successfully!");
     }
   } catch (error) {
     console.error("Error saving changes:", error);
     console.error("Error details:", error.message);
-    alert("Failed to save changes. Please try again.");
+    // UPDATED
+    triggerPopup("Failed to save changes. Please try again.");
   }
 };
 
@@ -570,7 +580,7 @@ const defaultClient = {
     lat: 30.0444,
     lng: 31.2357,
   },
-  orders: []
+  orders: [],
 };
 
 // Initialize client and tempClient with default values
@@ -580,7 +590,9 @@ tempClient.value = { ...defaultClient };
 // orders
 const sortedOrders = computed(() => {
   if (!client.value?.orders) return [];
-  return [...client.value.orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+  return [...client.value.orders].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 });
 
 const totalSales = computed(() => {
@@ -601,14 +613,21 @@ const progressWidth = (status) => {
 };
 
 const nextOrder = () => {
-  const idx = client.value.orders.findIndex((o) => o.id === selectedOrder.value.id);
-  selectedOrder.value = client.value.orders[(idx + 1) % client.value.orders.length];
+  const idx = client.value.orders.findIndex(
+    (o) => o.id === selectedOrder.value.id
+  );
+  selectedOrder.value =
+    client.value.orders[(idx + 1) % client.value.orders.length];
 };
 
 const prevOrder = () => {
-  const idx = client.value.orders.findIndex((o) => o.id === selectedOrder.value.id);
+  const idx = client.value.orders.findIndex(
+    (o) => o.id === selectedOrder.value.id
+  );
   selectedOrder.value =
-    client.value.orders[(idx - 1 + client.value.orders.length) % client.value.orders.length];
+    client.value.orders[
+      (idx - 1 + client.value.orders.length) % client.value.orders.length
+    ];
 };
 
 const openModal = (order) => (selectedOrder.value = order);
@@ -617,34 +636,36 @@ const closeModal = () => (selectedOrder.value = null);
 // الصورة
 const imageInput = ref(null);
 const triggerImageUpload = () => imageInput.value.click();
-// const handleImageUpload = (event) => {
-//   const file = event.target.files[0];
-//   if (!file) return;
+const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-//   // Check file size (max 5MB)
-//   if (file.size > 5 * 1024 * 1024) {
-//     alert("Image size should be less than 5MB");
-//     return;
-//   }
+  // Check file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    // UPDATED
+    triggerPopup("Image size should be less than 5MB");
+    return;
+  }
 
-//   const reader = new FileReader();
-//   reader.onload = (e) => {
-//     tempClient.value.image = e.target.result;
-//   };
-//   reader.readAsDataURL(file);
-// };
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    tempClient.value.image = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
 
 // تحديث الإحداثيات عند تغيير العنوان
 watch(
   () => [
     tempClient.value?.address?.street,
     tempClient.value?.address?.city,
-    tempClient.value?.address?.country
+    tempClient.value?.address?.country,
   ],
   async () => {
     if (isEditing.value) {
       // debounce geocoding to avoid too many requests while typing
-      if (typeof geocodeTimeout !== 'undefined' && geocodeTimeout) clearTimeout(geocodeTimeout);
+      if (typeof geocodeTimeout !== "undefined" && geocodeTimeout)
+        clearTimeout(geocodeTimeout);
       geocodeTimeout = setTimeout(async () => {
         await updateMapCoordinates();
       }, 700);
@@ -664,29 +685,34 @@ const updateMapCoordinates = async () => {
   try {
     // Build complete address string
     const address = [street, city, country].filter(Boolean).join(", ");
-    
+
     // Add delay to respect OpenStreetMap usage policy
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`,
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        address
+      )}&limit=1`,
       {
         headers: {
-          'Accept-Language': 'en', // Prefer English results
-          'User-Agent': 'TashtebApp/1.0' // Identify our application
-        }
+          "Accept-Language": "en", // Prefer English results
+          "User-Agent": "TashtebApp/1.0", // Identify our application
+        },
       }
     );
 
-    if (!response.ok) throw new Error('Geocoding request failed');
-    
+    if (!response.ok) throw new Error("Geocoding request failed");
+
     const data = await response.json();
 
     if (data && data.length > 0) {
       // Update coordinates
       tempClient.value.address.lat = parseFloat(data[0].lat);
       tempClient.value.address.lng = parseFloat(data[0].lon);
-      console.log('Updated coordinates:', { lat: data[0].lat, lng: data[0].lon });
+      console.log("Updated coordinates:", {
+        lat: data[0].lat,
+        lng: data[0].lon,
+      });
     } else {
-      console.warn('No location found for address:', address);
+      console.warn("No location found for address:", address);
     }
   } catch (error) {
     console.error("Error updating coordinates:", error);
@@ -700,7 +726,7 @@ const updateMapCoordinates = async () => {
 };
 
 const mapSrc = computed(() => {
-  if (!tempClient.value?.address) return '';
+  if (!tempClient.value?.address) return "";
   const lat = tempClient.value.address.lat || defaultClient.address.lat;
   const lng = tempClient.value.address.lng || defaultClient.address.lng;
   return `https://www.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`;
