@@ -69,6 +69,38 @@ const feedbacks = ref([
   },
 ]);
 
+
+// ===== Carousel for Services =====
+const currentSlide = ref(0);
+// Hide arrows if there are fewer than 4 real services (custom not counted)
+const showArrows = computed(() => serviceList.value.length >= 4);
+
+const chunkedServices = computed(() => {
+  const chunkSize = 4; // Always 4 per slide
+  const services = [...serviceList.value]; // copy array
+  // Add the custom service as the first card
+  services.unshift({ id: "custom-service" });
+  const chunks = [];
+  for (let i = 0; i < services.length; i += chunkSize) {
+    chunks.push(services.slice(i, i + chunkSize));
+  }
+  return chunks;
+});
+
+
+const nextSlide = () => {
+  if (currentSlide.value < chunkedServices.value.length - 1) {
+    currentSlide.value++;
+  }
+};
+
+const prevSlide = () => {
+  if (currentSlide.value > 0) {
+    currentSlide.value--;
+  }
+};
+
+
 // --- Computed Properties ---
 const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
@@ -484,43 +516,87 @@ watch(selectedDayInfo, () => {
       <!-- Right Section (Services) -->
       <div class="w-full lg:w-[60%] flex flex-col">
         <h1
-          class="font-bold text-3xl md:text-4xl lg:text-5xl text-accent-color text-center mb-10"
+          class="main-header m-0"
         >
           Services Offered
         </h1>
 
-        <!-- ✅ Service Cards Grid (Dynamic + Custom) -->
-        <div class="cardsContainer grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Custom Service -->
-          <div
-            class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
-          >
-            <div class="serviceImg mb-4">
-              <img
-                src="../images/custom.png"
-                class="w-28 h-28 md:w-32 md:h-32 object-contain"
-                alt="Custom Service"
-              />
-            </div>
-            <h2 class="font-bold mb-4 text-lg md:text-xl text-gray-800">
-              Custom Service
-            </h2>
-            <button
-              @click="openPopup()"
-              class="w-full bg-accent-color text-white px-4 py-2 mt-auto rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"
+        <!-- ✅ Fixed Carousel (2 rows × 2 columns, 4 cards per slide) -->
+        <div class="relative w-full flex justify-center">
+          <!-- Outer Wrapper (allows arrows to show fully) -->
+          <div class="relative w-[90%] overflow-hidden rounded-2xl">
+            <!-- Inner Slides -->
+            <div
+              class="flex transition-transform duration-700 ease-in-out"
+              :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
             >
-              Enter Details
-            </button>
+              <!-- Each slide contains exactly 4 cards (2x2 grid) -->
+              <div
+                v-for="(chunk, index) in chunkedServices"
+                :key="index"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full shrink-0"
+              >
+                <div
+                  v-for="(service, i) in chunk"
+                  :key="service.id"
+                  class="serviceCard rounded-2xl text-center p-6 bg-white flex flex-col items-center justify-between transition-shadow h-80"
+                >
+                  <!-- ✅ Custom Service (First Card in First Slide Only) -->
+                  <template v-if="index === 0 && i === 0">
+                    <div
+                      class="serviceCard rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 bg-white flex flex-col items-center justify-between h-80 w-full"
+                    >
+                      <div class="serviceImg mb-4">
+                        <img
+                          src="../images/custom.png"
+                          class="w-28 h-28 md:w-32 md:h-32 object-contain"
+                          alt="Custom Service"
+                        />
+                      </div>
+                      <h2 class="font-bold mb-4 text-lg md:text-xl text-gray-800">
+                        Custom Service
+                      </h2>
+                      <button
+                        @click="openPopup()"
+                        class="w-full bg-accent-color text-white px-4 py-2 mt-auto rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer"
+                      >
+                        Enter Details
+                      </button>
+                    </div>
+                  </template>
+
+                  <!-- ✅ Dynamic Services -->
+                  <template v-else>
+                    <UserServiceCard
+                      :service="service"
+                      class="h-full w-full"
+                      @order="(srv) => openPopup(srv.descreption, srv.price)"
+                    />
+                  </template>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Dynamic Services -->
-          <UserServiceCard
-            v-for="service in serviceList"
-            :key="service.id"
-            :service="service"
-            @order="(srv) => openPopup(srv.descreption, srv.price)"
-          />
+          <!-- ✅ Navigation Arrows (moved outside overflow) -->
+          <button
+          v-if="showArrows"
+            @click="prevSlide"
+            class="absolute left-2 md:left-[-30px] top-1/2 -translate-y-1/2 bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <button
+          v-if="showArrows"
+            @click="nextSlide"
+            class="absolute right-2 md:right-[-30px] top-1/2 -translate-y-1/2 bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
+
+
       </div>
     </div>
 
@@ -713,7 +789,7 @@ watch(selectedDayInfo, () => {
       class="WorkGallery flex flex-col items-center justify-center w-[90%] md:w-[80%] mx-auto mt-16 md:mt-24"
     >
       <h1
-        class="font-bold text-3xl md:text-4xl lg:text-5xl text-accent-color text-center mb-10"
+        class="main-header"
       >
         Work Gallery
       </h1>
@@ -782,7 +858,7 @@ watch(selectedDayInfo, () => {
       class="feedback relative flex flex-col items-center justify-center w-[90%] md:w-[70%] mx-auto my-16 md:my-24 text-center px-4"
     >
       <h1
-        class="font-bold text-3xl md:text-4xl lg:text-5xl text-accent-color text-center mb-10"
+        class="main-header"
       >
         Customer Feedback
       </h1>
@@ -842,6 +918,7 @@ watch(selectedDayInfo, () => {
 }
 /* Basic styling for Font Awesome icons if not globally included */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
 </style>
 
 
