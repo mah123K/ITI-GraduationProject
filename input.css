@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* If you used my "Option 2 (CSS Variables)" method,
+ your variables MUST be in this file, like this:
+*/
+
 @theme {
   --color-accent-color: #5984c6;
   --color-secondry-color: #daecf6;
@@ -7,7 +11,7 @@
   --color-dark-blue: #0b161b;
 }
 @plugin "daisyui" {
-  themes: light --default;
+
 }
 @layer components {
   .main-header {
