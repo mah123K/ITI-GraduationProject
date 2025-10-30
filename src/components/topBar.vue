@@ -9,7 +9,7 @@
             id="dropdownDefault"
             @click.stop="toggleDropdown"
             :aria-expanded="showDropdown"
-            class="flex items-center justify-center gap-1 px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 hover:bg-[#DAECF6]/30 text-sm md:text-base transition"
+            class="flex items-center justify-center gap-1 px-3 py-2 border dark:bg-white rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 hover:bg-[#DAECF6]/30 text-sm md:text-base transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +133,7 @@
           </div>
         </div>
 
-        <div class="text-[#0B161B]/90 font-medium text-sm md:text-base whitespace-nowrap">
+        <div class="text-[#0B161B]/90 dark:text-white font-medium text-sm md:text-base whitespace-nowrap">
           {{ $t('topBar.resultsText', { displayed: displayedCount, total: totalCount }) }}
         </div>
       </div>
@@ -144,7 +144,7 @@
         <select
           v-model="sortOption"
           @change="emitSort"
-          class="px-3 py-2 border rounded-lg border-[#0B161B]/15 text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition rtl:text-right"
+          class="px-3 py-2 border rounded-lg border-[#0B161B]/15  text-[#0B161B]/80 focus:outline-none text-sm md:text-base bg-white transition rtl:text-right"
         >
           <option value="default">{{ $t('topBar.sort.default') }}</option>
           <option value="rating">{{ $t('topBar.sort.rating') }}</option>
@@ -154,7 +154,7 @@
         <div
           @click="changeView('grid')"
           :class="[
-            'border rounded-lg border-[#0B161B]/15 w-10 h-10 flex items-center justify-center cursor-pointer transition',
+            'border rounded-lg border-[#0B161B]/15 dark:hover:bg-accent-color dark:active:bg-accent-color dark:bg-white w-10 h-10 flex items-center justify-center cursor-pointer transition',
             currentView === 'grid' ? 'bg-[#DAECF6]/40 border-[#5984C6]' : '',
           ]"
         >
@@ -173,7 +173,7 @@
         <div
           @click="changeView('list')"
           :class="[
-            'border rounded-lg border-[#0B161B]/15 w-10 h-10 flex items-center justify-center cursor-pointer transition',
+            'border rounded-lg border-[#0B161B]/15 dark:hover:bg-accent-color dark:active:bg-accent-color dark:bg-white w-10 h-10 flex items-center justify-center cursor-pointer transition',
             currentView === 'list' ? 'bg-[#DAECF6]/40 border-[#5984C6]' : '',
           ]"
         >
