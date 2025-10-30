@@ -1,18 +1,19 @@
 <template>
-  <footer class="bg-accent-color mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8 text-left rtl:text-right">
-    
-    <div>
+  <footer
+    class="bg-accent-color mt-10 sticky mx-auto text-white grid grid-cols-1 md:grid-cols-4 gap-5 p-8 text-left rtl:text-right"
+  >
+    <div class="text-left sm:text-left ms-0 sm:ms-10">
       <img
         src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760784552/image__11_-removebg-preview_ev3uvd.png"
         alt="Tashtebaty Logo"
         class="w-70 mb-4"
       />
-      <p class="w-80 ms-10 max-w-full sm:w-full">
+      <p class="w-full sm:w-80 sm:ms-10 ms-0 max-w-full">
         {{ $t('footer.description') }}
       </p>
     </div>
 
-    <div class="ms-30 sm:ms-10">
+    <div class="ms-0 sm:ms-10 text-left sm:text-left">
       <h6 class="text-lg font-semibold mb-3">{{ $t('footer.quickLinks') }}</h6>
       <ul class="space-y-2">
         <li><a href="#" class="hover:underline">{{ $t('footer.links.about') }}</a></li>
@@ -22,7 +23,7 @@
       </ul>
     </div>
 
-    <div class="ms-30 sm:ms-10">
+    <div class="ms-0 sm:ms-10 text-left sm:text-left">
       <h6 class="text-lg font-semibold mb-3">{{ $t('footer.legal') }}</h6>
       <ul class="space-y-2">
         <li><a href="#" class="hover:underline">{{ $t('footer.links.terms') }}</a></li>
@@ -31,9 +32,9 @@
       </ul>
     </div>
 
-    <div class="ms-30 sm:ms-10">
+    <div class="ms-0 sm:ms-10 text-left sm:text-left">
       <h6 class="text-lg font-semibold mb-3">{{ $t('footer.contactUs') }}</h6>
-      <div class="flex gap-x-4 mt-2 rtl:justify-start">
+      <div class="flex gap-x-4 mt-2 rtl:justify-start justify-start">
         <a href="#" class="hover:text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
             <path
