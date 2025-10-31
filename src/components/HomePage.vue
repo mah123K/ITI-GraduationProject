@@ -31,7 +31,7 @@
     <div class="flex justify-center mb-10 p-5 items-center mx-auto">
       <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
@@ -44,7 +44,7 @@
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
@@ -57,7 +57,7 @@
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
@@ -70,7 +70,7 @@
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>

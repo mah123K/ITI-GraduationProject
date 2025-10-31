@@ -32,27 +32,27 @@
       <!-- User Info -->
       <div class="mt-5 text-center break-words">
         <h2 class="text-xl sm:text-2xl font-bold text-black dark:text-white">{{ tempClient.name }}</h2>
-        <p class="text-gray-500 text-sm break-all dark:text-white dark:text-white">{{ tempClient.email }}</p>
+        <p class="text-gray-500 text-sm break-all dark:text-white ">{{ tempClient.email }}</p>
       </div>
 
       <div class="flex flex-col gap-3 mt-6 w-full">
         <button
           @click="openEditProfile"
-          class="bg-accent-color w-full text-white font-semibold py-2 sm:py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class="bg-[#5984C6]  dark:bg-[#182f3a] w-full text-white font-semibold py-2 sm:py-3 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-pen-to-square"></i> Edit Profile
         </button>
 
         <button
           @click="openOrders"
-          class="bg-accent-color text-white font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class="bg-[#5984C6] dark:bg-[#182f3a] text-white font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-box"></i> My Recent Orders
         </button>
 
         <button
           @click="goBack"
-          class="bg-accent-color text-[#ffffff] font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
+          class=" bg-[#5984C6] dark:bg-[#182f3a] text-[#ffffff] font-semibold py-2 sm:py-3 px-6 rounded-2xl hover:bg-[#002153] transition duration-300 flex items-center justify-center gap-2 shadow-inner text-sm sm:text-base"
         >
           <i class="fa-solid fa-arrow-left"></i> Back
         </button>
@@ -90,7 +90,7 @@
                 :key="order.id"
                 class="border-b hover:bg-gray-50 transition"
               >
-                <td class="p-3 font-semibold text-gray-700">#{{ order.id }}</td>
+                <td class="p-3 font-semibold text-white">#{{ order.id }}</td>
                 <td class="p-3 text-gray-600">{{ order.date }}</td>
                 <td class="p-3">
                   <span
@@ -120,7 +120,7 @@
           </table>
         </div>
 
-        <div class="mt-6 text-right text-gray-700 font-semibold text-sm sm:text-base">
+        <div class="mt-6 text-right text-white font-semibold text-sm sm:text-base">
           Total Delivered Sales:
           <span class="text-accent-color">${{ totalSales }}</span>
         </div>
@@ -128,11 +128,11 @@
 
       <section v-else class="space-y-6">
         <!-- Personal Info Box -->
-        <div class="bg-white/30 dark:bg-accent-color backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20">
-          <h3 class="text-xl sm:text-2xl font-semibold text-accent-color mb-4">Personal Information</h3>
+        <div class="bg-white/30 dark:bg-[#182f3a] backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20">
+          <h3 class="text-xl sm:text-2xl font-semibold text-[#5984C6] dark:text-white mb-4">Personal Information</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
+              <label class="block text-white font-medium mb-1 text-sm sm:text-base">
                 <i class="fa-solid fa-user mr-2 text-accent-color"></i> Name
               </label>
               <input
@@ -144,7 +144,7 @@
             </div>
 
             <div>
-              <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
+              <label class="block dark:text-white font-medium mb-1 text-sm sm:text-base">
                 <i class="fa-solid fa-envelope mr-2 text-accent-color"></i> Email
               </label>
               <input
@@ -156,7 +156,7 @@
             </div>
 
             <div>
-              <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
+              <label class="block dark:text-white font-medium mb-1 text-sm sm:text-base">
                 <i class="fa-solid fa-phone mr-2 text-accent-color"></i> Phone
               </label>
               <input
@@ -168,7 +168,7 @@
             </div>
 
             <div>
-              <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
+              <label class="block dark:text-white font-medium mb-1 text-sm sm:text-base">
                 <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Password
               </label>
               <div class="relative">
@@ -189,8 +189,8 @@
             </div>
 
             <div>
-              <label class="block text-gray-700 font-medium mb-1 text-sm sm:text-base">
-                <i class="fa-solid fa-lock-keyhole mr-2 text-accent-color"></i> Confirm Password
+              <label class="block dark:text-white font-medium mb-1 text-sm sm:text-base">
+                <i class="fa-solid fa-lock mr-2 text-accent-color"></i> Confirm Password
               </label>
               <div class="relative">
                 <input
@@ -214,16 +214,16 @@
         </div>
 
         <div
-          class="bg-white/30 dark:bg-accent-color backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
+          class="bg-white/30 dark:bg-[#182f3a] backdrop-blur-md p-4 sm:p-6 rounded-3xl shadow-xl border border-white/20 flex flex-col md:flex-row gap-6"
         >
           <div class="flex-1 space-y-4">
-            <h3 class="text-lg sm:text-xl font-semibold text-accent-color mb-4 flex items-center gap-2">
+            <h3 class="text-lg sm:text-xl font-semibold text-[#5984C6] dark:text-white mb-4 flex items-center gap-2">
               <i class="fa-solid fa-location-dot"></i> Address
             </h3>
 
             <div class="space-y-4">
               <div>
-                <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
+                <label class="block dark:text-white font-medium mb-2 text-sm sm:text-base">
                   <i class="fa-solid fa-road text-accent-color mr-2"></i>Street
                 </label>
                 <input
@@ -236,7 +236,7 @@
               </div>
 
               <div>
-                <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
+                <label class="block dark:text-white font-medium mb-2 text-sm sm:text-base">
                   <i class="fa-solid fa-city text-accent-color mr-2"></i>City
                 </label>
                 <input
@@ -249,7 +249,7 @@
               </div>
 
               <div>
-                <label class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
+                <label class="block dark:text-white font-medium mb-2 text-sm sm:text-base">
                   <i class="fa-solid fa-globe text-accent-color mr-2"></i>Country
                 </label>
                 <input
