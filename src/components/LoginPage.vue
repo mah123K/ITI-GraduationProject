@@ -8,6 +8,8 @@
     <div
       class="relative lg:w-1/2 w-full flex items-center justify-center overflow-hidden min-h-[45vh] md:min-h-[50vh] lg:min-h-screen"
     >
+          <img src="../images/white logo.png" alt="" class="absolute z-100 lg:w-[350px] w-[200px] lg:top-15 top-7">
+
       <div
         class="absolute left-[10%] md:left-[15%] lg:left-[20%] top-5 md:top-8 lg:top-10 bottom-5 md:bottom-8 lg:bottom-20 w-[80%] md:w-[75%] lg:w-[70%] bg-[#5984C6] rounded-l-3xl rtl:rounded-l-none rtl:rounded-r-3xl rtl:left-auto rtl:right-[10%] md:rtl:right-[15%] lg:rtl:right-[20%]"
       ></div>
@@ -15,13 +17,15 @@
       <img
         src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1760978847/worker.png_siviza.png"
         alt="Worker"
-        class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[80vh] object-contain z-10 rtl:left-auto rtl:right-[20px] md:rtl:right-[50px] lg:rtl:right-[70px]"
+        class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[70vh] object-contain z-10 rtl:left-auto rtl:right-[20px] md:rtl:right-[50px] lg:rtl:right-[70px]"
       />
       <div
-        class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2 rtl:left-auto rtl:right-1/2 rtl:translate-x-1/2 rtl:text-right"
-        v-html="$t('loginPage.heroTitle')"
+        class="absolute text-white text-3xl md:text-4xl lg:text-4xl font-bold leading-[1.1] z-20 lg:left-[45%] left-[37%] top-[30%] md:top-[28%] lg:top-[35%] transform -translate-y-1/2 rtl:left-auto rtl:right-1/2 rtl:translate-x-1/2 rtl:text-right"
+        v-html="$t('loginPage.welcome')"
       >
       </div>
+      
+
     </div>
 
     <div

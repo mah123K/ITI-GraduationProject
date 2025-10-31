@@ -31,65 +31,57 @@
     <div class="flex justify-center mb-10 p-5 items-center mx-auto">
       <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
-          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
-              <img
-                src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760695818/image__1_-removebg-preview_spqrzh.png"
-                class=""
-              />
-              <span class="text-center block text-accent-color text-xl font-medium"
-                >{{ $t('home.services.plumbing') }}</span
-              >
+              <img :src="isDark ? plumbingDark : plumbingLight" alt="Plumbing service" />
+              <span class="text-center block text-accent-color text-xl font-medium">
+                {{ $t('home.services.plumbing') }}
+              </span>
             </div>
           </router-link>
         </div>
+
         <div
-          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
-              <img
-                src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__2_-removebg-preview_qlbzwa.png"
-                class="w-full"
-              />
-              <span class="text-center block text-accent-color text-xl font-medium"
-                >{{ $t('home.services.finishing') }}</span
-              >
+              <img :src="isDark ? finishingDark : finishingLight" alt="Finishing service" class="w-full" />
+              <span class="text-center block text-accent-color text-xl font-medium">
+                {{ $t('home.services.finishing') }}
+              </span>
             </div>
           </router-link>
         </div>
+
         <div
-          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
-              <img
-                src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__3_-removebg-preview_ko98nb.png"
-                class=""
-              />
-              <span class="text-center block text-accent-color text-xl font-medium"
-                >{{ $t('home.services.electrical') }}</span
-              >
+              <img :src="isDark ? electricalDark : electricalLight" alt="Electrical service" />
+              <span class="text-center block text-accent-color text-xl font-medium">
+                {{ $t('home.services.electrical') }}
+              </span>
             </div>
           </router-link>
         </div>
+
         <div
-          class="card dark:bg-white cursor-pointer bg-secondary-blue image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-secondary-blue dark:bg-transparent image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>
-              <img
-                src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760696039/image__4_-removebg-preview_ihc9at.png"
-                class=""
-              />
-              <span class="text-center block text-accent-color text-xl font-medium"
-                >{{ $t('home.services.carpentry') }}</span
-              >
+              <img :src="isDark ? carpentryDark : carpentryLight" alt="Carpentry service" />
+              <span class="text-center block text-accent-color text-xl font-medium">
+                {{ $t('home.services.carpentry') }}
+              </span>
             </div>
           </router-link>
         </div>
+
       </div>
     </div>
 
@@ -463,6 +455,19 @@ const works = ref([]);
 let interval = null;
 const offers = ref([]);
 
+// 🌓 Detect Tailwind dark mode (class-based)
+
+const isDark = ref(document.documentElement.classList.contains('dark'))
+
+// Watch for changes to <html class="dark">
+const observer = new MutationObserver(() => {
+  isDark.value = document.documentElement.classList.contains('dark')
+})
+
+onMounted(() => {
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+})
+
 // 🟦 Responsive Hero Images Logic
 const heroImagesDesktop = [
   new URL("../images/hero img.png", import.meta.url).href,
@@ -476,6 +481,17 @@ const heroImagesMobile = [
   new URL("../images/hero img3 mob.png", import.meta.url).href,
 ];
 
+// Light images
+const plumbingLight = new URL('../images/plumbing light.png', import.meta.url).href;
+const finishingLight = new URL('../images/finishing light.png', import.meta.url).href;
+const electricalLight = new URL('../images/light electrecal.png', import.meta.url).href;
+const carpentryLight = new URL('../images/light carpentry.png', import.meta.url).href;
+
+// Dark images
+const plumbingDark = new URL('../images/plumbing dark.png', import.meta.url).href;
+const finishingDark = new URL('../images/finishing dark.png', import.meta.url).href;
+const electricalDark = new URL('../images/dark electrecal.png', import.meta.url).href;
+const carpentryDark = new URL('../images/dark carpentery.png', import.meta.url).href;
 const heroImages = ref(heroImagesDesktop);
 const currentHeroIndex = ref(0);
 let heroInterval = null;
