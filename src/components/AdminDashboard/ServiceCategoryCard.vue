@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-5 flex flex-col items-center text-center relative">
+  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 rounded-lg shadow-md p-5 flex flex-col items-center text-center relative">
     <!-- Status Badge -->
     <span
       :class="{
@@ -53,8 +53,8 @@
 
     <!-- Providers Modal -->
     <div v-if="showProviders" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
-        <div class="p-6 border-b">
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold text-gray-800">
               {{ category.name }} Providers
@@ -68,28 +68,29 @@
         <div class="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
           <div v-if="loading" class="text-center py-8">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5984C6] mx-auto"></div>
-            <p class="mt-4 text-gray-600">Loading providers...</p>
+            <p class="mt-4 text-gray-600 dark:text-gray-300">Loading providers...</p>
           </div>
 
           <div v-else-if="!providers.length" class="text-center py-8">
             <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
-            <p class="text-gray-600">No providers found for this service</p>
+            <p class="text-gray-600 dark:text-gray-300">No providers found for this service</p>
           </div>
 
           <div v-else class="grid gap-6">
             <div v-for="provider in providers" :key="provider.id" 
-                class="bg-gray-50 rounded-lg p-4 flex items-center gap-4 hover:bg-gray-100 transition-colors">
+                class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
               <img 
-                :src="provider.profileImage || provider.logoImage || 'https://via.placeholder.com/50'" 
+                :src="provider.profileImage || provider.logoImage || defaultAvatar" 
                 :alt="provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name"
                 class="w-12 h-12 rounded-full object-cover"
+                @error="onImgError"
               >
               <div class="flex-1">
-                <h3 class="font-semibold text-gray-800">{{ provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name }}</h3>
-                <p class="text-sm text-gray-600">
+                <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
                   {{ provider.userType === 'company' ? 'Company' : 'Technician' }}
                 </p>
-                <p class="text-xs text-gray-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
                   <i class="fas fa-map-marker-alt text-xs mr-1"></i>
                   {{ formatAddress(provider) }}
                 </p>
@@ -117,9 +118,9 @@
 
     <!-- Provider Details Modal -->
     <div v-if="selectedProvider" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div class="p-6 border-b flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800">Provider Details</h2>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Provider Details</h2>
           <button @click="selectedProvider = null" class="text-gray-500 hover:text-gray-700">
             <i class="fas fa-times text-xl"></i>
           </button>
@@ -128,52 +129,53 @@
         <div class="p-6 overflow-y-auto">
           <div class="flex items-center gap-4 mb-6">
             <img 
-              :src="selectedProvider.profileImage || selectedProvider.logoImage || 'https://via.placeholder.com/100'" 
+              :src="selectedProvider.profileImage || selectedProvider.logoImage || defaultAvatar" 
               :alt="selectedProvider.name"
               class="w-24 h-24 rounded-full object-cover"
+              @error="onImgError"
             >
             <div>
-              <h3 class="text-xl font-semibold text-gray-800">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 {{ selectedProvider.userType === 'company' ? (selectedProvider.companyName || selectedProvider.name) : selectedProvider.name }}
               </h3>
-              <p class="text-gray-600">{{ selectedProvider.userType === 'company' ? 'Company' : 'Technician' }}</p>
+              <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.userType === 'company' ? 'Company' : 'Technician' }}</p>
             </div>
           </div>
 
           <div class="grid gap-4">
             <div v-if="selectedProvider.description" class="space-y-2">
-              <h4 class="font-semibold text-gray-700">About</h4>
-              <p class="text-gray-600">{{ selectedProvider.description }}</p>
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">About</h4>
+              <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.description }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
-                <h4 class="font-semibold text-gray-700">Contact</h4>
-                <p class="text-gray-600">
+                <h4 class="font-semibold text-gray-700 dark:text-gray-200">Contact</h4>
+                <p class="text-gray-600 dark:text-gray-300">
                   <i class="fas fa-envelope mr-2"></i>{{ selectedProvider.email }}
                 </p>
-                <p v-if="selectedProvider.phone" class="text-gray-600">
+                <p v-if="selectedProvider.phone" class="text-gray-600 dark:text-gray-300">
                   <i class="fas fa-phone mr-2"></i>{{ selectedProvider.phone }}
                 </p>
               </div>
 
               <div class="space-y-2">
-                <h4 class="font-semibold text-gray-700">
+                <h4 class="font-semibold text-gray-700 dark:text-gray-200">
                   <i class="fas fa-map-marker-alt mr-2"></i>Location
                 </h4>
-                <div class="bg-gray-50 rounded-lg p-3 space-y-2">
-                  <p class="text-gray-600">{{ formatAddress(selectedProvider) }}</p>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
+                  <p class="text-gray-600 dark:text-gray-300">{{ formatAddress(selectedProvider) }}</p>
                 </div>
               </div>
             </div>
 
             <div v-if="selectedProvider.userType !== 'company'" class="space-y-2">
-              <h4 class="font-semibold text-gray-700">Experience</h4>
-              <p class="text-gray-600">{{ selectedProvider.experience }} years</p>
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">Experience</h4>
+              <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.experience }} years</p>
             </div>
 
             <div v-if="selectedProvider.portfolio" class="space-y-2">
-              <h4 class="font-semibold text-gray-700">Portfolio</h4>
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">Portfolio</h4>
               <a :href="selectedProvider.portfolio" target="_blank" 
                 class="text-[#5984C6] hover:text-[#4968a0] inline-flex items-center gap-2">
                 <i class="fas fa-external-link-alt"></i>
@@ -190,31 +192,31 @@
       v-if="editModal" 
       class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-white rounded-lg max-w-md w-full p-6">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Service</h2>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-lg max-w-md w-full p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Edit Service</h2>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-semibold text-gray-700">Name</label>
-            <input v-model="editableService.name" type="text" class="w-full border rounded-md p-2" />
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Name</label>
+            <input v-model="editableService.name" type="text" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700">Status</label>
-            <select v-model="editableService.status" class="w-full border rounded-md p-2">
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Status</label>
+            <select v-model="editableService.status" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700">Image URL</label>
-            <input v-model="editableService.icon" type="url" class="w-full border rounded-md p-2" />
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Image URL</label>
+            <input v-model="editableService.icon" type="url" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
           </div>
         </div>
 
         <div class="flex justify-end mt-6 gap-3">
-          <button @click="editModal = false" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+          <button @click="editModal = false" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
             Cancel
           </button>
           <button @click="updateService" class="px-4 py-2 bg-[#5984C6] text-white rounded-lg hover:bg-[#4968a0]">
@@ -229,14 +231,14 @@
       v-if="showDeleteModal" 
       class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
     >
-      <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
         <h3 class="text-xl font-semibold text-red-600 mb-4">Delete Service</h3>
-        <p class="text-gray-600 mb-6">
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
           Are you sure you want to delete "<strong>{{ selectedDeleteService?.name }}</strong>"?
         </p>
         <div class="flex justify-center space-x-4">
           <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
-          <button @click="closeDeleteModal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancel</button>
+          <button @click="closeDeleteModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
         </div>
       </div>
     </div>
@@ -261,6 +263,19 @@ export default {
     const providers = ref([]);
     const loading = ref(false);
     const selectedProvider = ref(null);
+    const defaultAvatar =
+      'data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">\
+  <circle cx="32" cy="32" r="32" fill="%23e5e7eb"/>\
+  <circle cx="32" cy="24" r="12" fill="%239ca3af"/>\
+  <path d="M12 54c4-10 12-16 20-16s16 6 20 16" fill="%239ca3af"/>\
+</svg>';
+
+    const onImgError = (event) => {
+      if (event && event.target) {
+        event.target.src = defaultAvatar;
+      }
+    };
 
     const editModal = ref(false);
     const editableService = ref({});
@@ -352,6 +367,8 @@ export default {
       viewProviderDetails,
       formatAddress,
       isImage,
+      defaultAvatar,
+      onImgError,
       editModal,
       editableService,
       openEditModal,

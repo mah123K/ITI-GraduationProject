@@ -1,10 +1,21 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-2xl mx-auto bg-white shadow-md rounded-2xl p-6">
-      <h2 class="text-2xl font-semibold text-[#5984C6] mb-4">Admin Profile Settings</h2>
+  <div class="min-h-screen bg-gray-50 dark:bg-[#0f172a] p-6">
+    <div class="max-w-2xl mx-auto bg-white dark:bg-[#1f2937] shadow-md rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Admin Profile Settings</h2>
+        <button
+          @click="toggleDarkMode"
+          :title="isDark ? 'Light mode' : 'Dark mode'"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+        >
+          <i v-if="isDark" class="fa-solid fa-sun text-yellow-400"></i>
+          <i v-else class="fa-solid fa-moon"></i>
+          <span class="text-sm">{{ isDark ? 'Light' : 'Dark' }}</span>
+        </button>
+      </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="text-center py-8 text-gray-600">Loading profile...</div>
+      <div v-if="loading" class="text-center py-8 text-gray-600 dark:text-gray-300">Loading profile...</div>
 
       <!-- Content -->
       <div v-else>
@@ -13,7 +24,7 @@
           <div class="relative">
             <div
               @click="triggerFileInput"
-              class="w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center bg-gray-100 overflow-hidden cursor-pointer hover:opacity-80 transition"
+              class="w-24 h-24 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden cursor-pointer hover:opacity-80 transition"
             >
               <img
                 v-if="photoURL && photoURL !== 'null' && !photoURL.startsWith('undefined')"
@@ -38,7 +49,7 @@
           </div>
 
           <!-- Upload Instructions -->
-          <p class="text-sm text-gray-500 mt-2">
+          <p class="text-sm text-gray-500 dark:text-gray-300 mt-2">
             {{ photoURL ? 'Click to change picture' : 'Click to add picture' }}
           </p>
 
@@ -55,21 +66,21 @@
         <!-- Profile Info -->
         <div class="space-y-4">
           <div>
-            <label class="block text-gray-700 mb-1">Name</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">Name</label>
             <input
               v-model="name"
               type="text"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#5984C6]"
+              class="w-full border dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#5984C6]"
             />
           </div>
 
           <div>
-            <label class="block text-gray-700 mb-1">Email</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">Email</label>
             <input
               v-model="email"
               type="email"
               disabled
-              class="w-full border rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed"
+              class="w-full border dark:border-gray-600 rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 cursor-not-allowed"
             />
           </div>
 
@@ -109,6 +120,7 @@ export default {
       saving: false,
       successMessage: "",
       errorMessage: "",
+      isDark: false,
     };
   },
 
@@ -156,6 +168,23 @@ export default {
   },
 
   methods: {
+    applyTheme(theme) {
+      const root = document.documentElement;
+      if (theme === 'dark') {
+        root.setAttribute('data-theme', 'dark');
+        root.classList.add('dark');
+        this.isDark = true;
+      } else {
+        root.removeAttribute('data-theme');
+        root.classList.remove('dark');
+        this.isDark = false;
+      }
+    },
+    toggleDarkMode() {
+      const next = this.isDark ? 'light' : 'dark';
+      this.applyTheme(next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    },
     // Handle image load errors
     handleImageError(event) {
       // If image fails to load, set photoURL to null to show default icon
@@ -490,6 +519,23 @@ export default {
       }
     },
   },
+  mounted() {
+    try {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const hasClass = document.documentElement.classList.contains('dark');
+      const target = saved ? saved : (prefersDark ? 'dark' : 'light');
+      // If DOM already matches, just sync isDark; else apply
+      if ((hasClass && target === 'dark') || (!hasClass && target === 'light')) {
+        this.isDark = target === 'dark';
+      } else {
+        this.applyTheme(target);
+      }
+    } catch (e) {
+      // fallback: derive from DOM
+      this.isDark = document.documentElement.classList.contains('dark');
+    }
+  }
 };
 </script>
 

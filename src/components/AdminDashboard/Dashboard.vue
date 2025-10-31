@@ -1,16 +1,16 @@
 <template>
-  <div class="bg-white shadow-lg rounded-2xl p-6">
+  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Title -->
     <div>
-      <h2 class="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
-      <p class="text-gray-500 mt-1">Monitor your platform’s performance and key metrics</p>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard Overview</h2>
+      <p class="text-gray-500 dark:text-gray-300 mt-1">Monitor your platform’s performance and key metrics</p>
     </div>
 
     <!-- Cards -->
     <div class="grid grid-cols-4 gap-6 mt-8 max-w-6xl">
       <!-- Users -->
-      <div class="bg-white shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 text-sm font-medium">Total Users</p>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Users</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalUsers }}</p>
           <div class="bg-blue-100 text-blue-500 w-12 h-12 flex items-center justify-center rounded-full">
@@ -21,8 +21,8 @@
       </div>
 
       <!-- Companies -->
-      <div class="bg-white shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 text-sm font-medium">Total Companies</p>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Companies</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalCompanies }}</p>
           <div class="bg-green-100 text-green-500 w-12 h-12 flex items-center justify-center rounded-full">
@@ -33,8 +33,8 @@
       </div>
 
       <!-- Craftsmen -->
-      <div class="bg-white shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 text-sm font-medium">Total Craftsmen</p>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Craftsmen</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalCraftsmen }}</p>
           <div class="bg-yellow-100 text-yellow-500 w-12 h-12 flex items-center justify-center rounded-full">
@@ -45,8 +45,8 @@
       </div>
 
       <!-- Orders -->
-      <div class="bg-white shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 text-sm font-medium">Total Orders</p>
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Orders</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalOrders }}</p>
           <div class="bg-red-100 text-red-500 w-12 h-12 flex items-center justify-center rounded-full">
@@ -54,13 +54,13 @@
           </div>
         </div>
         <p class="text-sm" :class="ordersChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ ordersChange >=0 ? '+' : ''}}{{ ordersChange }}% since last week </p>
-        <p class="text-gray-400 text-xs mt-2">Pending price: {{ pendingOrdersCount }}</p>
+        <p class="text-gray-400 dark:text-gray-300 text-xs mt-2">Pending price: {{ pendingOrdersCount }}</p>
       </div>
     </div>
 
     <!-- Monthly Revenue Chart -->
-    <div class="bg-white p-6 rounded-2xl shadow-md max-w-4xl mt-10">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">Monthly Revenue</h2>
+    <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md max-w-4xl mt-10">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Monthly Revenue</h2>
       <canvas id="revenueChart"></canvas>
     </div>
   </div>
