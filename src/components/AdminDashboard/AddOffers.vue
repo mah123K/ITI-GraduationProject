@@ -1,32 +1,32 @@
 <template>
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-3xl font-bold text-[#133B5D] mb-6">Manage Offers</h1>
+  <div class="p-6 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 min-h-screen">
+    <h1 class="text-3xl font-bold text-[#133B5D] dark:text-[#8db4ff] mb-6">Manage Offers</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <!-- 1. Add New Offer Form -->
       <div class="lg:col-span-1">
-        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Add New Offer</h2>
+        <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Add New Offer</h2>
           <form @submit.prevent="addOffer" class="space-y-4">
             <div>
-              <label class="block text-gray-700 font-medium mb-1">Title</label>
+              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Title</label>
               <input
                 v-model="newOffer.title"
                 type="text"
                 placeholder="e.g., 20% OFF"
                 required
-                class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
+                class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
               />
             </div>
             <div>
-              <label class="block text-gray-700 font-medium mb-1">Description</label>
+              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Description</label>
               <input
                 v-model="newOffer.description"
                 type="text"
                 placeholder="e.g., On all plumbing services"
                 required
-                class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
+                class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
               />
             </div>
             <!-- <div>
@@ -40,12 +40,12 @@
               />
             </div> -->
             <div>
-            <label class="block text-gray-700 font-medium mb-1">Upload Image</label>
+            <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Upload Image</label>
             <input
             type="file"
             accept="image/*"
             @change="handleFileChange"
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
+            class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#133B5D] focus:outline-none"
             />
           </div>
 
@@ -63,17 +63,17 @@
 
       <!-- 2. Existing Offers List -->
       <div class="lg:col-span-2">
-        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Current Offers</h2>
+        <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Current Offers</h2>
           
           <!-- Loading State -->
-          <div v-if="isLoading" class="text-center text-gray-500 py-10">
+          <div v-if="isLoading" class="text-center text-gray-500 dark:text-gray-300 py-10">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
             Loading offers...
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="offers.length === 0" class="text-center text-gray-500 py-10">
+          <div v-else-if="offers.length === 0" class="text-center text-gray-500 dark:text-gray-300 py-10">
             <i class="fa-solid fa-tags text-3xl mb-3"></i>
             <p>No offers found. Add one using the form!</p>
           </div>
@@ -83,13 +83,13 @@
             <div
               v-for="offer in offers"
               :key="offer.id"
-              class="flex items-center justify-between p-4 border rounded-lg shadow-sm"
+              class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm bg-white dark:bg-gray-800"
             >
               <div class="flex items-center gap-4">
                 <img :src="offer.image" alt="offer image" class="w-16 h-16 rounded-lg object-cover">
                 <div>
-                  <h3 class="font-semibold text-gray-800">{{ offer.title }}</h3>
-                  <p class="text-sm text-gray-600">{{ offer.description }}</p>
+                  <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ offer.title }}</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">{{ offer.description }}</p>
                 </div>
               </div>
               <button

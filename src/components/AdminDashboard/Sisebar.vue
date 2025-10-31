@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen flex bg-gray-100">
+ <div class="flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 h-screen">
+
     <!-- Sidebar -->
     <aside class="w-64 bg-[#344767] text-white flex flex-col p-5 justify-between">
       <div>
@@ -104,7 +105,7 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col">
       <!-- Header -->
-      <header class="flex justify-end items-center bg-white shadow-sm p-4 space-x-4 relative">
+      <header class="flex justify-end items-center bg-white dark:bg-[#111827] shadow-sm p-4 space-x-4 relative">
           <div
     @click.stop="toggleUserMenu"
     class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer overflow-hidden"
@@ -125,11 +126,11 @@
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
-            class="absolute top-16 right-4 bg-white w-60 rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+            class="absolute top-16 right-4 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
-                class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border border-gray-300 overflow-hidden"
+                class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-300 dark:border-gray-600 overflow-hidden"
               >
                 <img 
                   v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
@@ -140,13 +141,13 @@
                 />
                 <i v-else class="bi bi-person text-2xl text-gray-500"></i>
               </div>
-              <h3 class="text-gray-800 font-medium mt-2">{{ userName || 'Admin' }}</h3>
-              <p class="text-gray-500 text-sm">{{ userEmail }}</p>
+              <h3 class="text-gray-800 dark:text-gray-100 font-medium mt-2">{{ userName || 'Admin' }}</h3>
+              <p class="text-gray-500 dark:text-gray-300 text-sm">{{ userEmail }}</p>
 
             </div>
 
             <div class="flex flex-col py-2">
-            <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 transition cursor-pointer">
+            <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
   <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
   <span>Profile Settings</span>
 </div>
@@ -154,7 +155,7 @@
 
               <div
                 @click="switchAccount"
-                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 transition cursor-pointer"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-repeat text-[#5984C6]"></i>
                 <span>Switch Account</span>
@@ -162,7 +163,7 @@
 
               <div
                 @click="handleLogout"
-                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 transition cursor-pointer"
+                class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-arrow-right-from-bracket text-[#5984C6]"></i>
                 <span>Logout</span>
@@ -173,7 +174,8 @@
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 p-8">
+    <main class="flex-1 p-8 overflow-y-auto bg-gray-50 dark:bg-[#0b1220]">
+
         <router-view></router-view>
       </main>
     </div>
@@ -293,6 +295,21 @@ export default {
       })
 
       document.addEventListener('click', handleClickOutside)
+
+      // Initialize theme on dashboard mount from saved choice or system
+      try {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const target = saved ? saved : (prefersDark ? 'dark' : 'light');
+        const root = document.documentElement;
+        if (target === 'dark') {
+          root.setAttribute('data-theme', 'dark');
+          root.classList.add('dark');
+        } else {
+          root.removeAttribute('data-theme');
+          root.classList.remove('dark');
+        }
+      } catch (e) {}
     })
 
     onBeforeUnmount(() => {
