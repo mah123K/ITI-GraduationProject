@@ -93,7 +93,7 @@ const handleLogout = async () => {
         <button
           @click="emit('changeTab', 'orders')"
           :class="[props.active === 'orders' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
         >
           <i class="fa-solid fa-clipboard-list text-white text-lg"></i>
           Orders
@@ -102,7 +102,7 @@ const handleLogout = async () => {
         <button
           @click="emit('changeTab', 'appointments')"
           :class="[props.active === 'appointments' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
         >
           <i class="fa-solid fa-calendar-days text-white text-lg"></i>
           Appointments
@@ -111,7 +111,7 @@ const handleLogout = async () => {
         <button
           @click="emit('changeTab', 'services')"
           :class="[props.active === 'services' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
         >
           <i class="fa-solid fa-screwdriver-wrench text-white text-lg"></i>
           My Services
@@ -120,29 +120,30 @@ const handleLogout = async () => {
         <button
           @click="emit('changeTab', 'earnings')"
           :class="[props.active === 'earnings' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
         >
           <i class="fa-solid fa-coins text-white text-lg"></i>
           My Earnings
         </button>
 
         <button
+          @click="emit('changeTab', 'chat')"
+          :class="[props.active === 'chat' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
+        >
+          <i class="fa-solid fa-comments text-white text-lg"></i>
+          Chat
+        </button>
+
+        <button
           @click="emit('changeTab', 'Techsettings')"
           :class="[props.active === 'Techsettings' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
         >
           <i class="fa-solid fa-gear text-white text-lg"></i>
           Settings
         </button>
 
-        <button
-          @click="emit('changeTab', 'chat')"
-          :class="[props.active === 'chat' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
-          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition justify-center"
-        >
-          <i class="fa-solid fa-comments text-white text-lg"></i>
-          Chat
-        </button>
       </nav>
     </div>
 

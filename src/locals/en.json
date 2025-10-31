@@ -246,7 +246,7 @@
   },
   "loginPage": {
     "heroTitle": "Your home,<br />our care",
-    "welcome": "Welcome back to<br />Tashteebaty",
+    "welcome": "Welcome back!",
     "emailLabel": "Email",
     "emailPlaceholder": "Enter your email",
     "passwordLabel": "Password",
