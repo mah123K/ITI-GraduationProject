@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-white shadow-lg rounded-2xl p-6">
+  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Section Header -->
     <div class="mb-6">
-      <h2 class="text-2xl font-bold text-[#5984C6]">Order Management</h2>
-      <p class="text-gray-600">Track and manage all service orders</p>
+      <h2 class="text-2xl font-bold text-[#5984C6] dark:text-[#8db4ff]">Order Management</h2>
+      <p class="text-gray-600 dark:text-gray-300">Track and manage all service orders</p>
     </div>
 
     <!-- Title + Search + Filter -->
     <div class="flex justify-between items-center mb-4 px-4">
-      <h3 class="text-xl font-semibold text-gray-800">All Orders</h3>
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Orders</h3>
 
       <div class="flex items-center gap-3">
         <!-- Search Input (smaller) -->
@@ -17,7 +17,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search..."
-            class="w-full py-2 pl-9 pr-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
+            class="w-full py-2 pl-9 pr-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
           <i class="bi bi-search absolute left-3 top-2.5 text-gray-500 text-sm"></i>
         </div>
@@ -35,14 +35,14 @@
           <!-- Filter Menu -->
           <div
             v-if="showFilter"
-            class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10"
+            class="absolute right-0 mt-2 w-40 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10"
           >
             <ul>
               <li
                 v-for="option in statusOptions"
                 :key="option"
                 @click="filterStatus = option; showFilter = false"
-                class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm"
               >
                 {{ option }}
               </li>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Orders Table -->
-    <table class="min-w-full text-sm text-gray-700">
+    <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
       <thead class="bg-[#5984C6] text-white">
         <tr>
           <th class="py-3 px-4 text-left">Order ID</th>
@@ -72,7 +72,7 @@
         <tr
           v-for="order in filteredOrders"
           :key="order.id"
-          class="border-t hover:bg-[#f3f9fc] transition"
+          class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-800 transition"
         >
           <td class="py-3 px-4">{{ order.id }}</td>
           <td class="py-3 px-4">{{ order.customer }}</td>
@@ -139,7 +139,7 @@
       v-if="showModal"
       class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50"
     >
-      <div class="bg-white w-96 rounded-xl shadow-xl p-6 relative">
+      <div class="bg-white dark:bg-[#111827] dark:text-gray-100 w-96 rounded-xl shadow-xl p-6 relative">
         <!-- Close button -->
         <button
           @click="closeModal"
@@ -161,31 +161,31 @@
         <div v-if="modalType === 'view'" class="space-y-3">
           <div class="grid grid-cols-1 gap-2">
             <div>
-              <div class="text-sm text-gray-500">Order ID</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.id }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Order ID</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.id }}</div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Customer</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.customer }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Customer</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.customer }}</div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Service</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.service }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Service</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.service }}</div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Provider</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.provider }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Provider</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.provider }}</div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Amount</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.amount }}EGP</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Amount</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.amount }}EGP</div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Date & Time</div>
-              <div class="font-medium text-gray-800">{{ selectedOrder.date }} <span class="text-gray-500 text-xs">{{ selectedOrder.time }}</span></div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Date & Time</div>
+              <div class="font-medium text-gray-800 dark:text-gray-100">{{ selectedOrder.date }} <span class="text-gray-500 dark:text-gray-400 text-xs">{{ selectedOrder.time }}</span></div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">Status</div>
+              <div class="text-sm text-gray-500 dark:text-gray-300">Status</div>
               <div>
                 <span
                   :class="[
@@ -209,42 +209,42 @@
         </div>
         <div v-else-if="modalType === 'edit'" class="space-y-3">
           <div>
-            <label class="text-sm font-medium text-gray-600">Customer</label>
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-200">Customer</label>
             <input
               v-model="selectedOrder.customer"
-              class="w-full p-2 border rounded-lg text-sm"
+              class="w-full p-2 border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
           </div>
 
           <div>
-            <label class="text-sm font-medium text-gray-600">Service</label>
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-200">Service</label>
             <input
               v-model="selectedOrder.service"
-              class="w-full p-2 border rounded-lg text-sm"
+              class="w-full p-2 border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
           </div>
 
           <div>
-            <label class="text-sm font-medium text-gray-600">Provider</label>
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-200">Provider</label>
             <input
               v-model="selectedOrder.provider"
-              class="w-full p-2 border rounded-lg text-sm"
+              class="w-full p-2 border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
           </div>
 
           <div>
-            <label class="text-sm font-medium text-gray-600">Amount</label>
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-200">Amount</label>
             <input
               v-model="selectedOrder.amount"
-              class="w-full p-2 border rounded-lg text-sm"
+              class="w-full p-2 border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
           </div>
 
          <div>
-            <label class="text-sm font-medium text-gray-600">Status</label>
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-200">Status</label>
             <select
               v-model="selectedOrder.status"
-              class="w-full p-2 border rounded-lg text-sm bg-white"
+              class="w-full p-2 border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             >
               <option v-for="status in statusOptions" :key="status" :value="status.toLowerCase()">
                 {{ status }}
@@ -264,7 +264,7 @@
 
         <!-- Delete Confirmation -->
         <div v-else class="text-center">
-          <p class="text-gray-600 mb-4">
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
             Are you sure you want to delete this order?
           </p>
           <div class="flex justify-center gap-3">
@@ -276,7 +276,7 @@
             </button>
             <button
               @click="closeModal"
-              class="bg-gray-200 px-4 py-2 rounded-lg text-sm hover:bg-gray-300"
+              class="bg-gray-200 dark:bg-gray-700 dark:text-gray-100 px-4 py-2 rounded-lg text-sm hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               Cancel
             </button>
@@ -303,7 +303,7 @@ export default {
     const modalType = ref("");
     const selectedOrder = ref({});
 
-   const statusOptions = ['All', 'completed', 'unconfirmed', 'upcoming', 'new']
+   const statusOptions = ['All', 'completed', 'unconfirmed', 'upcoming','declined','cancelled', 'new']
 
     
     const fetchOrders = async () => {

@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-white shadow-lg rounded-2xl p-6">
+  <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-semibold text-[#5984C6]">Support & Complaints</h2>
-        <p class="text-gray-500 text-sm">Manage customer support tickets and complaints</p>
+        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Support & Complaints</h2>
+        <p class="text-gray-500 dark:text-gray-300 text-sm">Manage customer support tickets and complaints</p>
       </div>
 
       <!-- Search -->
@@ -14,7 +14,7 @@
             v-model="searchTerm"
             type="text"
             placeholder="Search tickets..."
-            class="border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
+            class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
           <svg
             class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
@@ -30,8 +30,8 @@
     </div>
 
     <!-- Tickets Table -->
-    <div class="overflow-x-auto rounded-lg border border-gray-200">
-      <table class="min-w-full text-sm text-gray-700">
+    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+      <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
             <th class="py-3 px-4 text-left">Name</th>
@@ -44,7 +44,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="ticket in filteredTickets" :key="ticket.id" class="border-t hover:bg-[#f3f9fc] transition">
+          <tr v-for="ticket in filteredTickets" :key="ticket.id" class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-800 transition">
             <td class="py-3 px-4">{{ ticket.name }}</td>
             <td class="py-3 px-4">{{ ticket.email }}</td>
             <td class="py-3 px-4">{{ ticket.phone }}</td>
@@ -63,14 +63,14 @@
 
     <!-- VIEW MESSAGE MODAL -->
     <div v-if="showMessageModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn relative">
+  <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn relative">
     <button @click="closeMessageModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700">✖</button>
     <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">Message Content</h3>
-    <div class="text-gray-700 space-y-2">
-      <p class="mt-2 p-3 bg-gray-100 rounded-lg whitespace-pre-wrap">{{ selectedMessage?.message }}</p>
+    <div class="text-gray-700 dark:text-gray-300 space-y-2">
+      <p class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg whitespace-pre-wrap">{{ selectedMessage?.message }}</p>
     </div>
     <div class="mt-6 flex justify-end">
-      <button @click="closeMessageModal" class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">Close</button>
+      <button @click="closeMessageModal" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">Close</button>
     </div>
   </div>
 </div>
