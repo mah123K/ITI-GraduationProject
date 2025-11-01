@@ -100,13 +100,13 @@
         <div class="relative flex flex-col lg:flex-row items-center justify-center gap-6">
           <!-- Step 1 -->
           <div
-            class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white dark:bg-[#182f3a] shadow-md border border-gray-200 dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img src="../images/1.png" alt="" class="w-32 h-36 object-contain mb-4" />
-            <h3 class="text-xl font-semibold text-accent-color">
+            <img :src="isDark ? firstDark : firstLight" class="w-32 h-36 object-contain mb-4"/> 
+            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
               {{ $t('home.howItWorks.step1.title') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-sm text-gray-600 dark:text-white">
               {{ $t('home.howItWorks.step1.text') }}
             </p>
           </div>
@@ -120,13 +120,13 @@
 
           <!-- Step 2 -->
           <div
-            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border dark:bg-[#182f3a] dark:border-none border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img src="../images/2.png" alt="" class="w-32 h-36 object-contain mb-4" />
-            <h3 class="text-xl font-semibold text-accent-color">
+            <img :src="isDark ? secondDark : secondLight" class="w-32 h-36 object-contain mb-4"/> 
+            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
               {{ $t('home.howItWorks.step2.title') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-sm text-gray-600 dark:text-white">
               {{ $t('home.howItWorks.step2.text') }}
             </p>
           </div>
@@ -140,13 +140,13 @@
 
           <!-- Step 3 -->
           <div
-            class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 dark:bg-[#182f3a] dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img src="../images/3.png" alt="" class="w-32 h-36 object-contain mb-4" />
-            <h3 class="text-xl font-semibold text-accent-color">
+            <img :src="isDark ? thirdDark : thirdLight" class="w-32 h-36 object-contain mb-4"/> 
+            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
               {{ $t('home.howItWorks.step3.title') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-sm text-gray-600 dark:text-white">
               {{ $t('home.howItWorks.step3.text') }}
             </p>
           </div>
@@ -160,13 +160,13 @@
 
           <!-- Step 4 -->
           <div
-            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 dark:bg-[#182f3a] dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img src="../images/4.png" alt="" class="w-32 h-36 object-contain mb-4" />
-            <h3 class="text-xl font-semibold text-accent-color">
+            <img :src="isDark ? fourthDark : fourthLight" class="w-32 h-36 object-contain mb-4"/> 
+            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
               {{ $t('home.howItWorks.step4.title') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-2 text-sm text-gray-600 dark:text-white">
               {{ $t('home.howItWorks.step4.text') }}
             </p>
           </div>
@@ -183,15 +183,15 @@
           <!-- Image Section -->
           <div class="flex justify-center">
             <img
-              src="https://res.cloudinary.com/dlrgf0myy/image/upload/v1760705618/image_10_vvoxvo.jpg"
-              class="hidden md:block h-[480px] w-full object-contain rounded-2xl"
+              src="../images/whyUs.png"
+              class="hidden md:block h-[480px] w-full object-contain "
               alt="Technician at work"
             />
           </div>
 
           <!-- Text List Section -->
           <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <div class="text-4xl shrink-0">
                 <img
                   class="w-10"
@@ -199,28 +199,28 @@
                   alt="icon"
                 />
               </div>
-              <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
+              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
                 {{ $t('home.whyUs.point1') }}
               </p>
             </li>
 
-            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-people-group text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
+              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
                 {{ $t('home.whyUs.point2') }}
               </p>
             </li>
 
-            <li class="bg-secondary-blue dark:bg-white  p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-[#DAECF6] dark:bg-[#182f3a]  p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-address-card text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
+              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
                 {{ $t('home.whyUs.point3') }}
               </p>
             </li>
 
-            <li class="bg-secondary-blue dark:bg-white p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
               <i class="fa-solid fa-headphones text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 leading-relaxed">
+              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
                 {{ $t('home.whyUs.point4') }}
               </p>
             </li>
@@ -494,6 +494,19 @@ const electricalDark = new URL('../images/dark electrecal.png', import.meta.url)
 const carpentryDark = new URL('../images/dark carpentery.png', import.meta.url).href;
 const heroImages = ref(heroImagesDesktop);
 const currentHeroIndex = ref(0);
+
+// how it works Light images
+const firstLight = new URL('../images/1.png', import.meta.url).href;
+const secondLight = new URL('../images/2.png', import.meta.url).href;
+const thirdLight = new URL('../images/3.png', import.meta.url).href;
+const fourthLight = new URL('../images/4.png', import.meta.url).href;
+
+// how it works dark images
+const firstDark = new URL('../images/dark4.png', import.meta.url).href;
+const secondDark = new URL('../images/dark3.png', import.meta.url).href;
+const thirdDark = new URL('../images/dark2.png', import.meta.url).href;
+const fourthDark = new URL('../images/dark1.png', import.meta.url).href;
+
 let heroInterval = null;
 
 const updateHeroImages = () => {
