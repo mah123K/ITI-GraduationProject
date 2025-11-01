@@ -205,13 +205,40 @@ const updateOrderStatus = async (id, status) => {
         cancelled: "Technician cancelled your order.",
       };
 
-      await addDoc(notifCol, {
-        orderId: id,
-        message: messages[status] || `Order status updated to ${status}`,
-        status,
-        isRead: false,
-        timestamp: serverTimestamp(),
-      });
+      // ✅ Create notification for the client
+if (orderData?.clientId) {
+  const notifCol = collection(db, "users", orderData.clientId, "notifications");
+
+  // 🟦 جِيب إيميل العميل
+  const clientRef = doc(db, "users", orderData.clientId);
+  const clientSnap = await getDoc(clientRef);
+  const clientData = clientSnap.exists() ? clientSnap.data() : null;
+  const clientEmail = clientData?.email;
+
+  const messages = {
+    unconfirmed:
+      "تم قبول الأوردر ✅ الفني وافق على طلبك، برجاء إتمام الدفع لتأكيد الحجز.",
+    upcoming:
+      "✅ تم استلام الدفع بنجاح! الأوردر الخاص بك تم تأكيده.",
+    completed:
+      "🎉 تم إتمام الأوردر بنجاح! شكرًا لاستخدامك موقع Tashtebaty.",
+    declined: "❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.",
+    cancelled: "⚠️ تم إلغاء الأوردر من قبل الفني.",
+  };
+
+  await addDoc(notifCol, {
+    orderId: id,
+    title: "Order Status Update",
+    message: messages[status] || `Order status updated to ${status}`,
+    status,
+    email: orderData?.clientEmail || clientEmail || "noemail@tashtebaty.com",
+    isRead: false,
+    timestamp: serverTimestamp(),
+  });
+}
+
+
+
     }
 
     // UPDATED
