@@ -13,6 +13,20 @@ import { ref, computed } from "vue"
   const handleDecline = () => {
   emit("declineOrder", props.order.id)
   }
+
+const formatLocation = (loc) => {
+  if (!loc) return "—";
+  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "object") {
+    const parts = [loc.street, loc.city, loc.country]
+      .filter(Boolean)
+      .join(", ");
+    return parts || "Location not specified";
+  }
+  return "—";
+};
+
+
   const shortDescription = computed(() => {
   const desc = props.order.descreption || ""
   return desc.length > 15 ? desc.slice(0, 15) + "..." : desc
@@ -73,7 +87,7 @@ import { ref, computed } from "vue"
       class="w-[25px] h-[25px]"
       >
         <path fill="#2574b9" d="M0 188.6C0 84.4 86 0 192 0S384 84.4 384 188.6c0 119.3-120.2 262.3-170.4 316.8-11.8 12.8-31.5 12.8-43.3 0-50.2-54.5-170.4-197.5-170.4-316.8zM192 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128z"/>              </svg>
-      <p class="mx-1"><span class="font-bold text-[#133B5D]">Location: </span>{{ order.location }}</p>
+      <p class="mx-1"><span class="font-bold text-[#133B5D]">Location: </span>{{ formatLocation(order.location) }}</p>
     </div>
 
     <div class="element flex m-1 text-lg">
@@ -134,7 +148,7 @@ import { ref, computed } from "vue"
         <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
         <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
         <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
-        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ formatLocation(order.location) }}</p>
         <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
       </div>
     </div>

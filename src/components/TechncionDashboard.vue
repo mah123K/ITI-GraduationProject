@@ -345,6 +345,19 @@ const closePopup = () => {
   newImage.value = null;
 };
 
+const formatLocation = (loc) => {
+  if (!loc) return "—";
+  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "object") {
+    const parts = [loc.street, loc.city, loc.country]
+      .filter(Boolean)
+      .join(", ");
+    return parts || "Location not specified";
+  }
+  return "—";
+};
+
+
 // 🟩 Filtered Orders
 const filteredOrders = computed(() =>
   orders.value.filter((o) => {
@@ -598,7 +611,7 @@ watch(
               </p>
               <p>
                 <span class="font-semibold text-[#133B5D]">Location:</span>
-                {{ order.location }}
+                {{ formatLocation(order.location) }}
               </p>
               <p>
                 <span class="font-semibold text-[#133B5D]">Client:</span>
@@ -648,7 +661,7 @@ watch(
                     </p>
                     <p>
                       <span class="font-bold text-[#133B5D]">Location:</span>
-                      {{ order.location }}
+                      {{ formatLocation(order.location) }}
                     </p>
                     <p>
                       <span class="font-bold text-[#133B5D]">Client:</span>
