@@ -14,6 +14,19 @@ const handleMarkCompleted = () => {
 const handleCancelOrder = () => {
   emit("cancelOrder", props.order.id)
 }
+const formatLocation = (loc) => {
+  if (!loc) return "—";
+  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "object") {
+    const parts = [loc.street, loc.city, loc.country]
+      .filter(Boolean)
+      .join(", ");
+    return parts || "Location not specified";
+  }
+  return "—";
+};
+
+
 
 // Short description logic
 const shortDescription = computed(() => {
@@ -110,7 +123,8 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
       </svg>
       <p class="mx-1">
         <span class="font-bold text-[#133B5D]">Location:</span>
-        {{ order.location }}
+        {{ formatLocation(order.location) }}
+
       </p>
     </div>
 
@@ -195,7 +209,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
         <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
         <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
         <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
-        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ order.location }}</p>
+        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ formatLocation(order.location) }}</p>
         <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
       </div>
     </div>

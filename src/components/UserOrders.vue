@@ -52,7 +52,7 @@
             </p>
             <p>
               <span class="font-semibold text-accent-color">Location:</span>
-              {{ order.location }}
+              {{ formatLocation(order.location) }}
             </p>
           </div>
 
@@ -180,6 +180,19 @@ const closeAlert = () => {
   showPopupMessage.value = false;
   popupMessageContent.value = "";
 };
+
+const formatLocation = (loc) => {
+  if (!loc) return "—";
+  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "object") {
+    const parts = [loc.street, loc.city, loc.country]
+      .filter(Boolean)
+      .join(", ");
+    return parts || "Location not specified";
+  }
+  return "—";
+};
+
 
 const { locale } = useI18n(); // *** 2. Initialize locale ***
 
