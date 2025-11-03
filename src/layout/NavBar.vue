@@ -69,14 +69,7 @@
             </transition>
           </div>
 
-          <router-link
-            v-if="user"
-            to="/my-orders"
-            class="relative cursor-pointer"
-            :title="$t('navbar.myOrdersTitle')"
-          >
-            <i class="text-accent-color fa-solid fa-cart-shopping dark:text-white"></i>
-          </router-link>
+          
 
           <button @click="toggleLanguage" class="cursor-pointer text-xl text-accent-color">
             <i class="fa-solid fa-globe dark:text-white"></i>
@@ -130,6 +123,19 @@
                 </div>
 
                 <div id="content" class="px-4 pb-4">
+                  <div
+                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+                  >
+                    <router-link
+                      v-if="user"
+                      to="/my-orders"
+                      class="relative cursor-pointer text-[#1B5383] "
+                      :title="$t('navbar.myOrdersTitle')"
+                    >
+                    <i class="text-accent-color fa-solid fa-cart-shopping "></i>
+                    My Orders
+                    </router-link>
+                  </div>
                   <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
                     <i class="fa-solid fa-user text-accent-color"></i>
                     <router-link to="/manageuserprofile" @click="closeMenu">
@@ -152,6 +158,7 @@
                     <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
                     <h4 class="text-accent-color">{{ $t('navbar.logout') }}</h4>
                   </div>
+                  
                 </div>
               </div>
             </div>
