@@ -2,14 +2,14 @@
   <div>
     <div
       v-if="viewType === 'grid'"
-      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 w-full h-100 rounded-2xl overflow-hidden shadow-xl transition-all duration-200"
+      class="relative group bg-linear-to-b from-[#f5f5f5] to-gray-300 dark:bg-linear-to-b dark:from-[#1f2937] dark:to-[#111827] w-full h-100 rounded-2xl overflow-hidden shadow-xl transition-all duration-200"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
     >
       <img
         :src="profile.profileImage"
         alt="Profile photo"
-        class="absolute w-full h-[70%] object-contain"
+        class="absolute w-full h-[60%] object-contain"
       />
 
       <svg
@@ -22,7 +22,7 @@
           class="transition-all duration-500"
           :class="{
             'fill-accent-color': isHovered,
-            'fill-white': !isHovered,
+            'fill-white dark:fill-(--surface)': !isHovered,
           }"
           d="
           M0,200
@@ -35,28 +35,28 @@
 
       <div
         class="h-15 w-15 rounded-full absolute z-20 top-1/2 right-10 rtl:right-auto rtl:left-10 border border-white flex items-center justify-center transition-all duration-500"
-        :class="isHovered ? 'bg-[#0B161B]' : 'bg-[#5984C6]'"
+        :class="isHovered ? 'bg-dark-blue' : 'bg-accent-color'"
       >
         <img src="../images/plumberIcon.png" alt="" class="transition-all duration-500 p-2" />
       </div>
 
       <div
-        class="absolute bottom-0 w-full px-4 py-3 z-20 flex flex-col items-center text-center text-[#0B161B]"
+        class="absolute bottom-0 w-full px-4 py-3 z-20 flex flex-col items-center text-center text-(--text-primary)"
       >
         <h2
           class="text-2xl font-bold transition-colors duration-500"
-          :class="isHovered ? 'text-white' : 'text-[#0B161B]'"
+          :class="isHovered ? 'text-white' : 'text-(--text-primary)'"
         >
           {{ profile.name }}
         </h2>
 
-        <div class="text-m pt-4" :class="isHovered ? 'text-[#0B161B]' : 'text-[#0369F0]'">
+        <div class="text-m pt-4" :class="isHovered ? 'text-(--text-primary)' : 'text-accent-color'">
           {{ $t("profilesPage.ordersCompleted") }}
           <span class="font-semibold">{{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}</span>
         </div>
 
         <div class="flex items-center gap-1">
-          <span class="text-sm font-bold" :class="isHovered ? 'text-white' : 'text-[#0B161B]'">
+          <span class="text-sm font-bold" :class="isHovered ? 'text-white' : 'text-(--text-primary)'">
             {{ profile.rating }}
           </span>
           <i class="fa-solid fa-star text-[#FF9529]"></i>
@@ -74,10 +74,10 @@
           <div class="flex items-center gap-1 mt-2">
             <i
               class="fa-solid fa-location-dot"
-              :class="isHovered ? 'text-white' : 'text-[#0B161B]'"
+            :class="isHovered ? 'text-white' : 'text-(--text-primary)'"
             ></i>
-            <span class="text-sm" :class="isHovered ? 'text-white' : 'text-[#0B161B]'">
-              {{ profile.username }}
+            <span class="text-sm" :class="isHovered ? 'text-white' : 'text-(--text-primary)'">
+              {{ profile.location }}
             </span>
           </div>
         </div>
@@ -88,7 +88,7 @@
       v-else
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
-      class="flex flex-col sm:flex-row items-start bg-white rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
+      class="flex flex-col sm:flex-row items-start bg-(--surface) rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
     >
       <img
         src="../images/lamp-big-3.jpg"
@@ -97,31 +97,31 @@
       />
       <div class="flex flex-col flex-1 mt-4 sm:mt-0 text-left rtl:text-right">
         <div>
-          <h2 class="text-lg md:text-xl font-bold text-[#0B161B]">{{ profile.name }}</h2>
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <span class="font-medium text-[#0369F0]">{{ profile.service }}</span>
+          <h2 class="text-lg md:text-xl font-bold text-(--text-primary)">{{ profile.name }}</h2>
+          <div class="flex items-center gap-2 text-sm text-(--text-muted)">
+            <span class="font-medium text-accent-color">{{ profile.service }}</span>
           </div>
         </div>
-        <p class="text-sm md:text-base text-gray-700 mt-2">
+        <p class="text-sm md:text-base text-(--text-muted) mt-2">
           {{ profile.bio }}
         </p>
 
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 md:mt-20 gap-4"
         >
-          <div class="flex items-center gap-6 text-sm text-[#0B161B] space-x-6 rtl:space-x-reverse">
+          <div class="flex items-center gap-6 text-sm text-(--text-primary) space-x-6 rtl:space-x-reverse">
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-star text-[#FF9529]"></i>
               <span class="font-bold">{{ profile.rating }}</span>
             </div>
 
             <div class="flex items-center gap-1">
-              <i class="fa-solid fa-location-dot text-[#0369F0]"></i>
+              <i class="fa-solid fa-location-dot text-accent-color"></i>
               <span class="dark:text-accent-color">{{ profile.location }}</span>
             </div>
           </div>
           <button
-            class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-[#0369F0] hover:bg-[#0B161B]"
+            class="w-full sm:w-auto mx-auto sm:mx-0 text-white text-sm font-medium px-5 py-2 rounded-lg transition duration-300 bg-accent-color hover:bg-dark-blue"
           >
             {{ $t("profilesPage.viewProfile") }}
           </button>
