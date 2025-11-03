@@ -59,20 +59,20 @@
       
       <div v-if="isLoading" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-color mx-auto"></div>
-        <p class="mt-3 text-gray-600">{{ $t('offersPage.grid.loading') }}</p>
+        <p class="mt-3 text-(--text-muted)">{{ $t('offersPage.grid.loading') }}</p>
       </div>
 
       <div v-else-if="offers.length === 0" class="text-center py-20">
-        <i class="fa-solid fa-tags text-4xl text-gray-400 mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-700">{{ $t('offersPage.grid.emptyTitle') }}</h3>
-        <p class="text-gray-500 mt-2">{{ $t('offersPage.grid.emptyText') }}</p>
+        <i class="fa-solid fa-tags text-4xl text-(--text-muted) mb-4"></i>
+        <h3 class="text-xl font-semibold text-(--text-primary)">{{ $t('offersPage.grid.emptyTitle') }}</h3>
+        <p class="text-(--text-muted) mt-2">{{ $t('offersPage.grid.emptyText') }}</p>
       </div>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
         <div
           v-for="offer in offers"
           :key="offer.id" 
-          class="relative bg-secondary-blue rounded-2xl w-full max-w-xs sm:max-w-none shadow-md hover:shadow-xl transition transform hover:scale-105"
+          class="relative bg-(--surface) rounded-2xl w-full max-w-xs sm:max-w-none shadow-md hover:shadow-xl transition transform hover:scale-105"
         >
           <div class="absolute top-0 left-0 rtl:left-auto rtl:right-0">
             <img
@@ -89,8 +89,8 @@
           />
 
           <div class="card-body mt-2 items-center text-center p-3">
-            <h2 class="text-red-600 font-bold text-xl">{{ offer.title }} {{ $t('offersPage.grid.suffix') }}</h2>
-            <p class="text-gray-700 text-sm">{{ offer.description }}</p>
+            <h2 class="text-(--accent) font-bold text-xl">{{ offer.title }} {{ $t('offersPage.grid.suffix') }}</h2>
+            <p class="text-(--text-muted) text-sm">{{ offer.description }}</p>
             <div class="mt-4">
               <button
                 @click="claimOffer(offer)"
@@ -98,7 +98,7 @@
                 class="text-white font-semibold py-2 transition rounded-[10px] px-3 text-lg"
                 :class="[
                   { 'bg-green-600 hover:bg-green-700 cursor-default': claimedOfferIds.has(offer.id) },
-                  { 'bg-accent-color hover:bg-[#4a6ca6]': !claimedOfferIds.has(offer.id) },
+                  { 'bg-accent-color hover:bg-(--accent)': !claimedOfferIds.has(offer.id) },
                   { 'opacity-50 cursor-not-allowed': isClaiming === offer.id }
                 ]"
               >

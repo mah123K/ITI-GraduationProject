@@ -124,7 +124,7 @@
       alt="happy workers smiling"
       class="w-full h-full object-cover"
     />
-    <div class="blueLayer absolute inset-0 bg-[#5984C6] opacity-70"></div>
+    <div class="blueLayer absolute inset-0 bg-accent-color opacity-70"></div>
 
     <div
       class="textContainer absolute flex flex-col w-11/12 md:w-2/3 lg:w-1/2 mx-auto text-center rtl:md:text-right"
@@ -158,12 +158,12 @@
     </div>
 
     <div class="textContainer lg:w-xl gap-3 flex flex-col w-96 md:w-2xl justify-center">
-      <h2 class="text-xl font-semibold my-2 ">{{ $t('aboutUs.features.title') }}</h2>
+      <h2 class="text-xl font-semibold my-2 text-(--text-primary)">{{ $t('aboutUs.features.title') }}</h2>
       <h1 class="text-4xl font-semibold text-accent-color">{{ $t('aboutUs.features.subtitle') }}</h1>
       <ul>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature1Title') }}</h2>{{ $t('aboutUs.features.feature1Text') }}</li>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature2Title') }}</h2>{{ $t('aboutUs.features.feature2Text') }}</li>
-        <li class="text-md my-2"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature3Title') }}</h2>{{ $t('aboutUs.features.feature3Text') }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature1Title') }}</h2>{{ $t('aboutUs.features.feature1Text') }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature2Title') }}</h2>{{ $t('aboutUs.features.feature2Text') }}</li>
+        <li class="text-md my-2 text-(--text-muted)"><h2 class="text-3xl my-2 text-accent-color">{{ $t('aboutUs.features.feature3Title') }}</h2>{{ $t('aboutUs.features.feature3Text') }}</li>
       </ul>
     </div>
     </div>
@@ -209,13 +209,13 @@
 
       <div class="textContainer justify-center lg:w-xl w-96 md:w-2xl gap-3 flex flex-col">
 
-        <h2 class="text-3xl font-semibold">{{ $t('aboutUs.whyUs.title') }}</h2>
-        <p class="md:text-md text-md">{{ $t('aboutUs.whyUs.description') }}</p>
+        <h2 class="text-3xl font-semibold text-(--text-primary)">{{ $t('aboutUs.whyUs.title') }}</h2>
+        <p class="md:text-md text-md text-(--text-muted)">{{ $t('aboutUs.whyUs.description') }}</p>
         
         <ul class="space-y-4">
-        <li class="flex items-start gap-3 text-xl text-gray-800">
+        <li class="flex items-start gap-3 text-xl text-(--text-primary)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            class="w-6 h-6 text-accent-color flex-shrink-0 mt-1 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 
             18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 
@@ -224,9 +224,9 @@
           {{ $t('aboutUs.whyUs.point1') }}
         </li>
 
-        <li class="flex items-start gap-3 text-xl text-gray-800">
+        <li class="flex items-start gap-3 text-xl text-(--text-primary)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            class="w-6 h-6 text-accent-color flex-shrink-0 mt-1 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
             33.9l72 72c5 5 11.8 7.5 
@@ -237,9 +237,9 @@
           {{ $t('aboutUs.whyUs.point2') }}
         </li>
 
-        <li class="flex items-start gap-3 text-xl text-gray-800">
+        <li class="flex items-start gap-3 text-xl text-(--text-primary)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            class="w-6 h-6 text-accent-color flex-shrink-0 mt-1 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
             33.9l72 72c5 5 11.8 7.5 
@@ -250,9 +250,9 @@
           {{ $t('aboutUs.whyUs.point3') }}
         </li>
 
-        <li class="flex items-start gap-3 text-xl text-gray-800">
+        <li class="flex items-start gap-3 text-xl text-(--text-primary)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            class="w-6 h-6 text-accent-color flex-shrink-0 mt-1 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
             33.9l72 72c5 5 11.8 7.5 
@@ -263,9 +263,9 @@
           {{ $t('aboutUs.whyUs.point4') }}
         </li>
 
-        <li class="flex items-start gap-3 text-xl text-gray-800">
+        <li class="flex items-start gap-3 text-xl text-(--text-primary)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            class="w-6 h-6 text-[#5984C6] flex-shrink-0 mt-1 fill-current">
+            class="w-6 h-6 text-accent-color flex-shrink-0 mt-1 fill-current">
             <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 
             169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 
             33.9l72 72c5 5 11.8 7.5 
@@ -308,7 +308,7 @@
             <div class="flex justify-center text-yellow-300 mb-2">
               <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
             </div>
-            <p class="text-gray-700 text-sm max-w-xl">
+            <p class="text-(--text-muted) text-sm max-w-xl">
               {{ $t(item.textKey) }}
             </p>
           </div>
