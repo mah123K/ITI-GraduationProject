@@ -1,7 +1,7 @@
 <script>
 import FooterLayout from "../layout/FooterLayout.vue";
 import NavBar from "../layout/NavBar.vue";
-import TechncionDashboard from "../components/TechncionDashboard.vue";
+import TechncionDashboard from "../components/Technicion Dashboard/TechncionDashboard.vue";
 import TechnicionDashNav from "../layout/TechnicionDashNav.vue";
 import MannageUserProfile from "../components/MannageUserProfile.vue";
 

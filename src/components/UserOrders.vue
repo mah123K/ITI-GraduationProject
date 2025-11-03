@@ -54,6 +54,9 @@
               <span class="font-semibold text-accent-color">Location:</span>
               {{ formatLocation(order.location) }}
             </p>
+            <p v-if="order.orderCode" class="font-semibold text-green-700 mt-2">
+              🔐 Order Code: <span class="text-accent-color">{{ order.orderCode }}</span>
+            </p>
           </div>
 
           <div v-if="order.status === 'unconfirmed'" class="mt-5 text-center">

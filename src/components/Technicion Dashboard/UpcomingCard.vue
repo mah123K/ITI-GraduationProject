@@ -8,7 +8,17 @@ const props = defineProps({
 const emit = defineEmits(["markCompleted", "cancelOrder"])
 
 const handleMarkCompleted = () => {
-  emit("markCompleted", props.order.id)
+  if (!props.order.orderCode) {
+    emit("markCompleted", props.order.id)
+    return;
+  }
+  const entered = prompt("Enter the 6-digit code provided by the client:");
+  if (!entered) return;
+  if (entered.trim() === props.order.orderCode) {
+    emit("markCompleted", props.order.id);
+  } else {
+    alert("❌ Incorrect code. Please verify with the client.");
+  }
 }
 
 const handleCancelOrder = () => {

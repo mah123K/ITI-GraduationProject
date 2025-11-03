@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, nextTick } from "vue";
 import Chart from "chart.js/auto";
 import { auth, db } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import ChatPage from "./ChatPage.vue";
+import ChatPage from "../ChatPage.vue";
 import {
   doc,
   getDoc,
@@ -17,14 +17,14 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import ordersCard from "../components/ordersCard.vue";
-import UpcomingCard from "../components/UpcomingCard.vue";
-import ServiceCard from "../components/ServiceCard.vue";
+import ordersCard from "./ordersCard.vue";
+import UpcomingCard from "./UpcomingCard.vue";
+import ServiceCard from "./ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
-import CreateServiceCard from "../components/CreateServiceCard.vue";
+import CreateServiceCard from "./CreateServiceCard.vue";
 import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
 // NEW: Import the AlertPopup component
-import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path if needed
+import AlertPopup from "../AlertPopup.vue"; // <-- Adjust path if needed
 
 // 🟦 Refs & states
 const technicianId = ref(null);
@@ -577,7 +577,7 @@ watch(
             >
               <button
                 @click="order.showDetails = true"
-                class="cursor-pointer absolute left-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+                class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
               >
                 Details
               </button>
