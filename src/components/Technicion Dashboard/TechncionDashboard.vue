@@ -23,6 +23,7 @@ import ServiceCard from "./ServiceCard.vue";
 import TechnicionDashNav from "@/layout/TechnicionDashNav.vue";
 import CreateServiceCard from "./CreateServiceCard.vue";
 import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
+import TechnicianWorkGallery from "./TechnicianWorkGallery.vue";
 // NEW: Import the AlertPopup component
 import AlertPopup from "../AlertPopup.vue"; // <-- Adjust path if needed
 
@@ -365,6 +366,7 @@ const filteredOrders = computed(() =>
     if (orderTab.value === "upcoming")
       return o.status === "unconfirmed" || o.status === "upcoming";
     if (orderTab.value === "completed") return o.status === "completed";
+    if (orderTab.value === "cancelled") return o.status === "cancelled";
     return false;
   })
 );
@@ -541,6 +543,17 @@ watch(
               {{ completedCount }}
             </span>
           </button>
+          <button
+            @click="orderTab = 'cancelled'"
+            :class="[
+              'pb-2 border-b-2 transition-colors duration-200',
+              orderTab === 'cancelled'
+                ? 'border-[#133B5D] text-[#133B5D]'
+                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+            ]"
+          >
+            Cancelled Orders
+          </button>
         </div>
         <div
           v-if="!filteredOrders.length"
@@ -675,6 +688,31 @@ watch(
               </div>
             </div>
           </template>
+          <template v-else-if="orderTab === 'cancelled'">
+            <div
+              v-for="order in filteredOrders"
+              :key="order.id"
+              class="order rounded-2xl shadow-md p-5 w-[31%] bg-red-50 m-2 border border-red-300 relative"
+            >
+              <button
+                @click="order.showDetails = true"
+                class="cursor-pointer absolute right-2 top-3 bg-[#133B5D] text-white rounded-lg p-1 px-2"
+              >
+                Details
+              </button>
+              <p class="text-[#133B5D] font-semibold text-lg mb-2 break-words">
+                <span class="font-bold">Order:</span>
+                {{ order.descreption || "No description" }}
+              </p>
+              <p><span class="font-semibold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
+              <p><span class="font-semibold text-[#133B5D]">Date:</span> {{ order.date }}</p>
+              <p><span class="font-semibold text-[#133B5D]">Time:</span> {{ order.time }}</p>
+              <p><span class="font-semibold text-[#133B5D]">Location:</span> {{ formatLocation(order.location) }}</p>
+              <p><span class="font-semibold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+              <p class="text-red-600 font-semibold mt-2">❌ Cancelled by client</p>
+            </div>
+          </template>
+
         </div>
       </template>
 
@@ -954,15 +992,22 @@ watch(
           </div>
         </div>
       </template>
+
       <template v-else-if="mainTab === 'Techsettings'">
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Settings</h2>
 
         <ManageTechnicianProfile @showNotification="triggerAlert" />
       </template>
+
       <template v-else-if="mainTab === 'chat'">
         <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Chat</h2>
         <ChatPage />
       </template>
+
+      <template v-else-if="mainTab === 'workGallery'">
+        <TechnicianWorkGallery />
+      </template>
+
     </div>
 
     <div

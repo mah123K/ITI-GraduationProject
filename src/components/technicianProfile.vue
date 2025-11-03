@@ -20,11 +20,12 @@ import UserServiceCard from "../components/UserServiceCard.vue";
 // NEW: Import the custom alert popup
 import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path if needed
 
-// ... (your existing code) ...
-
 // NEW: Refs for the custom alert popup
 const showPopupMessage = ref(false);
 const popupMessageContent = ref("");
+
+// 🟦 Work Gallery images from Firestore
+const galleryImages = ref([]);
 
 // NEW: Helper functions for custom alert popup
 const triggerAlert = (message) => {
@@ -35,6 +36,7 @@ const closeAlert = () => {
   showPopupMessage.value = false;
   popupMessageContent.value = "";
 };
+
 // 🟦 Dynamic service list from Firestore
 const serviceList = ref([]);
 
@@ -271,7 +273,6 @@ const submitOrder = async () => {
   isSubmitting.value = true;
 
   try {
-    // Convert selected day + time to a proper JS Date
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     const selectedDate = new Date(selectedDayInfo.value.date);
     const [time, period] = selectedTime.value.split(" ");
@@ -280,9 +281,7 @@ const submitOrder = async () => {
     if (period === "AM" && hours === 12) hours = 0;
     selectedDate.setHours(hours, minutes, 0, 0);
 
-    // Construct order data with all necessary fields
     const orderData = {
-      // ✅ Existing fields (kept)
       clientId: clientUser.value.uid,
       clientName: clientData.value?.name || clientUser.value.email.split("@")[0],
       clientEmail: clientUser.value.email,
@@ -298,17 +297,14 @@ const submitOrder = async () => {
       status: "new",
       createdAt: serverTimestamp(),
 
-      // 🧩 New compatible aliases for dashboard display (non-breaking)
       descreption: orderDescription.value || serviceTitle.value || "",
       date: selectedDayInfo.value.display || "",
       time: selectedTime.value || "",
       location: clientData.value?.address || "Not Specified",
       customer: clientData.value?.name || clientUser.value.email.split("@")[0],
-      // 🆕 Random 6-digit order code
       orderCode: verificationCode,
     };
 
-    // Save to Firestore
     const docRef = await addDoc(collection(db, "orders"), orderData);
 
     console.log("Order submitted with ID:", docRef.id);
@@ -333,6 +329,21 @@ const fetchTechnicianServices = async (technicianId) => {
     }));
   } catch (error) {
     console.error("Error fetching technician services:", error);
+  }
+};
+
+// 🟩 NEW: Fetch Technician Gallery
+const fetchTechnicianGallery = async (technicianId) => {
+  try {
+    const galleryRef = collection(db, "technicians", technicianId, "gallery");
+    const snapshot = await getDocs(galleryRef);
+    galleryImages.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error("Error fetching technician gallery:", error);
+    galleryImages.value = [];
   }
 };
 
@@ -375,6 +386,9 @@ onMounted(async () => {
 
       // 🟩 Fetch technician services dynamically
       await fetchTechnicianServices(technicianIdParam);
+
+      // 🟩 Fetch technician gallery dynamically
+      await fetchTechnicianGallery(technicianIdParam);
 
       // 🟩 Listen for completed orders count (live)
       try {
@@ -421,6 +435,7 @@ watch(selectedDayInfo, () => {
 });
 </script>
 
+
 <template>
   <!-- Loading State -->
   <div v-if="isLoading" class="flex justify-center items-center min-h-screen">
@@ -439,7 +454,7 @@ watch(selectedDayInfo, () => {
       class="technichainProfile my-10 md:my-20 w-[90%] md:w-[80%] mx-auto flex flex-col lg:flex-row justify-between gap-8 lg:gap-12"
     >
       <!-- Left Card (Technician Info) -->
-      <div class="card w-full lg:w-[35%] bg-gray-50 rounded-2xl shadow-lg self-start p-6">
+      <div class="card w-full lg:w-[35%] bg-gray-50 dark:bg-[#16222B] rounded-2xl shadow-lg self-start p-6">
         <div class="imgContainer flex flex-col items-center justify-center">
           <img
             :src="technicianProfileImage"
@@ -447,7 +462,7 @@ watch(selectedDayInfo, () => {
             alt="Technician Profile Photo"
           />
           <div class="nameContainer flex items-center mt-4">
-            <h2 class="font-semibold text-2xl md:text-3xl text-gray-800">
+            <h2 class="font-semibold text-2xl md:text-3xl text-gray-800 dark:text-white">
               {{ technicianName }}
             </h2>
             <svg
@@ -460,7 +475,7 @@ watch(selectedDayInfo, () => {
               />
             </svg>
           </div>
-          <h3 class="text-lg md:text-xl text-gray-600 mt-1">
+          <h3 class="text-lg md:text-xl text-gray-600 dark:text-white mt-1">
             {{ technicianSkill }}
           </h3>
           <div class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl">
@@ -471,12 +486,12 @@ watch(selectedDayInfo, () => {
               class="far fa-star text-gray-300"
             ></i>
           </div>
-          <p class="text-sm md:text-base mb-3 text-gray-500">({{ technicianReviews }} reviews)</p>
+          <p class="text-sm md:text-base mb-3 text-gray-500 dark:text-white">({{ technicianReviews }} reviews)</p>
           <div class="line w-full h-px bg-gray-300 my-4"></div>
         </div>
 
         <div
-          class="dataContainer flex justify-between px-2 md:px-6 pb-4 text-sm md:text-base font-medium text-gray-700"
+          class="dataContainer flex justify-between px-2 md:px-6 pb-4 text-sm md:text-base font-medium text-gray-700 dark:text-white"
         >
           <div class="dataKey space-y-3">
             <div class="flex items-center gap-2">
@@ -496,7 +511,7 @@ watch(selectedDayInfo, () => {
               Orders Completed
             </div>
           </div>
-          <div class="dataValue space-y-3 text-right text-gray-600 font-normal">
+          <div class="dataValue space-y-3 text-right text-gray-600 dark:text-white font-normal">
             <div>{{ technicianLocation }}</div>
             <div>{{ technicianMemberSince }}</div>
             <div>~35 Minutes</div>
@@ -535,12 +550,12 @@ watch(selectedDayInfo, () => {
                 <div
                   v-for="(service, i) in chunk"
                   :key="service.id"
-                  class="serviceCard rounded-2xl text-center p-6 bg-white flex flex-col items-center justify-between transition-shadow h-80"
+                  class="serviceCard rounded-2xl text-center p-6 bg-white dark:bg-[#16222B] flex flex-col items-center justify-between transition-shadow h-80"
                 >
                   <!-- ✅ Custom Service (First Card in First Slide Only) -->
                   <template v-if="index === 0 && i === 0">
                     <div
-                      class="serviceCard rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 bg-white flex flex-col items-center justify-between h-80 w-full"
+                      class="serviceCard rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 bg-white dark:bg-[#16222B]  flex flex-col items-center justify-between h-80 w-full"
                     >
                       <div class="serviceImg mb-4">
                         <img
@@ -549,7 +564,7 @@ watch(selectedDayInfo, () => {
                           alt="Custom Service"
                         />
                       </div>
-                      <h2 class="font-bold mb-4 text-lg md:text-xl text-gray-800">
+                      <h2 class="font-bold mb-4 text-lg md:text-xl text-gray-800 dark:text-white">
                         Custom Service
                       </h2>
                       <button
@@ -747,44 +762,32 @@ watch(selectedDayInfo, () => {
       </div>
     </div>
 
-    <!-- Work Gallery (Static) -->
+    <!-- 🟦 Safe Dynamic Work Gallery -->
     <div
+      v-if="technician && Array.isArray(galleryImages)"
       class="WorkGallery flex flex-col items-center justify-center w-[90%] md:w-[80%] mx-auto mt-16 md:mt-24"
     >
       <h1 class="main-header">Work Gallery</h1>
+
       <div
+        v-if="galleryImages.length > 0"
         class="galleryContainer grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full"
       >
         <div
+          v-for="(img, index) in galleryImages"
+          :key="img.id || index"
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img src="../images/w1.png" alt="Work sample 1" class="w-full h-full object-cover" />
+          <img
+            :src="img.url"
+            :alt="`Work photo ${index + 1}`"
+            class="w-full h-full object-cover"
+          />
         </div>
-        <div
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
-        >
-          <img src="../images/w2.png" alt="Work sample 2" class="w-full h-full object-cover" />
-        </div>
-        <div
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
-        >
-          <img src="../images/w3.png" alt="Work sample 3" class="w-full h-full object-cover" />
-        </div>
-        <div
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
-        >
-          <img src="../images/w4.png" alt="Work sample 4" class="w-full h-full object-cover" />
-        </div>
-        <div
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
-        >
-          <img src="../images/w5.png" alt="Work sample 5" class="w-full h-full object-cover" />
-        </div>
-        <div
-          class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
-        >
-          <img src="../images/w6.png" alt="Work sample 6" class="w-full h-full object-cover" />
-        </div>
+      </div>
+
+      <div v-else class="text-gray-500 mt-6 italic">
+        This technician has not uploaded any work photos yet.
       </div>
     </div>
 
@@ -843,3 +846,7 @@ watch(selectedDayInfo, () => {
 /* Basic styling for Font Awesome icons if not globally included */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 </style>
+
+<!--
+  
+-->

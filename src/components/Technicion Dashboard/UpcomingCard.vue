@@ -1,32 +1,48 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed } from "vue";
+import AlertPopup from "../AlertPopup.vue"; // ✅ import your popup
 
 const props = defineProps({
   order: Object,
-})
+});
 
-const emit = defineEmits(["markCompleted", "cancelOrder"])
+const emit = defineEmits(["markCompleted", "cancelOrder"]);
 
+// 🟩 States for popup input
+const showCodePopup = ref(false);
+const enteredCode = ref("");
+const showAlert = ref(false);
+const alertMessage = ref("");
+
+// 🟦 Handle mark completed flow
 const handleMarkCompleted = () => {
   if (!props.order.orderCode) {
-    emit("markCompleted", props.order.id)
+    emit("markCompleted", props.order.id);
     return;
   }
-  const entered = prompt("Enter the 6-digit code provided by the client:");
-  if (!entered) return;
-  if (entered.trim() === props.order.orderCode) {
+  showCodePopup.value = true;
+};
+
+// 🟦 Confirm entered code
+const confirmCode = () => {
+  if (enteredCode.value.trim() === props.order.orderCode) {
     emit("markCompleted", props.order.id);
+    showCodePopup.value = false;
+    enteredCode.value = "";
   } else {
-    alert("❌ Incorrect code. Please verify with the client.");
+    alertMessage.value = "❌ Incorrect code. Please verify with the client.";
+    showAlert.value = true;
   }
-}
+};
 
 const handleCancelOrder = () => {
-  emit("cancelOrder", props.order.id)
-}
+  emit("cancelOrder", props.order.id);
+};
+
+// Format location helper
 const formatLocation = (loc) => {
   if (!loc) return "—";
-  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "string") return loc;
   if (typeof loc === "object") {
     const parts = [loc.street, loc.city, loc.country]
       .filter(Boolean)
@@ -36,23 +52,21 @@ const formatLocation = (loc) => {
   return "—";
 };
 
-
-
 // Short description logic
 const shortDescription = computed(() => {
-  const desc = (props.order.descreption || "").trim()
-  if (!desc) return ""
-  const words = desc.split(/\s+/).filter(Boolean)
-  if (words.length > 15) return words.slice(0, 15).join(" ") + "..."
-  if (words.length === 1 && desc.length > 60) return desc.slice(0, 60) + "..."
-  return desc
-})
+  const desc = (props.order.descreption || "").trim();
+  if (!desc) return "";
+  const words = desc.split(/\s+/).filter(Boolean);
+  if (words.length > 15) return words.slice(0, 15).join(" ") + "...";
+  if (words.length === 1 && desc.length > 60) return desc.slice(0, 60) + "...";
+  return desc;
+});
 
 // Full details modal toggle
-const showDetails = ref(false)
+const showDetails = ref(false);
 
 // Check if payment is confirmed
-const isConfirmed = computed(() => props.order.status === "upcoming")
+const isConfirmed = computed(() => props.order.status === "upcoming");
 </script>
 
 <template>
@@ -67,7 +81,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
       Details
     </button>
 
-    <!-- Order -->
+    <!-- Order Info -->
     <div class="element flex m-1 text-lg">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[25px] h-[25px]">
         <path
@@ -100,7 +114,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 512" class="w-[25px] h-[25px]">
         <path
           fill="#2574b9"
-          d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-32c0-17.7 14.3-32 32-32zM64 240l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm128 0l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM64 368l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16z"
+          d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-32c0-17.7 14.3-32 32-32z"
         />
       </svg>
       <p class="mx-1">
@@ -134,7 +148,6 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
       <p class="mx-1">
         <span class="font-bold text-[#133B5D]">Location:</span>
         {{ formatLocation(order.location) }}
-
       </p>
     </div>
 
@@ -152,22 +165,20 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
       </p>
     </div>
 
-    <!-- 🟦 Order Status -->
+    <!-- Status -->
     <div class="element flex m-1 text-lg">
-      <i
-        class="fa-solid fa-circle-info text-[#2574b9] text-xl"
-      ></i>
+      <i class="fa-solid fa-circle-info text-[#2574b9] text-xl"></i>
       <p class="mx-2">
         <span class="font-bold text-[#133B5D]">Status:</span>
         <span
           :class="isConfirmed ? 'text-green-600 font-semibold' : 'text-yellow-500 font-semibold'"
         >
-          {{ isConfirmed ? 'Confirmed (Paid)' : 'Unconfirmed (Awaiting Payment)' }}
+          {{ isConfirmed ? "Confirmed (Paid)" : "Unconfirmed (Awaiting Payment)" }}
         </span>
       </p>
     </div>
 
-    <!-- Action -->
+    <!-- Actions -->
     <div class="flex justify-center mt-6">
       <button
         @click="handleMarkCompleted"
@@ -191,7 +202,52 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
     </div>
   </div>
 
-  <!-- Full details popup -->
+  <!-- ✅ Popup to enter verification code -->
+  <transition name="fade">
+    <div
+      v-if="showCodePopup"
+      class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
+    >
+      <div class="bg-white rounded-2xl shadow-xl p-6 w-96 text-center">
+        <h3 class="text-xl font-semibold text-[#5984C6] mb-4">
+          Enter Order Verification Code
+        </h3>
+        <p class="text-gray-700 mb-4">
+          Ask the client for their 6-digit order code.
+        </p>
+        <input
+          v-model="enteredCode"
+          type="text"
+          maxlength="6"
+          class="border border-gray-300 rounded-lg p-2 w-full text-center tracking-widest text-lg mb-6 focus:ring-2 focus:ring-[#5984C6] outline-none"
+          placeholder="••••••"
+        />
+        <div class="flex justify-end gap-3">
+          <button
+            @click="showCodePopup = false"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            @click="confirmCode"
+            class="bg-[#5984C6] hover:bg-[#002153] text-white px-5 py-2 rounded-lg font-semibold transition"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </transition>
+
+  <!-- ✅ Reuse AlertPopup for error messages -->
+  <AlertPopup
+    :show="showAlert"
+    :message="alertMessage"
+    @close="showAlert = false"
+  />
+
+  <!-- Full details modal -->
   <div
     v-if="showDetails"
     class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
@@ -230,5 +286,13 @@ const isConfirmed = computed(() => props.order.status === "upcoming")
 .break-words {
   word-break: break-word;
   overflow-wrap: anywhere;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

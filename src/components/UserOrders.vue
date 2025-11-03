@@ -62,6 +62,13 @@
                   >
                     Pay Now
                   </button>
+                  <button
+                    v-if="order.status === 'new' || order.status === 'unconfirmed'"
+                    @click="openCancelPopup(order)"
+                    class="bg-red-600 ml-2 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition"
+                  >
+                    Cancel Order
+                  </button>
                   <div v-else-if="order.status === 'upcoming'" class="text-green-600 font-semibold">Payment Completed</div>
                   <div v-else-if="order.status === 'completed'" class="text-accent-color font-semibold">Service Completed</div>
                   <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">This order was {{ order.status }}.</div>
@@ -228,6 +235,31 @@
       </div>
     </transition>
 
+    <!-- 🟥 Cancel confirmation popup -->
+    <transition name="fade">
+      <div v-if="showCancelPopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Are you sure?</h2>
+          <p class="text-gray-700 mb-6">Do you really want to cancel this order?</p>
+          <div class="flex justify-center gap-4">
+            <button
+              @click="confirmCancelOrder"
+              class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Yes, Cancel
+            </button>
+            <button
+              @click="closeCancelPopup"
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition"
+            >
+              No, Keep it
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+
     <AlertPopup :show="showPopupMessage" :message="popupMessageContent" @close="closeAlert" />
   </div>
 </template>
@@ -243,6 +275,9 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  addDoc,
+  serverTimestamp,
+  getDoc,
 } from "firebase/firestore";
 // NEW: Import the custom alert popup
 import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path as needed
@@ -253,6 +288,8 @@ const orders = ref([]);
 const loading = ref(true);
 const showPopup = ref(false); // This is for the PAYMENT popup
 const selectedOrder = ref(null);
+const showCancelPopup = ref(false);
+const orderToCancel = ref(null);
 
 // NEW: Refs for the custom alert popup
 const showPopupMessage = ref(false);
@@ -338,6 +375,48 @@ const confirmPayment = async () => {
     triggerAlert("Error while preparing payment.");
   }
 };
+
+// 🟦 Open cancel confirmation
+const openCancelPopup = (order) => {
+  orderToCancel.value = order;
+  showCancelPopup.value = true;
+};
+
+// 🟥 Confirm cancel
+const confirmCancelOrder = async () => {
+  if (!orderToCancel.value) return;
+  try {
+    const orderRef = doc(db, "orders", orderToCancel.value.id);
+    const orderSnap = await getDoc(orderRef);
+    const orderData = orderSnap.exists() ? orderSnap.data() : null;
+
+    await updateDoc(orderRef, { status: "cancelled" });
+
+    // 🔔 Notify technician
+    if (orderData?.technicianId) {
+      const notifCol = collection(db, "technicians", orderData.technicianId, "notifications");
+      await addDoc(notifCol, {
+        orderId: orderToCancel.value.id,
+        message: `⚠️ The client has cancelled the order (${orderData.descreption || "No description"}).`,
+        status: "cancelled",
+        isRead: false,
+        timestamp: serverTimestamp(),
+      });
+    }
+
+    triggerAlert("Order cancelled successfully.");
+    showCancelPopup.value = false;
+  } catch (error) {
+    console.error("Error cancelling order:", error);
+    triggerAlert("Failed to cancel order.");
+  }
+};
+
+const closeCancelPopup = () => {
+  showCancelPopup.value = false;
+  orderToCancel.value = null;
+};
+
 
 // 🟨 Status badge colors (unchanged)
 const statusColor = (status) => {

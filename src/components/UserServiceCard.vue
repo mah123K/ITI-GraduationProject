@@ -10,7 +10,7 @@ const emit = defineEmits(["order"])
 </script>
 <template>
   <div
-    class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
+    class="serviceCard rounded-2xl shadow-lg text-center p-6 bg-white dark:bg-[#16222B]  flex flex-col items-center justify-between hover:shadow-xl transition-shadow"
   >
     <div class="serviceImg mb-4">
       <img
@@ -20,7 +20,7 @@ const emit = defineEmits(["order"])
       />
     </div>
 
-    <h2 class="font-semibold text-gray-700">{{ service.descreption }}</h2>
+    <h2 class="font-semibold text-gray-700 dark:text-white">{{ service.descreption }}</h2>
     <h2 class="font-bold text-accent-color text-lg md:text-xl">
       {{ service.price }}
     </h2>

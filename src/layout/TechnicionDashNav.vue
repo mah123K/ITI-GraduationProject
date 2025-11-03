@@ -16,12 +16,12 @@ const router = useRouter();
 const technician = ref({ name: "", earnings: 0, image: "" });
 const technicianId = ref(null);
 const orders = ref([]);
-const totalEarnings = computed(() =>
-  orders.value.reduce((sum, order) => {
-    const price = parseFloat(order.price);
-    return sum + (isNaN(price) ? 0 : price);
-  }, 0)
-);
+// 🔹 Calculate total and monthly earnings dynamically
+const totalEarnings = computed(() => {
+  return orders.value
+    .filter((o) => o.status === "completed")
+    .reduce((sum, o) => sum + (parseFloat(o.price) || 0), 0);
+});
 
 onMounted(async () => {
   const auth = getAuth();
@@ -52,6 +52,8 @@ onMounted(async () => {
     }
   });
 });
+
+
 
 const handleLogout = async () => {
   try {
@@ -116,6 +118,17 @@ const handleLogout = async () => {
           <i class="fa-solid fa-screwdriver-wrench text-white text-lg"></i>
           My Services
         </button>
+
+        <button
+          @click="emit('changeTab', 'workGallery')"
+          :class="[props.active === 'workGallery' ? 'bg-[#1b5383] text-white' : 'text-gray-200 hover:bg-[#1b5383]/60']"
+          class="flex items-center gap-2 cursor-pointer py-3 text-[16px] font-semibold rounded-xl w-[88%] mx-auto transition p-3"
+        >
+          <i class="fa-solid fa-image text-white text-lg"></i>
+          Work Gallery
+        </button>
+
+
 
         <button
           @click="emit('changeTab', 'earnings')"
