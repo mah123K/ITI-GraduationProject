@@ -58,6 +58,9 @@ const isSubmitting = ref(false);
 // Stores the fetched availability schedule from Firebase
 const availabilitySchedule = ref([]);
 
+// Live orders for this technician (to mark booked appointments)
+const technicianOrders = ref([]);
+
 // Holds the currently logged-in user (client)
 const clientUser = ref(null);
 const clientData = ref(null);
@@ -86,7 +89,6 @@ const feedbacks = ref([
   },
 ]);
 
-
 // ===== Carousel for Services =====
 const currentSlide = ref(0);
 // Hide arrows if there are fewer than 4 real services (custom not counted)
@@ -104,7 +106,6 @@ const chunkedServices = computed(() => {
   return chunks;
 });
 
-
 const nextSlide = () => {
   if (currentSlide.value < chunkedServices.value.length - 1) {
     currentSlide.value++;
@@ -117,21 +118,14 @@ const prevSlide = () => {
   }
 };
 
-
 // --- Computed Properties ---
 const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
-const technicianLocation = computed(
-  () => technician.value?.city || "Not Specified"
-);
-const technicianRating = computed(() =>
-  Math.round(technician.value?.rating || 0)
-);
+const technicianLocation = computed(() => technician.value?.city || "Not Specified");
+const technicianRating = computed(() => Math.round(technician.value?.rating || 0));
 const technicianReviews = computed(() => technician.value?.reviews || 0);
 const technicianProfileImage = computed(
-  () =>
-    technician.value?.profileImage ||
-    new URL("../images/Ellipse 56.png", import.meta.url).href
+  () => technician.value?.profileImage || new URL("../images/Ellipse 56.png", import.meta.url).href
 );
 const technicianMemberSince = computed(() => {
   const ca = technician.value?.createdAt;
@@ -197,9 +191,7 @@ const activeAvailableDays = computed(() => {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
     const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const schedule = availabilitySchedule.value.find(
-      (d) => d.name === dayName && d.active
-    );
+    const schedule = availabilitySchedule.value.find((d) => d.name === dayName && d.active);
     if (schedule) {
       available.push({
         date: date,
@@ -218,19 +210,28 @@ const activeAvailableDays = computed(() => {
 const availableTimeSlots = computed(() => {
   if (!selectedDayInfo.value) return [];
   const dayName = selectedDayInfo.value.name;
-  const schedule = availabilitySchedule.value.find(
-    (d) => d.name === dayName && d.active
-  );
+  const schedule = availabilitySchedule.value.find((d) => d.name === dayName && d.active);
   if (schedule && schedule.start && schedule.end) {
     return generateTimeSlots(schedule.start, schedule.end, 60);
   }
   return [];
 });
 
+// Set of booked times for currently selected day (based on existing orders)
+const bookedTimesForSelectedDay = computed(() => {
+  if (!selectedDayInfo.value || technicianOrders.value.length === 0) return new Set();
+  const dayDisplay = selectedDayInfo.value.display;
+  const times = technicianOrders.value
+    .filter((o) => o.appointmentDay === dayDisplay)
+    .map((o) => o.appointmentTime)
+    .filter(Boolean);
+  return new Set(times);
+});
+
 // --- Popup, Form & Order Submission ---
 const openPopup = (service = null, price = null) => {
   if (!clientUser.value) {
-triggerAlert("Please select an available day and time.");
+    triggerAlert("Please select an available day and time.");
     router.push("/login");
     return;
   }
@@ -262,12 +263,7 @@ const handleFileUpload = (event) => {
 };
 
 const submitOrder = async () => {
-  if (
-    !selectedDayInfo.value ||
-    !selectedTime.value ||
-    !clientUser.value ||
-    !technician.value
-  ) {
+  if (!selectedDayInfo.value || !selectedTime.value || !clientUser.value || !technician.value) {
     triggerAlert("Please select an available day and time.");
     return;
   }
@@ -286,33 +282,31 @@ const submitOrder = async () => {
 
     // Construct order data with all necessary fields
     const orderData = {
-    // ✅ Existing fields (kept)
-    clientId: clientUser.value.uid,
-    clientName:
-      clientData.value?.name || clientUser.value.email.split("@")[0],
-    clientEmail: clientUser.value.email,
-    technicianId: route.params.id,
-    technicianName: technician.value.name || "Technician",
-    technicianSkill: technician.value.skill || "General",
-    serviceTitle: serviceTitle.value || "Custom Service Request",
-    description: orderDescription.value || serviceTitle.value || "",
-    price: servicePrice.value || "Pending Quote",
-    appointmentDate: selectedDate,
-    appointmentDay: selectedDayInfo.value.display,
-    appointmentTime: selectedTime.value,
-    status: "new",
-    createdAt: serverTimestamp(),
+      // ✅ Existing fields (kept)
+      clientId: clientUser.value.uid,
+      clientName: clientData.value?.name || clientUser.value.email.split("@")[0],
+      clientEmail: clientUser.value.email,
+      technicianId: route.params.id,
+      technicianName: technician.value.name || "Technician",
+      technicianSkill: technician.value.skill || "General",
+      serviceTitle: serviceTitle.value || "Custom Service Request",
+      description: orderDescription.value || serviceTitle.value || "",
+      price: servicePrice.value || "Pending Quote",
+      appointmentDate: selectedDate,
+      appointmentDay: selectedDayInfo.value.display,
+      appointmentTime: selectedTime.value,
+      status: "new",
+      createdAt: serverTimestamp(),
 
-    // 🧩 New compatible aliases for dashboard display (non-breaking)
-    descreption: orderDescription.value || serviceTitle.value || "",
-    date: selectedDayInfo.value.display || "",
-    time: selectedTime.value || "",
-    location: clientData.value?.address || "Not Specified",
-    customer: clientData.value?.name || clientUser.value.email.split("@")[0],
-    // 🆕 Random 6-digit order code
-    orderCode: verificationCode
-  };
-
+      // 🧩 New compatible aliases for dashboard display (non-breaking)
+      descreption: orderDescription.value || serviceTitle.value || "",
+      date: selectedDayInfo.value.display || "",
+      time: selectedTime.value || "",
+      location: clientData.value?.address || "Not Specified",
+      customer: clientData.value?.name || clientUser.value.email.split("@")[0],
+      // 🆕 Random 6-digit order code
+      orderCode: verificationCode,
+    };
 
     // Save to Firestore
     const docRef = await addDoc(collection(db, "orders"), orderData);
@@ -327,7 +321,6 @@ const submitOrder = async () => {
     isSubmitting.value = false;
   }
 };
-
 
 // --- Fetch Technician, Client, and Services ---
 const fetchTechnicianServices = async (technicianId) => {
@@ -374,10 +367,7 @@ onMounted(async () => {
     if (docSnap.exists()) {
       technician.value = docSnap.data();
 
-      if (
-        technician.value.availability &&
-        Array.isArray(technician.value.availability)
-      ) {
+      if (technician.value.availability && Array.isArray(technician.value.availability)) {
         availabilitySchedule.value = technician.value.availability;
       } else {
         availabilitySchedule.value = [];
@@ -400,6 +390,17 @@ onMounted(async () => {
       } catch (e) {
         console.error("Error listening for completed orders:", e);
       }
+
+      // 🔹 Listen to all orders for this technician to disable booked slots
+      try {
+        const allOrdersRef = collection(db, "orders");
+        const qAll = query(allOrdersRef, where("technicianId", "==", technicianIdParam));
+        onSnapshot(qAll, (snap) => {
+          technicianOrders.value = snap.docs.map((d) => d.data());
+        });
+      } catch (e) {
+        console.error("Error listening for technician orders:", e);
+      }
     } else {
       technician.value = null;
     }
@@ -420,22 +421,15 @@ watch(selectedDayInfo, () => {
 });
 </script>
 
-
-
 <template>
   <!-- Loading State -->
   <div v-if="isLoading" class="flex justify-center items-center min-h-screen">
-    <div
-      class="animate-spin rounded-full h-16 w-16 border-b-4 border-accent-color"
-    ></div>
+    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-accent-color"></div>
     <p class="ml-4 text-2xl text-accent-color">Loading Profile...</p>
   </div>
 
   <!-- Not Found State -->
-  <div
-    v-else-if="!technician"
-    class="flex justify-center items-center min-h-screen"
-  >
+  <div v-else-if="!technician" class="flex justify-center items-center min-h-screen">
     <p class="text-2xl text-red-500">Technician not found.</p>
   </div>
 
@@ -445,9 +439,7 @@ watch(selectedDayInfo, () => {
       class="technichainProfile my-10 md:my-20 w-[90%] md:w-[80%] mx-auto flex flex-col lg:flex-row justify-between gap-8 lg:gap-12"
     >
       <!-- Left Card (Technician Info) -->
-      <div
-        class="card w-full lg:w-[35%] bg-gray-50 rounded-2xl shadow-lg self-start p-6"
-      >
+      <div class="card w-full lg:w-[35%] bg-gray-50 rounded-2xl shadow-lg self-start p-6">
         <div class="imgContainer flex flex-col items-center justify-center">
           <img
             :src="technicianProfileImage"
@@ -471,23 +463,15 @@ watch(selectedDayInfo, () => {
           <h3 class="text-lg md:text-xl text-gray-600 mt-1">
             {{ technicianSkill }}
           </h3>
-          <div
-            class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl"
-          >
-            <i
-              v-for="n in technicianRating"
-              :key="n"
-              class="fas fa-star fill-current"
-            ></i>
+          <div class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl">
+            <i v-for="n in technicianRating" :key="n" class="fas fa-star fill-current"></i>
             <i
               v-for="n in 5 - technicianRating"
               :key="'empty-' + n"
               class="far fa-star text-gray-300"
             ></i>
           </div>
-          <p class="text-sm md:text-base mb-3 text-gray-500">
-            ({{ technicianReviews }} reviews)
-          </p>
+          <p class="text-sm md:text-base mb-3 text-gray-500">({{ technicianReviews }} reviews)</p>
           <div class="line w-full h-px bg-gray-300 my-4"></div>
         </div>
 
@@ -496,15 +480,11 @@ watch(selectedDayInfo, () => {
         >
           <div class="dataKey space-y-3">
             <div class="flex items-center gap-2">
-              <i
-                class="fas fa-map-marker-alt w-5 text-center text-accent-color"
-              ></i>
+              <i class="fas fa-map-marker-alt w-5 text-center text-accent-color"></i>
               Location
             </div>
             <div class="flex items-center gap-2">
-              <i
-                class="fas fa-user-check w-5 text-center text-accent-color"
-              ></i>
+              <i class="fas fa-user-check w-5 text-center text-accent-color"></i>
               Member Since
             </div>
             <div class="flex items-center gap-2">
@@ -535,11 +515,7 @@ watch(selectedDayInfo, () => {
 
       <!-- Right Section (Services) -->
       <div class="w-full lg:w-[60%] flex flex-col">
-        <h1
-          class="main-header m-0"
-        >
-          Services Offered
-        </h1>
+        <h1 class="main-header m-0">Services Offered</h1>
 
         <!-- ✅ Fixed Carousel (2 rows × 2 columns, 4 cards per slide) -->
         <div class="relative w-full flex justify-center">
@@ -600,7 +576,7 @@ watch(selectedDayInfo, () => {
 
           <!-- ✅ Navigation Arrows (moved outside overflow) -->
           <button
-          v-if="showArrows"
+            v-if="showArrows"
             @click="prevSlide"
             class="absolute left-2 md:left-[-30px] top-1/2 -translate-y-1/2 bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30"
           >
@@ -608,15 +584,13 @@ watch(selectedDayInfo, () => {
           </button>
 
           <button
-          v-if="showArrows"
+            v-if="showArrows"
             @click="nextSlide"
             class="absolute right-2 md:right-[-30px] top-1/2 -translate-y-1/2 bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30"
           >
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
-
-
       </div>
     </div>
 
@@ -635,15 +609,11 @@ watch(selectedDayInfo, () => {
         >
           &times;
         </button>
-        <h2 class="text-2xl font-semibold mb-6 text-accent-color">
-          Order Details
-        </h2>
+        <h2 class="text-2xl font-semibold mb-6 text-accent-color">Order Details</h2>
         <div class="subContainer flex flex-col md:flex-row gap-6">
           <div class="orderDetails w-full md:w-1/2 space-y-4">
             <div class="flex flex-col items-start">
-              <label
-                for="photoUpload"
-                class="font-semibold mb-2 text-lg text-accent-color"
+              <label for="photoUpload" class="font-semibold mb-2 text-lg text-accent-color"
                 >Upload Photos (optional)</label
               >
               <input
@@ -660,23 +630,14 @@ watch(selectedDayInfo, () => {
               >
                 <i class="fas fa-upload"></i><span>Select Photos</span>
               </label>
-              <div
-                v-if="uploadedFiles.length > 0"
-                class="mt-2 text-sm text-gray-600"
-              >
-                <p
-                  v-for="file in uploadedFiles"
-                  :key="file.name"
-                  class="truncate"
-                >
+              <div v-if="uploadedFiles.length > 0" class="mt-2 text-sm text-gray-600">
+                <p v-for="file in uploadedFiles" :key="file.name" class="truncate">
                   {{ file.name }}
                 </p>
               </div>
             </div>
             <div>
-              <label class="block text-left font-semibold text-gray-700 mb-1"
-                >Description</label
-              >
+              <label class="block text-left font-semibold text-gray-700 mb-1">Description</label>
               <textarea
                 v-model="orderDescription"
                 placeholder="Describe your problem or custom request..."
@@ -685,30 +646,23 @@ watch(selectedDayInfo, () => {
               ></textarea>
             </div>
             <div>
-              <label class="block text-left font-semibold text-gray-700 mb-1"
-                >Price</label
-              >
+              <label class="block text-left font-semibold text-gray-700 mb-1">Price</label>
               <input
                 v-model="servicePrice"
                 :disabled="isPriceLocked"
                 type="text"
                 :placeholder="
-                  isPriceLocked
-                    ? 'Price set by service'
-                    : 'Enter Your Budget (Optional)...'
+                  isPriceLocked ? 'Price set by service' : 'Enter Your Budget (Optional)...'
                 "
                 class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color disabled:bg-gray-100"
               />
             </div>
           </div>
           <div class="orderTime w-full md:w-1/2 flex flex-col items-center">
-            <h3 class="text-xl font-semibold text-accent-color mb-4">
-              Choose Appointment
-            </h3>
+            <h3 class="text-xl font-semibold text-accent-color mb-4">Choose Appointment</h3>
             <div class="w-[90%] md:w-[80%] space-y-4">
               <div>
-                <label
-                  class="block text-left font-medium mb-1 text-accent-color"
+                <label class="block text-left font-medium mb-1 text-accent-color"
                   >Select Available Day:</label
                 >
                 <select
@@ -723,26 +677,19 @@ watch(selectedDayInfo, () => {
                         : "-- Select Day --"
                     }}
                   </option>
-                  <option
-                    v-for="day in activeAvailableDays"
-                    :key="day.display"
-                    :value="day"
-                  >
+                  <option v-for="day in activeAvailableDays" :key="day.display" :value="day">
                     {{ day.display }}
                   </option>
                 </select>
               </div>
               <div>
-                <label
-                  class="block text-left font-medium mb-1 text-accent-color"
+                <label class="block text-left font-medium mb-1 text-accent-color"
                   >Select Time:</label
                 >
                 <select
                   v-model="selectedTime"
                   class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-accent-color"
-                  :disabled="
-                    !selectedDayInfo || availableTimeSlots.length === 0
-                  "
+                  :disabled="!selectedDayInfo || availableTimeSlots.length === 0"
                 >
                   <option value="" disabled>
                     {{
@@ -757,25 +704,21 @@ watch(selectedDayInfo, () => {
                     v-for="time in availableTimeSlots"
                     :key="time"
                     :value="time"
+                    :disabled="bookedTimesForSelectedDay.has(time)"
                   >
                     {{ time }}
+                    {{ bookedTimesForSelectedDay.has(time) ? "(Booked)" : "" }}
                   </option>
                 </select>
               </div>
             </div>
-            <div
-              v-if="selectedDayInfo && selectedTime"
-              class="mt-6 text-gray-700 text-center"
-            >
+            <div v-if="selectedDayInfo && selectedTime" class="mt-6 text-gray-700 text-center">
               <p>
-                You selected: <br /><span
-                  class="font-semibold text-accent-color"
-                  >{{ selectedDayInfo.display }}</span
-                >
-                at
-                <span class="font-semibold text-accent-color">{{
-                  selectedTime
+                You selected: <br /><span class="font-semibold text-accent-color">{{
+                  selectedDayInfo.display
                 }}</span>
+                at
+                <span class="font-semibold text-accent-color">{{ selectedTime }}</span>
               </p>
             </div>
             <div
@@ -808,67 +751,39 @@ watch(selectedDayInfo, () => {
     <div
       class="WorkGallery flex flex-col items-center justify-center w-[90%] md:w-[80%] mx-auto mt-16 md:mt-24"
     >
-      <h1
-        class="main-header"
-      >
-        Work Gallery
-      </h1>
+      <h1 class="main-header">Work Gallery</h1>
       <div
         class="galleryContainer grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full"
       >
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w1.png"
-            alt="Work sample 1"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w1.png" alt="Work sample 1" class="w-full h-full object-cover" />
         </div>
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w2.png"
-            alt="Work sample 2"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w2.png" alt="Work sample 2" class="w-full h-full object-cover" />
         </div>
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w3.png"
-            alt="Work sample 3"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w3.png" alt="Work sample 3" class="w-full h-full object-cover" />
         </div>
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w4.png"
-            alt="Work sample 4"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w4.png" alt="Work sample 4" class="w-full h-full object-cover" />
         </div>
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w5.png"
-            alt="Work sample 5"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w5.png" alt="Work sample 5" class="w-full h-full object-cover" />
         </div>
         <div
           class="imgContainer rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 aspect-square"
         >
-          <img
-            src="../images/w6.png"
-            alt="Work sample 6"
-            class="w-full h-full object-cover"
-          />
+          <img src="../images/w6.png" alt="Work sample 6" class="w-full h-full object-cover" />
         </div>
       </div>
     </div>
@@ -877,11 +792,7 @@ watch(selectedDayInfo, () => {
     <div
       class="feedback relative flex flex-col items-center justify-center w-[90%] md:w-[70%] mx-auto my-16 md:my-24 text-center px-4"
     >
-      <h1
-        class="main-header"
-      >
-        Customer Feedback
-      </h1>
+      <h1 class="main-header">Customer Feedback</h1>
       <div
         v-if="feedbacks.length > 0"
         :key="currentIndex"
@@ -909,34 +820,20 @@ watch(selectedDayInfo, () => {
           <p class="text-xl md:text-2xl font-semibold text-gray-800">
             {{ feedbacks[currentIndex].name }}
           </p>
-          <div
-            class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl"
-          >
-            <i
-              v-for="n in 5"
-              :key="n"
-              class="fas fa-star fill-current mx-0.5"
-            ></i>
+          <div class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl">
+            <i v-for="n in 5" :key="n" class="fas fa-star fill-current mx-0.5"></i>
           </div>
-          <p
-            class="text-base md:text-lg text-gray-600 leading-relaxed mt-4 italic px-4"
-          >
+          <p class="text-base md:text-lg text-gray-600 leading-relaxed mt-4 italic px-4">
             "{{ feedbacks[currentIndex].text }}"`
           </p>
         </div>
       </div>
       <div v-else class="text-gray-500 mt-10">No feedback available yet.</div>
 
-    <AlertPopup
-  :show="showPopupMessage"
-  :message="popupMessageContent"
-  @close="closeAlert"
-/>
+      <AlertPopup :show="showPopupMessage" :message="popupMessageContent" @close="closeAlert" />
     </div>
-    
   </div>
 </template>
-
 
 <style scoped>
 /* Add any specific styles if needed */
@@ -945,10 +842,4 @@ watch(selectedDayInfo, () => {
 }
 /* Basic styling for Font Awesome icons if not globally included */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
-
 </style>
-
-
-
-
-
