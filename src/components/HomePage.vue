@@ -13,8 +13,6 @@
         />
       </transition-group>
 
-      
-
       <!-- Indicators -->
       <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
         <span
@@ -22,152 +20,180 @@
           :key="'dot-' + index"
           @click="goToHero(index)"
           class="w-4 h-4 rounded-full cursor-pointer transition-all duration-500"
-          :class="currentHeroIndex === index ? 'bg-accent-color scale-110' : 'bg-white/60 hover:bg-white/90'"
+          :class="
+            currentHeroIndex === index
+              ? 'bg-accent-color scale-110'
+              : 'bg-(--text-muted)/40 hover:bg-(--text-muted)/60'
+          "
         ></span>
       </div>
     </section>
 
-    <h2 class="text-center main-header">{{ $t('home.services.title') }}</h2>
+    <h2 class="text-center main-header">{{ $t("home.services.title") }}</h2>
     <div class="flex justify-center mb-10 p-5 items-center mx-auto">
       <div class="grid grid-cols-1 md:gap-20 gap-8 md:grid-cols-4">
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">
             <div>
               <img :src="isDark ? plumbingDark : plumbingLight" alt="Plumbing service" />
               <span class="text-center block text-accent-color text-xl font-medium">
-                {{ $t('home.services.plumbing') }}
+                {{ $t("home.services.plumbing") }}
               </span>
             </div>
           </router-link>
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">
             <div>
-              <img :src="isDark ? finishingDark : finishingLight" alt="Finishing service" class="w-full" />
+              <img
+                :src="isDark ? finishingDark : finishingLight"
+                alt="Finishing service"
+                class="w-full"
+              />
               <span class="text-center block text-accent-color text-xl font-medium">
-                {{ $t('home.services.finishing') }}
+                {{ $t("home.services.finishing") }}
               </span>
             </div>
           </router-link>
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">
             <div>
               <img :src="isDark ? electricalDark : electricalLight" alt="Electrical service" />
               <span class="text-center block text-accent-color text-xl font-medium">
-                {{ $t('home.services.electrical') }}
+                {{ $t("home.services.electrical") }}
               </span>
             </div>
           </router-link>
         </div>
 
         <div
-          class="card cursor-pointer bg-secondary-blue dark:bg-[#182f3a] image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
+          class="card cursor-pointer bg-(--surface) image-full w-60 rounded-2xl shadow-lg h-70 hover:scale-102 hover:shadow-xl transition duration-600"
         >
           <router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">
             <div>
               <img :src="isDark ? carpentryDark : carpentryLight" alt="Carpentry service" />
               <span class="text-center block text-accent-color text-xl font-medium">
-                {{ $t('home.services.carpentry') }}
+                {{ $t("home.services.carpentry") }}
               </span>
             </div>
           </router-link>
         </div>
-
       </div>
     </div>
 
-    <section id="how-it-works" class="relative isolate bg-white py-8 dark:bg-dark-blue">
+    <section id="how-it-works" class="relative isolate  py-8">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Header -->
-        <header class="text-center ">
+        <header class="text-center">
           <h2 class="main-header text-accent-color">
-            {{ $t('home.howItWorks.title') }}
+            {{ $t("home.howItWorks.title") }}
           </h2>
-          <p class="mt-3 text-base sm:text-lg text-gray-600 dark:text-white">
-            {{ $t('home.howItWorks.subtitle') }}
+          <p class="mt-3 text-base sm:text-lg text-(--text-muted)">
+            {{ $t("home.howItWorks.subtitle") }}
           </p>
         </header>
 
         <div class="relative flex flex-col lg:flex-row items-center justify-center gap-6">
           <!-- Step 1 -->
           <div
-            class=" flex flex-col justify-between items-center text-center rounded-2xl bg-white dark:bg-[#182f3a] shadow-md border border-gray-200 dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="flex flex-col justify-between items-center text-center rounded-2xl dark:bg-(--surface) shadow-md border border-(--border) hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img :src="isDark ? firstDark : firstLight" class="w-32 h-36 object-contain mb-4"/> 
-            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
-              {{ $t('home.howItWorks.step1.title') }}
+            <img :src="isDark ? firstDark : firstLight" class="w-32 h-36 object-contain mb-4" />
+            <h3 class="text-xl font-semibold text-(--accent)">
+              {{ $t("home.howItWorks.step1.title") }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-white">
-              {{ $t('home.howItWorks.step1.text') }}
+            <p class="mt-2 text-sm text-(--text-muted)">
+              {{ $t("home.howItWorks.step1.text") }}
             </p>
           </div>
 
           <!-- Arrow -->
           <div class="hidden lg:flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-8 h-8 text-accent-color"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
             </svg>
           </div>
 
           <!-- Step 2 -->
           <div
-            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border dark:bg-[#182f3a] dark:border-none border-gray-200 hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl dark:bg-(--surface) shadow-md border border-(--border) hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img :src="isDark ? secondDark : secondLight" class="w-32 h-36 object-contain mb-4"/> 
-            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
-              {{ $t('home.howItWorks.step2.title') }}
+            <img :src="isDark ? secondDark : secondLight" class="w-32 h-36 object-contain mb-4" />
+            <h3 class="text-xl font-semibold text-(--accent)">
+              {{ $t("home.howItWorks.step2.title") }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-white">
-              {{ $t('home.howItWorks.step2.text') }}
+            <p class="mt-2 text-sm text-(--text-muted)">
+              {{ $t("home.howItWorks.step2.text") }}
             </p>
           </div>
 
           <!-- Arrow -->
           <div class="hidden lg:flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-8 h-8 text-accent-color"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
             </svg>
           </div>
 
           <!-- Step 3 -->
           <div
-            class="flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 dark:bg-[#182f3a] dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="flex flex-col justify-between items-center text-center rounded-2xl dark:bg-(--surface) shadow-md border border-(--border) hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img :src="isDark ? thirdDark : thirdLight" class="w-32 h-36 object-contain mb-4"/> 
-            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
-              {{ $t('home.howItWorks.step3.title') }}
+            <img :src="isDark ? thirdDark : thirdLight" class="w-32 h-36 object-contain mb-4" />
+            <h3 class="text-xl font-semibold text-(--accent)">
+              {{ $t("home.howItWorks.step3.title") }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-white">
-              {{ $t('home.howItWorks.step3.text') }}
+            <p class="mt-2 text-sm text-(--text-muted)">
+              {{ $t("home.howItWorks.step3.text") }}
             </p>
           </div>
 
           <!-- Arrow -->
           <div class="hidden lg:flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-8 h-8 text-accent-color"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-4-4l4 4-4 4" />
             </svg>
           </div>
 
           <!-- Step 4 -->
           <div
-            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl bg-white shadow-md border border-gray-200 dark:bg-[#182f3a] dark:border-none hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
+            class="mt-8 flex flex-col justify-between items-center text-center rounded-2xl dark:bg-(--surface) shadow-md border border-(--border) hover:-translate-y-1 hover:shadow-lg transition p-3 w-full max-w-[250px]"
           >
-            <img :src="isDark ? fourthDark : fourthLight" class="w-32 h-36 object-contain mb-4"/> 
-            <h3 class="text-xl font-semibold text-[#5895DF] dark:text-white">
-              {{ $t('home.howItWorks.step4.title') }}
+            <img :src="isDark ? fourthDark : fourthLight" class="w-32 h-36 object-contain mb-4" />
+            <h3 class="text-xl font-semibold text-(--accent)">
+              {{ $t("home.howItWorks.step4.title") }}
             </h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-white">
-              {{ $t('home.howItWorks.step4.text') }}
+            <p class="mt-2 text-sm text-(--text-muted)">
+              {{ $t("home.howItWorks.step4.text") }}
             </p>
           </div>
         </div>
@@ -176,7 +202,7 @@
 
     <section class="why choose us">
       <div>
-        <h2 class="main-header">{{ $t('home.whyUs.title') }}</h2>
+        <h2 class="main-header">{{ $t("home.whyUs.title") }}</h2>
       </div>
       <div class="flex justify-center">
         <div class="grid grid-cols-1 md:grid-cols-[40%_60%] w-[80%] gap-3 items-center">
@@ -184,14 +210,16 @@
           <div class="flex justify-center">
             <img
               src="../images/whyUs.png"
-              class="hidden md:block h-[480px] w-full object-contain "
+              class="hidden md:block h-[480px] w-full object-contain"
               alt="Technician at work"
             />
           </div>
 
           <!-- Text List Section -->
           <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
               <div class="text-4xl shrink-0">
                 <img
                   class="w-10"
@@ -199,29 +227,35 @@
                   alt="icon"
                 />
               </div>
-              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
-                {{ $t('home.whyUs.point1') }}
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ $t("home.whyUs.point1") }}
               </p>
             </li>
 
-            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
               <i class="fa-solid fa-people-group text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
-                {{ $t('home.whyUs.point2') }}
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ $t("home.whyUs.point2") }}
               </p>
             </li>
 
-            <li class="bg-[#DAECF6] dark:bg-[#182f3a]  p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
               <i class="fa-solid fa-address-card text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
-                {{ $t('home.whyUs.point3') }}
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ $t("home.whyUs.point3") }}
               </p>
             </li>
 
-            <li class="bg-[#DAECF6] dark:bg-[#182f3a] p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4">
+            <li
+              class="bg-(--surface) p-3 rounded-xl shadow-lg hover:scale-102 transition transform-900 flex items-center gap-4"
+            >
               <i class="fa-solid fa-headphones text-accent-color text-3xl shrink-0"></i>
-              <p class="text-lg md:text-LG text-gray-800 dark:text-white leading-relaxed">
-                {{ $t('home.whyUs.point4') }}
+              <p class="text-lg md:text-LG text-(--text-primary) leading-relaxed">
+                {{ $t("home.whyUs.point4") }}
               </p>
             </li>
           </ul>
@@ -230,69 +264,65 @@
     </section>
 
     <section class="offers">
+      <div v-if="loading" class="flex justify-center mt-10">
+        <p class="text-lg">{{ $t("home.offers.loading") }}</p>
+      </div>
 
-        <div v-if="loading" class="flex justify-center mt-10">
-          <p class="text-lg">{{ $t('home.offers.loading') }}</p>
-        </div>
-      
-          <div>
-        <h2 class="text-center main-header">{{ $t('home.offers.title') }}</h2>
-        </div>
-        <div class="text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60">
-          <router-link to="/offers">{{ $t('home.offers.seeMore') }}</router-link>
-        </div>
-        <div v-if="loading" class="flex justify-center mt-10">
-          <p class="text-lg">{{ $t('home.offers.loading') }}</p>
-        </div>
-        
-        <div v-else-if="offers.length > 0" class="flex justify-center mt-5">
-          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            
-            <div
-              v-for="offer in offers"
-              :key="offer.id"
-              class="card bg-secondry-color rounded-2xl h-fit w-70 shadow-lg relative"
-            >
-              <div class="offer absolute">
-                <img
-                  src="../images/offerdisc.png"
-                  class="w-15 rounded-b-full"
-                  alt="Offer discount"
-                />
-              </div>
-        
-              <img
-                :src="offer.image"
-                :alt="offer.title"
-                class="w-full rounded-t-2xl h-48 object-cover" 
-                />
-        
-              <div class="card-body mt-2 items-center text-center">
-                <h2 class="card-title text-red-600 font-bold">{{ offer.title }}</h2> 
-                
-                <p class="text-lg">{{ offer.description }}</p>
-                
-                <div class="card-actions pb-3">
-                  <button
-                    class="cursor-pointer btn mt-2 text-white px-3 bg-accent-color rounded-[10px] text-lg"
-                  >
-                    {{ $t('home.offers.claim') }}
-                  </button>
-                </div>
+      <div>
+        <h2 class="text-center main-header">{{ $t("home.offers.title") }}</h2>
+      </div>
+   
+      <div v-if="loading" class="flex justify-center mt-10">
+        <p class="text-lg">{{ $t("home.offers.loading") }}</p>
+      </div>
+
+      <div v-else-if="offers.length > 0" class="flex justify-center mt-5">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            v-for="offer in offers"
+            :key="offer.id"
+            class="card bg-(--surface) rounded-2xl h-fit w-70 shadow-lg relative"
+          >
+            <div class="offer absolute">
+              <img src="../images/offerdisc.png" class="w-15 rounded-b-full" alt="Offer discount" />
+            </div>
+
+            <img
+              :src="offer.image"
+              :alt="offer.title"
+              class="w-full rounded-t-2xl h-48 object-cover"
+            />
+
+            <div class="card-body mt-2 items-center text-center">
+              <h2 class="card-title text-(--accent) font-bold">{{ offer.title }}</h2>
+
+              <p class="text-lg">{{ offer.description }}</p>
+
+              <div class="card-actions pb-3">
+                <button
+                  class="cursor-pointer btn border-none mt-2 text-white px-3 bg-accent-color rounded-[10px] text-lg"
+                >
+                  {{ $t("home.offers.claim") }}
+                </button>
               </div>
             </div>
-            
           </div>
         </div>
-        
-        <div v-else class="flex justify-center mt-10">
-          <p class="text-lg">{{ $t('home.offers.noOffers') }}</p>
-        </div>
+      </div>
+
+      <div v-else class="flex justify-center mt-10">
+        <p class="text-lg">{{ $t("home.offers.noOffers") }}</p>
+      </div>
+         <div
+        class="text-accent-color flex justify-end rtl:justify-end me-20 font-semibold text-xl rtl:ms-10 rtl:me-60"
+      >
+        <router-link to="/offers">{{ $t("home.offers.seeMore") }}</router-link>
+      </div>
     </section>
 
     <section class="feedback">
       <div class="relative w-[80%] mx-auto">
-        <h2 class="main-header">{{ $t('home.feedback.title') }}</h2>
+        <h2 class="main-header">{{ $t("home.feedback.title") }}</h2>
 
         <div class="relative h-80 overflow-hidden rounded-lg">
           <div
@@ -305,64 +335,56 @@
               '-translate-x-full opacity-0 z-0': currentSlide > index,
             }"
           >
-            <div
-              class="flex flex-col items-center justify-center h-full px-4 text-center"
-            >
+            <div class="flex flex-col items-center justify-center h-full px-4 text-center">
               <img
                 :src="item.image"
                 class="w-24 h-24 mb-5 rounded-full object-cover"
                 alt="client"
               />
               <h2 class="text-accent-color text-2xl mb-2 font-medium">
-                {{item.name}}
+                {{ item.name }}
               </h2>
               <div class="flex justify-center text-yellow-300 mb-2">
                 <i v-for="n in 5" :key="n" class="fa-solid fa-star"></i>
               </div>
-              <p class="text-gray-700 max-w-xl dark:text-white">
+              <p class="text-(--text-muted) max-w-xl">
                 {{ item.text }}
               </p>
             </div>
           </div>
           <button
             @click="prevSlide"
-            class="absolute top-[45%] cursor-pointer bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30"
+            class="absolute top-[45%] cursor-pointer bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-(--accent) transition z-30"
           >
-          <i class="fas fa-chevron-left inline-flex items-center justify-center"></i>
-          
+            <i class="fas fa-chevron-left inline-flex items-center justify-center"></i>
           </button>
-        
+
           <button
-          @click="nextSlide"
-          class="absolute right-0 top-[45%] cursor-pointer bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-[#4a74b3] transition z-30 "
+            @click="nextSlide"
+            class="absolute right-0 top-[45%] cursor-pointer bg-accent-color text-white rounded-full p-3 shadow-lg hover:bg-(--accent) transition z-30"
           >
             <i class="fas fa-chevron-right inline-flex items-center justify-center"></i>
-              
           </button>
         </div>
-        <div
-          class="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-3 z-20"
-        >
+        <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
           <button
             v-for="(item, index) in slides"
             :key="'dot-' + index"
             @click="goToSlide(index)"
             class="w-3 h-3 rounded-full transition-colors"
-            :class="currentSlide === index ? 'bg-accent-color' : 'bg-gray-300'"
+            :class="currentSlide === index ? 'bg-accent-color' : 'bg-(--text-muted)'"
           ></button>
         </div>
-
-        
       </div>
     </section>
 
-    <section class="work-gallery py-16 bg-gray-50 dark:bg-dark-blue">
+    <section class="work-gallery py-16 bg-(--section)">
       <div class="text-center mb-10">
         <h2 class="text-3xl md:text-4xl font-semibold text-accent-color mb-2">
-          {{ $t('home.gallery.title') }}
+          {{ $t("home.gallery.title") }}
         </h2>
-        <p class="text-gray-600 max-w-2xl mx-auto text-base dark:text-white">
-          {{ $t('home.gallery.description') }}
+        <p class="text-(--text-muted) max-w-2xl mx-auto text-base">
+          {{ $t("home.gallery.description") }}
         </p>
       </div>
 
@@ -395,44 +417,50 @@
     <section class="contactIcons flex justify-center mt-10">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div
-          class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
+          class="flex cursor-pointer items-center gap-4 bg-(--surface) shadow-md border border-(--border) rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
           <div
-            class="flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full text-xl"
+            class="flex items-center justify-center w-12 h-12 bg-(--accent)/10 text-(--accent) rounded-full text-xl"
           >
             <i class="fa-solid fa-phone"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.phone') }}</h3>
-            <span class="text-gray-500 text-sm">+2025895623</span>
+            <h3 class="text-lg font-semibold text-(--text-primary)">
+              {{ $t("home.contactInfo.phone") }}
+            </h3>
+            <span class="text-(--text-muted) text-sm">+2025895623</span>
           </div>
         </div>
 
         <div
-          class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
+          class="flex cursor-pointer items-center gap-4 bg-(--surface) shadow-md border border-(--border) rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
           <div
-            class="flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full text-xl"
+            class="flex items-center justify-center w-12 h-12 bg-(--accent)/10 text-(--accent) rounded-full text-xl"
           >
             <i class="fa-solid fa-envelope"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.email') }}</h3>
-            <span class="text-gray-500 text-sm">tashtebaty12@gmail.com</span>
+            <h3 class="text-lg font-semibold text-(--text-primary)">
+              {{ $t("home.contactInfo.email") }}
+            </h3>
+            <span class="text-(--text-muted) text-sm">tashtebaty12@gmail.com</span>
           </div>
         </div>
 
         <div
-          class="flex cursor-pointer items-center gap-4 bg-white shadow-md border border-gray-200 rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
+          class="flex cursor-pointer items-center gap-4 bg-(--surface) shadow-md border border-(--border) rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-300 w-64"
         >
           <div
-            class="flex items-center justify-center w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full text-xl"
+            class="flex items-center justify-center w-12 h-12 bg-(--accent)/10 text-(--accent) rounded-full text-xl"
           >
             <i class="fa-solid fa-location-dot"></i>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-800">{{ $t('home.contactInfo.address') }}</h3>
-            <span class="text-gray-500 text-sm">XYZ Street</span>
+            <h3 class="text-lg font-semibold text-(--text-primary)">
+              {{ $t("home.contactInfo.address") }}
+            </h3>
+            <span class="text-(--text-muted) text-sm">XYZ Street</span>
           </div>
         </div>
       </div>
@@ -557,8 +585,8 @@ const goToSlide = (index) => {
 
 const fetchOffers = async () => {
   try {
-    const offersCollection = collection(db, 'offers');
-    const q = query(offersCollection, limit(4)); 
+    const offersCollection = collection(db, "offers");
+    const q = query(offersCollection, limit(4));
     const querySnapshot = await getDocs(q);
     const fetchedOffers = [];
     querySnapshot.forEach((doc) => {
@@ -643,7 +671,6 @@ onBeforeUnmount(() => {
   clearInterval(interval);
 });
 </script>
-
 
 <style scoped>
 .offer {

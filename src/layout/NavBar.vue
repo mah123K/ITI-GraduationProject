@@ -1,9 +1,15 @@
 <template>
   <div>
-    <div class="navbar bg-white shadow-md fixed top-0 left-0 z-50 w-full  dark:bg-dark-blue ">
+    <div
+      class="navbar fixed top-0 left-0 z-50 w-full shadow-md transition-colors duration-300"
+      :style="{
+        backgroundColor: 'var(--nav-bg)',
+        color: 'var(--nav-text)',
+        borderColor: 'var(--nav-border)',
+      }"
+    >
       <!-- START -->
       <div class="navbar-start items-center gap-2">
-        <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2 rtl:space-x-reverse">
           <img :src="logoSrc" alt="Logo" class="w-[180px] mt-3" />
         </router-link>
@@ -11,34 +17,51 @@
 
       <!-- CENTER (desktop only) -->
       <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal text-accent-color dark:text-white px-1 text-lg space-x-4 rtl:space-x-reverse">
-          <li><router-link to="/" active-class="font-semibold  dark:text-white">{{ $t('navbar.home') }}</router-link></li>
+        <ul
+          class="menu menu-horizontal px-1 text-lg space-x-4 rtl:space-x-reverse transition-colors"
+          :style="{ color: 'var(--nav-text)' }"
+        >
+          <li>
+            <router-link to="/" active-class="font-semibold" class="hover:text-(--nav-hover)">
+              {{ $t('navbar.home') }}
+            </router-link>
+          </li>
 
           <li class="relative group">
-            <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse  transition-colors duration-200">{{ $t('navbar.services') }}</a>
-            <ul class="absolute hidden group-hover:block p-2 bg-white text-accent-color mt-10 rounded-xl">
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }">{{ $t('navbar.plumbing') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }">{{ $t('navbar.electrical') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }">{{ $t('navbar.finishing') }}</router-link></li>
-              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }">{{ $t('navbar.carpentry') }}</router-link></li>
+            <a class="cursor-pointer flex items-center space-x-1 rtl:space-x-reverse transition-colors duration-200 hover:text-[var(--nav-hover)]">
+              {{ $t('navbar.services') }}
+            </a>
+            <ul
+              class="absolute hidden group-hover:block p-2 mt-10 rounded-xl border shadow-md"
+              :style="{
+                backgroundColor: 'var(--bg)',
+                borderColor: 'var(--nav-border)',
+                color: 'var(--nav-text)',
+              }"
+            >
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.plumbing') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.electrical') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.finishing') }}</router-link></li>
+              <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Carpentry' } }" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.carpentry') }}</router-link></li>
             </ul>
           </li>
 
-          <li><router-link to="/offers" active-class="font-semibold dark:text-white">{{ $t('navbar.offers') }}</router-link></li>
-          <li><router-link to="/about" active-class="font-semibold dark:text-white">{{ $t('navbar.about') }}</router-link></li>
-          <li><router-link to="/ContactUs" active-class="font-semibold dark:text-white">{{ $t('navbar.contact') }}</router-link></li>
+          <li><router-link to="/offers" active-class="font-semibold" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.offers') }}</router-link></li>
+          <li><router-link to="/about" active-class="font-semibold" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.about') }}</router-link></li>
+          <li><router-link to="/ContactUs" active-class="font-semibold" class="hover:text-[var(--nav-hover)]">{{ $t('navbar.contact') }}</router-link></li>
         </ul>
       </div>
 
       <!-- END -->
-      <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center ">
+      <div class="navbar-end gap-x-3 min-w-[250px] flex justify-end items-center">
         <div class="flex items-center me-4 gap-x-3">
+          <!-- Notifications -->
           <div class="relative" v-if="user">
             <button @click="toggleNotifications" class="relative cursor-pointer">
-              <i class="fa-solid fa-bell text-xl text-accent-color dark:text-white"></i>
+              <i class="fa-solid fa-bell text-xl" :style="{ color: 'var(--accent)' }"></i>
               <span
                 v-if="unreadCount > 0"
-                class="absolute -top-1 -right-1  bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center"
               >
                 {{ unreadCount }}
               </span>
@@ -47,21 +70,25 @@
             <transition name="fade-slide">
               <div
                 v-if="showNotifications"
-                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-dark-blue  z-50"
+                class="absolute right-0 mt-2 w-80 rounded-lg shadow-xl border z-50"
+                :style="{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }"
               >
-                <div class="p-3 font-semibold text-[#133B5D] border-b dark:text-white">{{ $t('navbar.notifications') }}</div>
+                <div class="p-3 font-semibold border-b" :style="{ borderColor: 'var(--border)' }">
+                  {{ $t('navbar.notifications') }}
+                </div>
                 <ul class="max-h-64 overflow-y-auto">
                   <li
                     v-for="n in notifications"
                     :key="n.id"
-                    class="p-3 border-b last:border-none text-sm hover:bg-secondary-blue dark:text-white"
+                    class="p-3 border-b last:border-none text-sm hover:bg-[var(--secondary-blue)] transition"
+                    :style="{ borderColor: 'var(--border)' }"
                   >
-                    <p class="text-gray-500 ">{{ n.message }}</p>
+                    <p class="text-muted">{{ n.message }}</p>
                     <p class="text-xs text-gray-400 mt-1">
-                      {{ n.timestamp?.toDate?.().toLocaleString?.() || "Just now" }}
+                      {{ n.timestamp?.toDate?.().toLocaleString?.() || 'Just now' }}
                     </p>
                   </li>
-                  <li v-if="!notifications.length" class="p-3 text-gray-400 text-center dark:text-white">
+                  <li v-if="!notifications.length" class="p-3 text-gray-400 text-center">
                     {{ $t('navbar.noNotifications') }}
                   </li>
                 </ul>
@@ -69,44 +96,45 @@
             </transition>
           </div>
 
+          <!-- Orders -->
           <router-link
             v-if="user"
             to="/my-orders"
             class="relative cursor-pointer"
             :title="$t('navbar.myOrdersTitle')"
           >
-            <i class="text-accent-color fa-solid fa-cart-shopping dark:text-white"></i>
+            <i class="fa-solid fa-cart-shopping text-xl" :style="{ color: 'var(--accent)' }"></i>
           </router-link>
 
-          <button @click="toggleLanguage" class="cursor-pointer text-xl text-accent-color">
-            <i class="fa-solid fa-globe dark:text-white"></i>
+          <!-- Language -->
+          <button @click="toggleLanguage" class="cursor-pointer text-xl">
+            <i class="fa-solid fa-globe" :style="{ color: 'var(--accent)' }"></i>
           </button>
 
+          <!-- Dark Mode -->
           <button @click="toggleDarkMode" class="cursor-pointer" :title="isDark ? 'Light mode' : 'Dark mode'">
             <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
-            <i v-else class="fa-solid fa-moon text-accent-color dark:text-white text-xl"></i>
+            <i v-else class="fa-solid fa-moon text-xl" :style="{ color: 'var(--accent)' }"></i>
           </button>
         </div>
 
+        <!-- Loading User -->
         <div v-if="loadingUser" class="flex items-center gap-x-3 animate-pulse">
           <div class="h-5 w-20 bg-gray-200 rounded"></div>
           <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
         </div>
 
+        <!-- User Menu -->
         <div v-else-if="user" class="relative flex items-center">
           <span class="font-medium text-black dark:text-white hidden sm:block me-5">{{ $t('navbar.hello', { name: firstName }) }}</span>
 
           <div
             ref="profileButton"
-            class="w-10 h-10 rounded-full border border-[#daecf6] flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden"
+            class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden border"
+            :style="{ borderColor: 'var(--nav-border)' }"
             @click="toggleUserMenu"
           >
-            <img
-              v-if="userImage"
-              :src="userImage"
-              alt="User"
-              class="w-full h-full object-cover"
-            />
+            <img v-if="userImage" :src="userImage" alt="User" class="w-full h-full object-cover" />
             <i v-else class="bi bi-person text-gray-500 text-xl"></i>
           </div>
 
@@ -114,43 +142,34 @@
             <div
               v-if="isUserMenuOpen"
               ref="dropdown"
-              class="absolute mt-2 top-15 right-0 bg-white w-60 h-fit rounded-2xl shadow-lg transition-all duration-300"
+              class="absolute mt-2 top-15 right-0 rounded-2xl shadow-lg border w-60 bg-[var(--surface)] transition-all duration-300"
+              :style="{ borderColor: 'var(--nav-border)' }"
             >
               <div class="flex flex-col">
-                <div
-                  class="w-15 h-15 rounded-full border border-[#daecf6] flex items-center justify-center mx-auto m-2 bg-gray-100 cursor-pointer hover:bg-gray-200 transition"
-                >
-                  <img
-                    v-if="userImage"
-                    :src="userImage"
-                    alt="User"
-                    class="w-full h-full object-cover  rounded-full"
-                  />
+                <div class="w-15 h-15 rounded-full mx-auto m-2 border flex items-center justify-center bg-gray-100">
+                  <img v-if="userImage" :src="userImage" alt="User" class="w-full h-full object-cover rounded-full" />
                   <i v-else class="bi bi-person text-gray-500 text-xl"></i>
                 </div>
 
                 <div id="content" class="px-4 pb-4">
-                  <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
-                    <i class="fa-solid fa-user text-accent-color"></i>
+                  <div class="border-b-2 my-2 flex items-center space-x-2 p-2" :style="{ borderColor: 'var(--border)' }">
+                    <i class="fa-solid fa-user" :style="{ color: 'var(--accent)' }"></i>
                     <router-link to="/manageuserprofile" @click="closeMenu">
-                      <h4 class="cursor-pointer text-accent-color">{{ $t('navbar.manageProfile') }}</h4>
+                      <h4 class="cursor-pointer" :style="{ color: 'var(--accent)' }">{{ $t('navbar.manageProfile') }}</h4>
                     </router-link>
                   </div>
 
-                  <div
-                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-                    @click="switchAccount"
-                  >
-                    <i class="fa-solid fa-repeat text-accent-color"></i>
-                    <h4 class="text-accent-color">{{ $t('navbar.switchAccount') }}</h4>
+                  <div class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-[var(--secondary-blue)] rounded-md transition"
+                       @click="switchAccount" :style="{ borderColor: 'var(--border)' }">
+                    <i class="fa-solid fa-repeat" :style="{ color: 'var(--accent)' }"></i>
+                    <h4 :style="{ color: 'var(--accent)' }">{{ $t('navbar.switchAccount') }}</h4>
                   </div>
 
-                  <div
-                    @click="handleLogout"
-                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
-                  >
-                    <i class="fa-solid fa-arrow-right-from-bracket text-accent-color"></i>
-                    <h4 class="text-accent-color">{{ $t('navbar.logout') }}</h4>
+                  <div @click="handleLogout"
+                       class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-[var(--secondary-blue)] rounded-md transition"
+                       :style="{ borderColor: 'var(--border)' }">
+                    <i class="fa-solid fa-arrow-right-from-bracket" :style="{ color: 'var(--accent)' }"></i>
+                    <h4 :style="{ color: 'var(--accent)' }">{{ $t('navbar.logout') }}</h4>
                   </div>
                 </div>
               </div>
@@ -158,17 +177,19 @@
           </transition>
         </div>
 
-        <!-- Hide login/signup on mobile -->
+        <!-- Login/Signup -->
         <div v-else class="hidden lg:flex items-center gap-x-3">
           <router-link
             to="/signup"
-            class="btn btn-white  btn-sm rounded-[10px] bg-accent-color text-white border-none hover:bg-[#497bb3]"
+            class="btn btn-sm rounded-[10px] text-white border-none transition"
+            :style="{ backgroundColor: 'var(--accent)' }"
           >
             {{ $t('navbar.signup') }}
           </router-link>
           <router-link
             to="/login"
-            class="btn btn-outline  btn-sm text-accent-color rounded-[10px] hover:bg-white border-accent-color border-2"
+            class="btn btn-outline btn-sm rounded-[10px] border-2 transition"
+            :style="{ color: 'var(--accent)', borderColor: 'var(--accent)' }"
           >
             {{ $t('navbar.login') }}
           </router-link>
@@ -176,11 +197,11 @@
 
         <!-- Burger -->
         <button
-          class="lg:hidden p-2 rounded-xl border border-gray-200 hover:bg-gray-100 focus:outline-none focus:ring ml-2"
+          class="lg:hidden p-2 rounded-xl border hover:bg-[var(--secondary-blue)] transition ml-2"
           @click="isSidebarOpen = true"
-          aria-label="Open menu"
+          :style="{ borderColor: 'var(--nav-border)' }"
         >
-          <i class="fa-solid fa-bars text-xl text-accent-color"></i>
+          <i class="fa-solid fa-bars text-xl" :style="{ color: 'var(--accent)' }"></i>
         </button>
       </div>
 
@@ -195,22 +216,22 @@
       <transition name="slide-fade">
         <aside
           v-if="isSidebarOpen"
-          class="fixed top-0 right-0 w-64 h-full bg-white/80 backdrop-blur-xl border-l border-[#daecf6] shadow-2xl z-50 p-6 flex flex-col space-y-4 rounded-l-2xl"
+          class="fixed top-0 right-0 w-64 h-full shadow-2xl z-50 p-6 flex flex-col space-y-4 rounded-l-2xl"
+          :style="{ backgroundColor: 'var(--bg)', borderColor: 'var(--nav-border)' }"
         >
           <button
-            class="self-end text-[#133B5D] hover:text-red-500 text-2xl transition"
+            class="self-end text-2xl transition hover:text-red-500"
             @click="isSidebarOpen = false"
-            aria-label="Close menu"
           >
             <i class="fa-solid fa-xmark"></i>
           </button>
 
-          <ul class="menu text-lg text-[#133B5D] font-medium space-y-3 mt-2">
-            <li><router-link to="/" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.home') }}</router-link></li>
+          <ul class="menu text-lg font-medium space-y-3 mt-2">
+            <li><router-link to="/" @click="isSidebarOpen = false" class="hover:text-[var(--nav-hover)] transition">{{ $t('navbar.home') }}</router-link></li>
             <li>
               <details>
-                <summary class="cursor-pointer hover:text-[#5984C6] transition">{{ $t('navbar.services') }}</summary>
-                <ul class="pl-4 mt-1 space-y-1 text-[#5984C6]">
+                <summary class="cursor-pointer hover:text-[var(--nav-hover)] transition">{{ $t('navbar.services') }}</summary>
+                <ul class="pl-4 mt-1 space-y-1 text-[var(--accent)]">
                   <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Plumbing' } }" @click="isSidebarOpen = false">{{ $t('navbar.plumbing') }}</router-link></li>
                   <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Electrical' } }" @click="isSidebarOpen = false">{{ $t('navbar.electrical') }}</router-link></li>
                   <li><router-link :to="{ name: 'ProfilesPage', params: { service: 'Finishing' } }" @click="isSidebarOpen = false">{{ $t('navbar.finishing') }}</router-link></li>
@@ -218,24 +239,26 @@
                 </ul>
               </details>
             </li>
-            <li><router-link to="/offers" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.offers') }}</router-link></li>
-            <li><router-link to="/about" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.about') }}</router-link></li>
-            <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-[#5984C6] transition">{{ $t('navbar.contact') }}</router-link></li>
+            <li><router-link to="/offers" @click="isSidebarOpen = false" class="hover:text-[var(--nav-hover)] transition">{{ $t('navbar.offers') }}</router-link></li>
+            <li><router-link to="/about" @click="isSidebarOpen = false" class="hover:text-[var(--nav-hover)] transition">{{ $t('navbar.about') }}</router-link></li>
+            <li><router-link to="/ContactUs" @click="isSidebarOpen = false" class="hover:text-[var(--nav-hover)] transition">{{ $t('navbar.contact') }}</router-link></li>
           </ul>
 
-          <!-- Login/Signup shown only inside sidebar -->
+          <!-- Sidebar Login/Signup -->
           <div v-if="!user" class="flex flex-col items-center gap-3 mt-6">
             <router-link
               to="/signup"
               @click="isSidebarOpen = false"
-              class="btn btn-white w-full rounded-[10px] bg-accent-color text-white"
+              class="btn w-full rounded-[10px] text-white transition"
+              :style="{ backgroundColor: 'var(--accent)' }"
             >
               {{ $t('navbar.signup') }}
             </router-link>
             <router-link
               to="/login"
               @click="isSidebarOpen = false"
-              class="btn btn-outline w-full text-accent-color rounded-[10px] hover:bg-white"
+              class="btn btn-outline w-full rounded-[10px] transition"
+              :style="{ color: 'var(--accent)', borderColor: 'var(--accent)' }"
             >
               {{ $t('navbar.login') }}
             </router-link>
@@ -245,6 +268,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -472,6 +496,25 @@ export default {
 }
 .slide-fade-leave-active {
   transition: all 0.3s ease;
+}
+
+/* 🎯 روابط النافبار */
+.navbar .menu a {
+  color: var(--nav-text);
+  background: transparent !important;
+  transition: color 0.25s ease;
+}
+
+/* hover */
+.navbar .menu a:hover {
+  color: var(--nav-hover-color);
+  background-color: var(--nav-hover-bg) !important;
+}
+
+/* active */
+.navbar .menu .router-link-exact-active {
+  color: var(--nav-active-color);
+  font-weight: 600;
 }
 
 /* 🔹 الاتجاه الافتراضي (الإنجليزي): من اليمين لليسار */
