@@ -276,6 +276,7 @@ const submitOrder = async () => {
 
   try {
     // Convert selected day + time to a proper JS Date
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     const selectedDate = new Date(selectedDayInfo.value.date);
     const [time, period] = selectedTime.value.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
@@ -285,30 +286,32 @@ const submitOrder = async () => {
 
     // Construct order data with all necessary fields
     const orderData = {
-  // ✅ Existing fields (kept)
-  clientId: clientUser.value.uid,
-  clientName:
-    clientData.value?.name || clientUser.value.email.split("@")[0],
-  clientEmail: clientUser.value.email,
-  technicianId: route.params.id,
-  technicianName: technician.value.name || "Technician",
-  technicianSkill: technician.value.skill || "General",
-  serviceTitle: serviceTitle.value || "Custom Service Request",
-  description: orderDescription.value || serviceTitle.value || "",
-  price: servicePrice.value || "Pending Quote",
-  appointmentDate: selectedDate,
-  appointmentDay: selectedDayInfo.value.display,
-  appointmentTime: selectedTime.value,
-  status: "new",
-  createdAt: serverTimestamp(),
+    // ✅ Existing fields (kept)
+    clientId: clientUser.value.uid,
+    clientName:
+      clientData.value?.name || clientUser.value.email.split("@")[0],
+    clientEmail: clientUser.value.email,
+    technicianId: route.params.id,
+    technicianName: technician.value.name || "Technician",
+    technicianSkill: technician.value.skill || "General",
+    serviceTitle: serviceTitle.value || "Custom Service Request",
+    description: orderDescription.value || serviceTitle.value || "",
+    price: servicePrice.value || "Pending Quote",
+    appointmentDate: selectedDate,
+    appointmentDay: selectedDayInfo.value.display,
+    appointmentTime: selectedTime.value,
+    status: "new",
+    createdAt: serverTimestamp(),
 
-  // 🧩 New compatible aliases for dashboard display (non-breaking)
-  descreption: orderDescription.value || serviceTitle.value || "",
-  date: selectedDayInfo.value.display || "",
-  time: selectedTime.value || "",
-  location: clientData.value?.address || "Not Specified",
-  customer: clientData.value?.name || clientUser.value.email.split("@")[0],
-};
+    // 🧩 New compatible aliases for dashboard display (non-breaking)
+    descreption: orderDescription.value || serviceTitle.value || "",
+    date: selectedDayInfo.value.display || "",
+    time: selectedTime.value || "",
+    location: clientData.value?.address || "Not Specified",
+    customer: clientData.value?.name || clientUser.value.email.split("@")[0],
+    // 🆕 Random 6-digit order code
+    orderCode: verificationCode
+  };
 
 
     // Save to Firestore

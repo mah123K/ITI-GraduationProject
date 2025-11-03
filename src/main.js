@@ -59,12 +59,12 @@ import AdminProfile from "./components/AdminDashboard/AdminProfile.vue";
 import AddOffer from "./components/AdminDashboard/AddOffers.vue";
 
 // Technician Dashboard
-import TechncionDashboard from "./components/TechncionDashboard.vue";
-import CreateServiceCard from "./components/CreateServiceCard.vue";
-import MyAppointments from "./components/MyAppointments.vue";
-import ManageTechnicianProfile from "./components/MannageTechnicionProfile.vue";
-import ordersCard from "./components/ordersCard.vue";
-import ServiceCard from "./components/ServiceCard.vue";
+import TechncionDashboard from "./components/Technicion Dashboard/TechncionDashboard.vue";
+import CreateServiceCard from "./components/Technicion Dashboard/CreateServiceCard.vue";
+import MyAppointments from "./components/Technicion Dashboard/MyAppointments.vue";
+import ManageTechnicianProfile from "./components/Technicion Dashboard/MannageTechnicionProfile.vue";
+import ordersCard from "./components/Technicion Dashboard/ordersCard.vue";
+import ServiceCard from "./components/Technicion Dashboard/ServiceCard.vue";
 
 // ✅ User Pages
 import UserOrders from "./components/UserOrders.vue";
