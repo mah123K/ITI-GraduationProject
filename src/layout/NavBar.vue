@@ -95,7 +95,7 @@
               </div>
             </transition>
           </div>
-          
+
           <button @click="toggleLanguage" class="cursor-pointer text-xl text-accent-color">
             <i class="fa-solid fa-globe "></i>
           </button>
@@ -119,7 +119,7 @@
 
           <div
             ref="profileButton"
-            class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 transition overflow-hidden border"
+            class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 cursor-pointer transition overflow-hidden border"
             :style="{ borderColor: 'var(--nav-border)' }"
             @click="toggleUserMenu"
           >
@@ -131,7 +131,7 @@
             <div
               v-if="isUserMenuOpen"
               ref="dropdown"
-              class="absolute mt-2 top-15 right-0 rounded-2xl shadow-lg border w-60 bg-(--surface) transition-all duration-300"
+              class="absolute mt-2 top-15 right-0 rounded-2xl shadow-lg border w-60 bg-white dark:bg-(--surface) transition-all duration-300"
               :style="{ borderColor: 'var(--nav-border)' }"
             >
               <div class="flex flex-col">
@@ -142,20 +142,20 @@
 
                 <div id="content" class="px-4 pb-4">
                   <div
-                    class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-gray-100 rounded-md transition"
+                    class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-(--secondary-blue) rounded-md transition" :style="{ borderColor: 'var(--border)' }"
                   >
                     <router-link
                       v-if="user"
                       to="/my-orders"
-                      class="relative cursor-pointer text-[#1B5383] "
+                      class="relative cursor-pointer"  :style="{ color: 'var(--accent)' }"
                       :title="$t('navbar.myOrdersTitle')"
                     >
-                    <i class="text-accent-color fa-solid fa-cart-shopping "></i>
-                    My Orders
+                    <i class="fa-solid fa-cart-shopping " :style="{ color: 'var(--accent)' }"></i>
+                    {{ $t('navbar.myOrdersTitle') }}
                     </router-link>
                   </div>
-                  <div class="border-b-2 border-gray-200 my-2 flex items-center space-x-2 p-2">
-                    <i class="fa-solid fa-user text-accent-color"></i>
+                  <div class="border-b-2 my-2 flex items-center space-x-2 p-2 cursor-pointer hover:bg-(--secondary-blue) rounded-md transition" :style="{ borderColor: 'var(--border)' }">
+                    <i class="fa-solid fa-user" :style="{ color: 'var(--accent)' }"></i>
                     <router-link to="/manageuserprofile" @click="closeMenu">
                       <h4 class="cursor-pointer" :style="{ color: 'var(--accent)' }">{{ $t('navbar.manageProfile') }}</h4>
                     </router-link>
