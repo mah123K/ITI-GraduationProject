@@ -72,6 +72,16 @@
                   <div v-else-if="order.status === 'upcoming'" class="text-green-600 font-semibold">Payment Completed</div>
                   <div v-else-if="order.status === 'completed'" class="text-accent-color font-semibold">Service Completed</div>
                   <div v-else-if="order.status === 'declined' || order.status === 'cancelled'" class="text-red-500 font-semibold">This order was {{ order.status }}.</div>
+                  <div v-if="order.status === 'completed'" class="mt-3 text-center">
+                  <button
+                    v-if="!hasRated(order.id)"
+                    @click="openRatePopup(order)"
+                    class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
+                  >
+                    Rate Technician
+                  </button>
+                  <div v-else class="text-(--text-muted)">You rated: {{ getExistingRating(order.id) }}★</div>
+                </div>
                 </div>
               </div>
             </div>
@@ -171,6 +181,16 @@
                 </ul>
 
                 <div class="mt-5 text-center text-accent-color font-semibold">Service Completed</div>
+                <div class="mt-3 text-center">
+                  <button
+                    v-if="!hasRated(order.id)"
+                    @click="openRatePopup(order)"
+                    class="bg-accent-color hover:bg-(--accent) text-white px-4 py-2 rounded-lg font-semibold transition"
+                  >
+                    Rate Technician
+                  </button>
+                  <div v-else class="text-(--text-muted)">You rated: {{ getExistingRating(order.id) }}★</div>
+                </div>
               </div>
             </div>
           </div>
@@ -259,6 +279,55 @@
       </div>
     </transition>
 
+    <!-- ⭐ Rating popup -->
+    <transition name="fade">
+      <div v-if="showRatePopup" class="fixed inset-0 bg-[#000000d0] flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-lg text-center">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Rate Technician</h2>
+
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">Technician:</span>
+            {{ getTranslatedName(ratingOrder?.technicianName) || 'Technician' }}
+          </p>
+          <p class="text-gray-700 mb-4">
+            <span class="font-semibold">Service:</span>
+            {{ getTranslatedName(ratingOrder?.serviceTitle) || 'Service' }}
+          </p>
+
+          <div class="flex justify-center gap-2 mb-4 text-2xl text-yellow-400">
+            <button
+              v-for="n in 5"
+              :key="n"
+              @click="ratingStars = n"
+              class="focus:outline-none"
+            >
+              <i :class="n <= ratingStars ? 'fas fa-star' : 'far fa-star'"></i>
+            </button>
+          </div>
+
+          <textarea
+            v-model="ratingComment"
+            rows="3"
+            placeholder="Optional comment..."
+            class="w-full border border-(--border) rounded-lg p-3 text-sm mb-4 focus:outline-none"
+          ></textarea>
+
+          
+
+          <div class="flex justify-center gap-4">
+            <button
+              :disabled="submittingRating || ratingStars === 0"
+              @click="submitRating"
+              class="bg-[#133B5D] disabled:opacity-60 hover:bg-[#1b5383] text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              {{ submittingRating ? 'Submitting...' : 'Submit' }}
+            </button>
+            <button @click="closeRatePopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold transition">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
 
     <AlertPopup :show="showPopupMessage" :message="popupMessageContent" @close="closeAlert" />
   </div>
@@ -278,6 +347,9 @@ import {
   addDoc,
   serverTimestamp,
   getDoc,
+  getDocs,
+  runTransaction,
+  or,
 } from "firebase/firestore";
 // NEW: Import the custom alert popup
 import AlertPopup from "../components/AlertPopup.vue"; // <-- Adjust path as needed
@@ -290,6 +362,14 @@ const showPopup = ref(false); // This is for the PAYMENT popup
 const selectedOrder = ref(null);
 const showCancelPopup = ref(false);
 const orderToCancel = ref(null);
+
+// Rating state
+const showRatePopup = ref(false);
+const ratingOrder = ref(null);
+const ratingStars = ref(0);
+const ratingComment = ref("");
+const submittingRating = ref(false);
+const ratingsByOrderId = ref({}); // { [orderId]: number }
 
 // NEW: Refs for the custom alert popup
 const showPopupMessage = ref(false);
@@ -445,6 +525,17 @@ onMounted(() => {
         orders.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         loading.value = false;
       });
+
+      // Load existing ratings by this client to prevent duplicates
+      const rq = query(collection(db, "Ratings"), where("clientId", "==", user.uid));
+      onSnapshot(rq, (snap) => {
+        const map = {};
+        snap.forEach((docu) => {
+          const data = docu.data();
+          if (data.orderId) map[data.orderId] = data.stars || data.rating || 0;
+        });
+        ratingsByOrderId.value = map;
+      });
     } else {
       loading.value = false;
     }
@@ -478,6 +569,103 @@ const tabs = computed(() => [
   { key: "completed", label: "Completed", count: grouped.value.completed.length },
   { key: "declined", label: "Declined / Cancelled", count: grouped.value.declined.length + grouped.value.cancelled.length },
 ]);
+
+// ⭐ Rating helpers
+const hasRated = (orderId) => {
+  return Boolean(ratingsByOrderId.value[orderId]);
+};
+
+const getExistingRating = (orderId) => {
+  return ratingsByOrderId.value[orderId] || 0;
+};
+
+const openRatePopup = (order) => {
+  ratingOrder.value = order;
+  ratingStars.value = 0;
+  ratingComment.value = "";
+  showRatePopup.value = true;
+};
+
+const closeRatePopup = () => {
+  showRatePopup.value = false;
+  ratingOrder.value = null;
+};
+
+ 
+
+const submitRating = async () => {
+  if (!ratingOrder.value || ratingStars.value === 0) return;
+  submittingRating.value = true;
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
+
+    // Prevent duplicate rating by checking again
+    const existingQ = query(
+      collection(db, "Ratings"),
+      where("orderId", "==", ratingOrder.value.id),
+      where("clientId", "==", user.uid)
+    );
+    const existing = await getDocs(existingQ);
+    if (!existing.empty) {
+      triggerAlert("You have already rated this order.");
+      submittingRating.value = false;
+      showRatePopup.value = false;
+      return;
+    }
+
+    // Load client profile to include saved name and image
+    let clientImageUrl = "";
+    let clientName = ratingOrder.value.clientName || user.displayName || null;
+    try {
+      const clientRef = doc(db, "clients", user.uid);
+      const clientSnap = await getDoc(clientRef);
+      if (clientSnap.exists()) {
+        const c = clientSnap.data();
+        clientImageUrl = c.image || "";
+        clientName = c.name || clientName;
+      }
+    } catch (e) {
+      console.warn("Could not fetch client profile:", e);
+    }
+
+    await addDoc(collection(db, "Ratings"), {
+      orderId: ratingOrder.value.id,
+      technicianId: ratingOrder.value.technicianId,
+      technicianName: ratingOrder.value.technicianName || null,
+      clientId: user.uid,
+      clientName,
+      clientImageUrl,
+      stars: ratingStars.value,
+      comment: ratingComment.value || "",
+      createdAt: serverTimestamp(),
+    });
+
+    // Atomically update technician average and count
+    const techRef = doc(db, "technicians", ratingOrder.value.technicianId);
+    await runTransaction(db, async (transaction) => {
+      const techSnap = await transaction.get(techRef);
+      const data = techSnap.exists() ? techSnap.data() : {};
+      const currentAvg = Number(data.ratingAverage || 0);
+      const currentCount = Number(data.ratingCount || 0);
+      const newCount = currentCount + 1;
+      const newAvg = newCount > 0 ? (currentAvg * currentCount + ratingStars.value) / newCount : ratingStars.value;
+      transaction.update(techRef, {
+        ratingAverage: Number(newAvg.toFixed(2)),
+        ratingCount: newCount,
+      });
+    });
+
+    triggerAlert("Thank you! Your rating has been submitted.");
+    showRatePopup.value = false;
+  } catch (err) {
+    console.error("Error submitting rating:", err);
+    triggerAlert("Failed to submit rating.");
+  } finally {
+    submittingRating.value = false;
+  }
+};
 </script>
 
 <style scoped>
