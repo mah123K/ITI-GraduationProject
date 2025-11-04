@@ -465,6 +465,8 @@
         </div>
       </div>
     </section>
+
+    <chat-bot/>
   </div>
 </template>
 
@@ -472,7 +474,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { db } from '@/firebase/firebase';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
-
+import ChatBot from './chatbot/ChatBot.vue';
 defineOptions({
   name: 'HomePage'
 });
