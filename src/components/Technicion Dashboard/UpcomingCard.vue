@@ -69,9 +69,9 @@ const showDetails = ref(false);
 const isConfirmed = computed(() => props.order.status === "upcoming");
 </script>
 
-<template>
+<template> 
   <div
-    class="order rounded-2xl shadow-md p-5 w-[31%] bg-white m-2 relative transition duration-200"
+    class="order rounded-2xl shadow-md p-5 w-[31%] bg-white dark:bg-[#16222B] dark:text-white m-2 relative transition duration-200"
   >
     <!-- Details button -->
     <button
@@ -90,7 +90,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1 break-words">
-        <span class="font-bold text-[#133B5D]">Order:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Order:</span>
         {{ shortDescription }}
       </p>
     </div>
@@ -104,7 +104,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1">
-        <span class="font-bold text-[#133B5D]">Price:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Price:</span>
         {{ order.price }} EGP
       </p>
     </div>
@@ -118,7 +118,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1">
-        <span class="font-bold text-[#133B5D]">Date:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Date:</span>
         {{ order.date }}
       </p>
     </div>
@@ -132,7 +132,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1">
-        <span class="font-bold text-[#133B5D]">Time:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Time:</span>
         {{ order.time }}
       </p>
     </div>
@@ -146,7 +146,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1">
-        <span class="font-bold text-[#133B5D]">Location:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Location:</span>
         {{ formatLocation(order.location) }}
       </p>
     </div>
@@ -160,7 +160,7 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         />
       </svg>
       <p class="mx-1">
-        <span class="font-bold text-[#133B5D]">Client:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Client:</span>
         {{ order.customer }}
       </p>
     </div>
@@ -169,11 +169,11 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
     <div class="element flex m-1 text-lg">
       <i class="fa-solid fa-circle-info text-[#2574b9] text-xl"></i>
       <p class="mx-2">
-        <span class="font-bold text-[#133B5D]">Status:</span>
+        <span class="font-bold text-[#133B5D] dark:text-white">Status:</span>
         <span
           :class="isConfirmed ? 'text-green-600 font-semibold' : 'text-yellow-500 font-semibold'"
         >
-          {{ isConfirmed ? "Confirmed (Paid)" : "Unconfirmed (Awaiting Payment)" }}
+          {{ isConfirmed ? 'Confirmed (Paid)' : 'Unconfirmed (Awaiting Payment)' }}
         </span>
       </p>
     </div>
@@ -202,30 +202,30 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
     </div>
   </div>
 
-  <!-- ✅ Popup to enter verification code -->
+  <!-- ✅ Popup -->
   <transition name="fade">
     <div
       v-if="showCodePopup"
       class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
     >
-      <div class="bg-white rounded-2xl shadow-xl p-6 w-96 text-center">
-        <h3 class="text-xl font-semibold text-[#5984C6] mb-4">
+      <div class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl shadow-xl p-6 w-96 text-center">
+        <h3 class="text-xl font-semibold text-[#5984C6] dark:text-white mb-4">
           Enter Order Verification Code
         </h3>
-        <p class="text-gray-700 mb-4">
+        <p class="text-gray-700 dark:text-white mb-4">
           Ask the client for their 6-digit order code.
         </p>
         <input
           v-model="enteredCode"
           type="text"
           maxlength="6"
-          class="border border-gray-300 rounded-lg p-2 w-full text-center tracking-widest text-lg mb-6 focus:ring-2 focus:ring-[#5984C6] outline-none"
+          class="border border-gray-300 rounded-lg p-2 w-full text-center tracking-widest text-lg mb-6 focus:ring-2 focus:ring-[#5984C6] outline-none dark:bg-[#16222B] dark:text-white"
           placeholder="••••••"
         />
         <div class="flex justify-end gap-3">
           <button
             @click="showCodePopup = false"
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg font-semibold transition"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-[#133B5D] dark:text-white px-4 py-2 rounded-lg font-semibold transition"
           >
             Cancel
           </button>
@@ -240,21 +240,16 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
     </div>
   </transition>
 
-  <!-- ✅ Reuse AlertPopup for error messages -->
-  <AlertPopup
-    :show="showAlert"
-    :message="alertMessage"
-    @close="showAlert = false"
-  />
+  <AlertPopup :show="showAlert" :message="alertMessage" @close="showAlert = false" />
 
-  <!-- Full details modal -->
+  <!-- Details Modal -->
   <div
     v-if="showDetails"
     class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
     @click.self="showDetails = false"
   >
     <div
-      class="bg-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+      class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
     >
       <button
         @click="showDetails = false"
@@ -263,20 +258,20 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
         ✕
       </button>
 
-      <h2 class="text-2xl font-semibold text-[#133B5D] mb-4 text-center">
+      <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4 text-center">
         Order Details
       </h2>
 
       <div class="mt-4 space-y-2 text-lg">
         <textarea
           disabled
-          class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px]"
+          class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
         >{{ order.descreption }}</textarea>
-        <p><span class="font-bold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
-        <p><span class="font-bold text-[#133B5D]">Date:</span> {{ order.date }}</p>
-        <p><span class="font-bold text-[#133B5D]">Time:</span> {{ order.time }}</p>
-        <p><span class="font-bold text-[#133B5D]">Location:</span> {{ formatLocation(order.location) }}</p>
-        <p><span class="font-bold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
+        <p><span class="font-bold text-[#133B5D] dark:text-white">Price:</span> {{ order.price }} EGP</p>
+        <p><span class="font-bold text-[#133B5D] dark:text-white">Date:</span> {{ order.date }}</p>
+        <p><span class="font-bold text-[#133B5D] dark:text-white">Time:</span> {{ order.time }}</p>
+        <p><span class="font-bold text-[#133B5D] dark:text-white">Location:</span> {{ formatLocation(order.location) }}</p>
+        <p><span class="font-bold text-[#133B5D] dark:text-white">Client:</span> {{ order.customer }}</p>
       </div>
     </div>
   </div>
@@ -296,3 +291,4 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
   opacity: 0;
 }
 </style>
+

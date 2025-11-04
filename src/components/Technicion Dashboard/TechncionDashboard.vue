@@ -586,7 +586,7 @@ watch(
             <div
               v-for="order in filteredOrders"
               :key="order.id"
-              class="order rounded-2xl shadow-md p-5 w-[31%] bg-green-50 m-2 border border-green-300 relative"
+              class="order rounded-2xl shadow-md p-5 w-[31%] bg-green-50 dark:bg-[#16222B] dark:text-white m-2 border border-green-300 relative transition duration-200"
             >
               <button
                 @click="order.showDetails = true"
@@ -596,7 +596,7 @@ watch(
               </button>
 
               <p
-                class="text-[#133B5D] font-semibold text-lg mb-2 break-words"
+                class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words"
               >
                 <span class="font-bold">Order:</span>
                 {{
@@ -604,34 +604,32 @@ watch(
                     .split(/\s+/)
                     .slice(0, 15)
                     .join(" ") +
-                  ((order.descreption || "").split(/\s+/).length > 15
-                    ? "..."
-                    : "")
+                  ((order.descreption || "").split(/\s+/).length > 15 ? "..." : "")
                 }}
               </p>
 
               <p>
-                <span class="font-semibold text-[#133B5D]">Price:</span>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
                 {{ order.price }} EGP
               </p>
               <p>
-                <span class="font-semibold text-[#133B5D]">Date:</span>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
                 {{ order.date }}
               </p>
               <p>
-                <span class="font-semibold text-[#133B5D]">Time:</span>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
                 {{ order.time }}
               </p>
               <p>
-                <span class="font-semibold text-[#133B5D]">Location:</span>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
                 {{ formatLocation(order.location) }}
               </p>
               <p>
-                <span class="font-semibold text-[#133B5D]">Client:</span>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
                 {{ order.customer }}
               </p>
 
-              <p class="text-green-600 font-semibold mt-2">✅ Completed</p>
+              <p class="text-green-600 dark:text-green-400 font-semibold mt-2">✅ Completed</p>
 
               <div
                 v-if="order.showDetails"
@@ -639,7 +637,7 @@ watch(
                 class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50"
               >
                 <div
-                  class="bg-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
+                  class="bg-white dark:bg-[#16222B] dark:text-white rounded-2xl p-6 w-[500px] shadow-xl relative border-t-4 border-[#133B5D]"
                 >
                   <button
                     @click="order.showDetails = false"
@@ -649,7 +647,7 @@ watch(
                   </button>
 
                   <h2
-                    class="text-2xl font-semibold text-[#133B5D] mb-4 text-center"
+                    class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4 text-center"
                   >
                     Completed Order Details
                   </h2>
@@ -657,30 +655,29 @@ watch(
                   <div class="mt-4 space-y-2 text-lg">
                     <textarea
                       disabled
-                      class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px]"
-                      >{{ order.descreption }}</textarea
-                    >
+                      class="border-[#133B5D] border-2 p-2 rounded-xl w-full h-[130px] dark:bg-[#16222B] dark:text-white"
+                    >{{ order.descreption }}</textarea>
                     <p>
-                      <span class="font-bold text-[#133B5D]">Price:</span>
+                      <span class="font-bold text-[#133B5D] dark:text-white">Price:</span>
                       {{ order.price }} EGP
                     </p>
                     <p>
-                      <span class="font-bold text-[#133B5D]">Date:</span>
+                      <span class="font-bold text-[#133B5D] dark:text-white">Date:</span>
                       {{ order.date }}
                     </p>
                     <p>
-                      <span class="font-bold text-[#133B5D]">Time:</span>
+                      <span class="font-bold text-[#133B5D] dark:text-white">Time:</span>
                       {{ order.time }}
                     </p>
                     <p>
-                      <span class="font-bold text-[#133B5D]">Location:</span>
+                      <span class="font-bold text-[#133B5D] dark:text-white">Location:</span>
                       {{ formatLocation(order.location) }}
                     </p>
                     <p>
-                      <span class="font-bold text-[#133B5D]">Client:</span>
+                      <span class="font-bold text-[#133B5D] dark:text-white">Client:</span>
                       {{ order.customer }}
                     </p>
-                    <p class="text-green-600 font-semibold mt-2">
+                    <p class="text-green-600 dark:text-green-400 font-semibold mt-2">
                       ✅ Completed
                     </p>
                   </div>
@@ -688,11 +685,12 @@ watch(
               </div>
             </div>
           </template>
-          <template v-else-if="orderTab === 'cancelled'">
+
+          <template v-else-if="orderTab === 'cancelled'"> 
             <div
               v-for="order in filteredOrders"
               :key="order.id"
-              class="order rounded-2xl shadow-md p-5 w-[31%] bg-red-50 m-2 border border-red-300 relative"
+              class="order rounded-2xl shadow-md p-5 w-[31%] bg-red-50 dark:bg-[#16222B] dark:text-white m-2 border border-red-300 relative transition duration-200"
             >
               <button
                 @click="order.showDetails = true"
@@ -700,18 +698,43 @@ watch(
               >
                 Details
               </button>
-              <p class="text-[#133B5D] font-semibold text-lg mb-2 break-words">
+
+              <p class="text-[#133B5D] dark:text-white font-semibold text-lg mb-2 break-words">
                 <span class="font-bold">Order:</span>
                 {{ order.descreption || "No description" }}
               </p>
-              <p><span class="font-semibold text-[#133B5D]">Price:</span> {{ order.price }} EGP</p>
-              <p><span class="font-semibold text-[#133B5D]">Date:</span> {{ order.date }}</p>
-              <p><span class="font-semibold text-[#133B5D]">Time:</span> {{ order.time }}</p>
-              <p><span class="font-semibold text-[#133B5D]">Location:</span> {{ formatLocation(order.location) }}</p>
-              <p><span class="font-semibold text-[#133B5D]">Client:</span> {{ order.customer }}</p>
-              <p class="text-red-600 font-semibold mt-2">❌ Cancelled by client</p>
+
+              <p>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
+                {{ order.price }} EGP
+              </p>
+
+              <p>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
+                {{ order.date }}
+              </p>
+
+              <p>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
+                {{ order.time }}
+              </p>
+
+              <p>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
+                {{ formatLocation(order.location) }}
+              </p>
+
+              <p>
+                <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
+                {{ order.customer }}
+              </p>
+
+              <p class="text-red-600 dark:text-red-400 font-semibold mt-2">
+                ❌ Cancelled by client
+              </p>
             </div>
           </template>
+
 
         </div>
       </template>
