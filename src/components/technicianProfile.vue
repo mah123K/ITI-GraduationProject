@@ -72,24 +72,8 @@ const servicePrice = ref("");
 const isPriceLocked = ref(false);
 const orderDescription = ref("");
 
-// --- Static Feedbacks ---
-const feedbacks = ref([
-  {
-    name: "manar morad",
-    image: new URL("../images/Ellipse 47.png", import.meta.url).href,
-    text: "I needed a plumber for an urgent leak...",
-  },
-  {
-    name: "mohamed amir",
-    image: new URL("../images/Ellipse 46.png", import.meta.url).href,
-    text: "I finally decided to get my kitchen cabinets updated...",
-  },
-  {
-    name: "samir khaled",
-    image: new URL("../images/Ellipse 46.png", import.meta.url).href,
-    text: "My main breaker kept tripping...",
-  },
-]);
+// --- Live Feedbacks from Firestore Ratings ---
+const feedbacks = ref([]);
 
 // ===== Carousel for Services =====
 const currentSlide = ref(0);
@@ -114,6 +98,17 @@ const nextSlide = () => {
   }
 };
 
+// --- Feedback carousel controls ---
+const nextFeedback = () => {
+  if (feedbacks.value.length === 0) return;
+  currentIndex.value = (currentIndex.value + 1) % feedbacks.value.length;
+};
+
+const prevFeedback = () => {
+  if (feedbacks.value.length === 0) return;
+  currentIndex.value = (currentIndex.value - 1 + feedbacks.value.length) % feedbacks.value.length;
+};
+
 const prevSlide = () => {
   if (currentSlide.value > 0) {
     currentSlide.value--;
@@ -123,9 +118,9 @@ const prevSlide = () => {
 // --- Computed Properties ---
 const technicianName = computed(() => technician.value?.name || "Technician");
 const technicianSkill = computed(() => technician.value?.skill || "Specialty");
-const technicianLocation = computed(() => technician.value?.city || "Not Specified");
-const technicianRating = computed(() => Math.round(technician.value?.rating || 0));
-const technicianReviews = computed(() => technician.value?.reviews || 0);
+const technicianLocation = computed(() => technician.value?.address.city || "Not Specified");
+const technicianRating = computed(() => Math.round(technician.value?.ratingAverage || 0));
+const technicianReviews = computed(() => technician.value?.ratingCount || 0);
 const technicianProfileImage = computed(
   () => technician.value?.profileImage || new URL("../images/Ellipse 56.png", import.meta.url).href
 );
@@ -414,6 +409,65 @@ onMounted(async () => {
         });
       } catch (e) {
         console.error("Error listening for technician orders:", e);
+      }
+      
+      // 🟩 Listen for Ratings for this technician (no orderBy; sort client-side)
+      try {
+        const mapRatings = (docs) =>
+          docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .filter((r) => {
+              const techId = technicianIdParam;
+              return (
+                r.technicianId === techId ||
+                r.technicianID === techId ||
+                r.providerId === techId ||
+                r.providerID === techId
+              );
+            })
+            .map((r) => ({
+              id: r.id,
+              name: r.clientName || "Client",
+              image:
+                r.clientImageUrl || new URL("../images/Ellipse 56.png", import.meta.url).href,
+              text: r.comment || "",
+              stars: Number(r.stars || r.rating || 0),
+              createdAt: r.createdAt || null,
+            }));
+
+        const mergeAndSort = (arrA, arrB) => {
+          const merged = [...arrA, ...arrB];
+          merged.sort((a, b) => {
+            const toMillis = (t) =>
+              t && typeof t.toDate === "function"
+                ? t.toDate().getTime()
+                : t && typeof t === "object" && (t.seconds || t._seconds)
+                ? (t.seconds || t._seconds) * 1000
+                : 0;
+            return toMillis(b.createdAt) - toMillis(a.createdAt);
+          });
+          return merged;
+        };
+
+        // 'Ratings' collection
+        const ratingsRefA = collection(db, "Ratings");
+        const rqAFallback = query(ratingsRefA, where("technicianId", "==", technicianIdParam));
+        onSnapshot(rqAFallback, (snapA) => {
+          const itemsA = mapRatings(snapA.docs).map((x) => ({ ...x, __src: "ratingsA" }));
+          feedbacks.value = mergeAndSort(itemsA, feedbacks.value.filter((x) => x.__src !== "ratingsA"));
+          if (currentIndex.value >= feedbacks.value.length) currentIndex.value = 0;
+        });
+
+        // 'ratings' (lowercase) for backward compatibility
+        const ratingsRefB = collection(db, "ratings");
+        const rqBFallback = query(ratingsRefB, where("technicianId", "==", technicianIdParam));
+        onSnapshot(rqBFallback, (snapB) => {
+          const itemsB = mapRatings(snapB.docs).map((x) => ({ ...x, __src: "ratingsB" }));
+          feedbacks.value = mergeAndSort(feedbacks.value.filter((x) => x.__src !== "ratingsB"), itemsB);
+          if (currentIndex.value >= feedbacks.value.length) currentIndex.value = 0;
+        });
+      } catch (e) {
+        console.error("Error listening for ratings:", e);
       }
     } else {
       technician.value = null;
@@ -824,7 +878,8 @@ watch(selectedDayInfo, () => {
             {{ feedbacks[currentIndex].name }}
           </p>
           <div class="flex justify-center my-2 text-yellow-400 text-lg md:text-xl">
-            <i v-for="n in 5" :key="n" class="fas fa-star fill-current mx-0.5"></i>
+            <i v-for="n in (feedbacks[currentIndex].stars || 0)" :key="'f'+n" class="fas fa-star fill-current mx-0.5"></i>
+            <i v-for="n in Math.max(0, 5 - (feedbacks[currentIndex].stars || 0))" :key="'e'+n" class="far fa-star text-gray-300 mx-0.5"></i>
           </div>
           <p class="text-base md:text-lg text-gray-600 leading-relaxed mt-4 italic px-4">
             "{{ feedbacks[currentIndex].text }}"`
