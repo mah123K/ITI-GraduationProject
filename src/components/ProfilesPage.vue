@@ -132,8 +132,8 @@ export default {
             name: data.name,
             service: data.skill,
             // UPDATED: Use $t for fallback text
-            location: data.city || this.$t('profilesPage.fallbackLocation'),
-            rating: data.rating || 0,
+            location: data.address.city || this.$t('profilesPage.fallbackLocation'),
+            rating: data.ratingAverage || 0,
             // UPDATED: Use $t for fallback text
             bio: data.description || this.$t('profilesPage.fallbackBio'),
             profileImage: data.profileImage || null
