@@ -57,7 +57,7 @@
 
         <div class="flex items-center gap-1">
           <span class="text-sm font-bold" :class="isHovered ? 'text-white' : 'text-(--text-primary)'">
-            {{ profile.rating }}
+            {{ profile.rating.toFixed() }}
           </span>
           <i class="fa-solid fa-star text-[#FF9529]"></i>
         </div>
