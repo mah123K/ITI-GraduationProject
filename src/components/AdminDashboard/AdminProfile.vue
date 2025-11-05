@@ -3,15 +3,6 @@
     <div class="max-w-2xl mx-auto bg-white dark:bg-[#1f2937] shadow-md rounded-2xl p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Admin Profile Settings</h2>
-        <button
-          @click="toggleDarkMode"
-          :title="isDark ? 'Light mode' : 'Dark mode'"
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-        >
-          <i v-if="isDark" class="fa-solid fa-sun text-yellow-400"></i>
-          <i v-else class="fa-solid fa-moon"></i>
-          <span class="text-sm">{{ isDark ? 'Light' : 'Dark' }}</span>
-        </button>
       </div>
 
       <!-- Loading -->
@@ -119,8 +110,7 @@ export default {
       loading: true,
       saving: false,
       successMessage: "",
-      errorMessage: "",
-      isDark: false,
+      errorMessage: ""
     };
   },
 
