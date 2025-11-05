@@ -136,3 +136,17 @@ body,
     color: var(--text-primary);
   }
 }
+/* -----------------------
+   ✅ Fix checkbox & radio color
+   ----------------------- */
+
+/* خلي المتصفح يختار ألوان Light/Dark الطبيعية */
+:root {
+  color-scheme: light dark;
+}
+
+/* رجّع اللون الطبيعي لعلامة الصح أو النقطة بلون الـ accent */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}

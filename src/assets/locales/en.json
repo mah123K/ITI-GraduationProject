@@ -192,38 +192,42 @@
     "viewProfile": "View Profile"
   },
   "topBar": {
-    "filterButton": "Filter",
-    "filtersTitle": "Filters",
-    "clearAll": "Clear all",
-    "searchPlaceholder": "Search keywords...",
-    "categoryTitle": "Location",
-    "locations": {
-      "cairo": "Cairo",
-      "alexandria": "Alexandria",
-      "giza": "Giza",
-      "suez": "Suez",
-      "aswan": "Aswan",
-      "luxor": "Luxor",
-      "redSea": "Red Sea"
-    },
-    "priceTitle": "Price",
-    "price": {
-      "low": "Under $50",
-      "medium": "$50–$200",
-      "high": "Over $200"
-    },
-    "ratingTitle": "Rating",
-    "rating": {
-      "fourStars": "4 stars & up",
-      "threeStars": "3 stars & up"
-    },
-    "resultsText": "Showing {displayed} of {total} results",
-    "sort": {
-      "default": "Default sort",
-      "rating": "Rating",
-      "location": "Location"
-    }
+  "filterButton": "Filter",
+  "filtersTitle": "Filters",
+  "clearAll": "Clear all",
+  "searchPlaceholder": "Search keywords...",
+  "categoryTitle": "Location",
+  "locations": {
+    "cairo": "Cairo",
+    "alexandria": "Alexandria",
+    "giza": "Giza",
+    "suez": "Suez",
+    "aswan": "Aswan",
+    "luxor": "Luxor",
+    "redSea": "Red Sea"
   },
+  "projectsTitle": "Projects",
+  "projects": {
+    "few": "Few projects (<10)",
+    "medium": "Medium (10–50)",
+    "many": "Many (>50)"
+  },
+  "ratingTitle": "Rating",
+  "rating": {
+    "fiveStars": "5 Stars & above",
+    "fourStars": "4 Stars & above",
+    "threeStars": "3 Stars & above",
+    "twoStars": "2 Stars & above",
+    "oneStars": "1 Star & above"
+  },
+  "resultsText": "Showing {displayed} of {total} results",
+  "sort": {
+    "default": "Default sort",
+    "ratingDesc": "Rating (High to Low)",
+    "ratingAsc": "Rating (Low to High)",
+    "locationClosest": "Location (Closest)"
+  }
+},
   "loginPage": {
     "heroTitle": "Your home,<br />our care",
     "welcome": "Welcome back to<br />Tashteebaty",
