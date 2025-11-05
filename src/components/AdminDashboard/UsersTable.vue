@@ -38,12 +38,20 @@
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
+            <th class="py-3 px-4 text-left">Profile</th>
             <th class="py-3 px-4 text-left">Name</th>
             <th class="py-3 px-4 text-left">Phone</th>
             <th class="py-3 px-4 text-left">Address</th>
-            <th class="py-3 px-4 text-left">Email</th>
+            <th class="py-3 px-12 text-left">Email</th>
             <th class="py-3 px-4 text-left">Status</th>
-            <th class="py-3 px-4 text-left">Created</th>
+            <th class="py-3 px-4 text-left">
+              <button @click="toggleSort('createdAt')" class="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded">
+                Created
+                <svg v-if="sortKey === 'createdAt'" :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                </svg>
+              </button>
+            </th>
             <th class="py-3 px-8 text-left">Actions</th>
           </tr>
         </thead>
@@ -53,21 +61,19 @@
             :key="client.uid"
             class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-800 transition"
           >
+          <td class="py-3 px-6">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full overflow-hidden bg-[#e8f0fe] dark:bg-gray-700 flex-shrink-0">
+                  <img :src="getUserImage(client) || defaultAvatar" alt="avatar" class="h-full w-full object-cover" @error="onUserImgError" />
+                </div>
+               
+              </div>
+            </td>
             <td class="py-3 px-6">{{ client.name || "No name" }}</td>
             <td class="py-3 px-6">{{ client.phone || "-" }}</td>
-            <td class="py-3 px-2">
-              {{
-                typeof client.address === "object"
-                  ? client.address.city ||
-                    Object.values(client.address)
-                      .filter((v) => typeof v === "string" && v.length === 1)
-                      .join("") ||
-                    "-"
-                  : client.address || "-"
-              }}
-            </td>
-            <td class="py-3 px-6">{{ client.email }}</td>
-            <td class="py-3 px-6">
+            <td class="py-3 px-8">{{ formatClientAddress(client) }}</td>
+            <td class="py-3 px-2">{{ client.email }}</td>
+            <td class="py-3 px-4">
               <span
                 :class="[
                   'px-3 py-1 rounded-full text-xs font-semibold',
@@ -291,6 +297,8 @@ const searchTerm = ref("");
 const showModal = ref(false);
 const modalType = ref("");
 const selectedClient = ref(null);
+const sortKey = ref("createdAt");
+const sortOrder = ref("desc");
 
 // Fetch clients
 onMounted(() => {
@@ -313,18 +321,37 @@ onMounted(() => {
 
 const filteredClients = computed(() => {
   const term = (searchTerm.value || "").trim().toLowerCase();
-  if (!term) return clients.value;
-  return clients.value.filter((c) => {
-    const haystack = [
-      c.name,
-      c.email,
-      c.phone,
-      formatClientAddress(c),
-      c.status,
-    ]
-      .map((v) => (v ?? "").toString().toLowerCase())
-      .join(" ");
-    return haystack.includes(term);
+  let filtered = clients.value;
+  if (term) {
+    filtered = clients.value.filter((c) => {
+      const haystack = [
+        c.name,
+        c.email,
+        c.phone,
+        formatClientAddress(c),
+        c.status,
+      ]
+        .map((v) => (v ?? "").toString().toLowerCase())
+        .join(" ");
+      return haystack.includes(term);
+    });
+  }
+  // Sort the filtered results
+  return filtered.sort((a, b) => {
+    let aVal = a[sortKey.value];
+    let bVal = b[sortKey.value];
+    if (sortKey.value === "createdAt") {
+      aVal = aVal ? new Date(aVal).getTime() : 0;
+      bVal = bVal ? new Date(bVal).getTime() : 0;
+    } else {
+      aVal = (aVal ?? "").toString().toLowerCase();
+      bVal = (bVal ?? "").toString().toLowerCase();
+    }
+    if (sortOrder.value === "asc") {
+      return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+    } else {
+      return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+    }
   });
 });
 
@@ -339,6 +366,16 @@ const closeModal = () => {
   showModal.value = false;
   modalType.value = "";
   selectedClient.value = null;
+};
+
+// Toggle Sort
+const toggleSort = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortOrder.value = "desc";
+  }
 };
 
 // Confirm Actions

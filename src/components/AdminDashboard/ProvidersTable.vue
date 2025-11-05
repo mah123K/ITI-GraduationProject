@@ -45,7 +45,7 @@
           'px-6 py-3 text-lg font-medium border-b-2',
           activeTab === 'craftsmen'
             ? 'border-[#5984C6] text-[#5984C6]'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+            : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300',
         ]"
       >
         Craftsmen
@@ -59,17 +59,27 @@
 
     <!-- Companies Table -->
     <div v-else-if="activeTab === 'company'" class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-semibold text-gray-800 mb-4 p-4">All Companies</h3>
+      <div class="flex justify-between items-center mb-4 p-4">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Companies</h3>
+        <button @click="toggleSort('createdAt')" class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition">
+          Sort by Created
+          <svg :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+          </svg>
+        </button>
+      </div>
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">Image</th>
+            <th class="py-3 px-4 text-left">Profile</th>
             <th class="py-3 px-4 text-left">Company Name</th>
             <th class="py-3 px-4 text-left">Email</th>
             <th class="py-3 px-4 text-left">Phone</th>
             <th class="py-3 px-4 text-left">Address</th>
+            <th class="py-3 px-4 text-left">Rating</th>
+            <th class="py-3 px-4 text-left">Orders</th>
+            <th class="py-3 px-4 text-left">Created</th>
             <th class="py-3 px-6 text-left">Status</th>
-            <th class="py-3 px-16 text-left ">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -88,6 +98,12 @@
             <td class="py-3 px-4">{{ company.phone || '-' }}</td>
           <td class="py-3 px-4">{{ formatAddress(company) }}</td>
 
+            <td class="py-3 px-4 flex items-center space-x-1">
+              <span>{{ company.rating ?? 0 }}</span>
+              <i class="bi bi-star-fill text-yellow-400"></i>
+            </td>
+            <td class="py-3 px-4">{{ company.orderCount ?? 0 }}</td>
+
             <td class="py-3 px-6">
               <span
                 :class="[
@@ -103,30 +119,30 @@
               </span>
             </td>
             <td class="py-3 px-6 flex space-x-2">
-              <button @click="viewProvider(company)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 transition">
+              <button @click="viewProvider(company)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition">
                 <i class="bi bi-eye"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openEditModal(company)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 transition">
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <button @click="openEditModal(company)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition">
                 <i class="bi bi-pencil"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
               <button
                 v-if="company.status !== 'banned'"
                 @click="openSuspendModal(company)"
-                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 transition"
+                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
               >
                 <i class="bi bi-slash-circle"></i>
               </button>
               <button
                 v-else
                 @click="openReactivateModal(company)"
-                class="p-2 rounded-lg text-green-500 hover:bg-green-100 transition"
+                class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openDeleteModal(company)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 transition">
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <button @click="openDeleteModal(company)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -137,17 +153,28 @@
 
     <!-- Craftsmen Table -->
     <div v-else class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-semibold text-gray-800 mb-4 p-4">All Craftsmen</h3>
+      <div class="flex justify-between items-center mb-4 p-4">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Craftsmen</h3>
+        <button @click="toggleSort('createdAt')" class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition">
+          Sort by Created
+          <svg :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+          </svg>
+        </button>
+      </div>
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">Image</th>
+            <th class="py-3 px-4 text-left">Profile</th>
             <th class="py-3 px-4 text-left">Name</th>
             <th class="py-3 px-4 text-left">Email</th>
             <th class="py-3 px-4 text-left">Phone</th>
             <th class="py-3 px-4 text-left">Address</th>
             <th class="py-3 px-4 text-left">Skill</th>
-            <th class="py-3 px-4 text-left">Rating</th>
+            <th class="py-3 px-4
+            
+           text-left">Rating</th>
+            <th class="py-3 px-4 text-left">Orders</th>
             <th class="py-3 px-8 text-left">Status</th>
             <th class="py-3 px-16  text-left">Actions</th>
           </tr>
@@ -158,21 +185,22 @@
             :key="craft.id"
              class="border-t border-gray-200 dark:border-gray-700 hover:bg-[#f3f9fc] dark:hover:bg-gray-800 transition"
           >
-            <td class="py-3 px-4">
+            <td class="py-2 px-3">
               <div class="h-10 w-10 rounded-full bg-[#e8f0fe] dark:bg-gray-800 overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold">
                 <img :src="getProviderImage(craft) || defaultAvatar" alt="avatar" class="h-full w-full object-cover" @error="onImgError" />
               </div>
             </td>
-            <td class="py-3 px-4">{{ craft.name }}</td>
-            <td class="py-3 px-4">{{ craft.email }}</td>
-            <td class="py-3 px-4">{{ craft.phone || '-' }}</td>
-            <td class="py-3 px-4">{{ formatAddress(craft) }}</td>
+            <td class="py-2 px-3">{{ craft.name }}</td>
+            <td class="py-2 px-3">{{ craft.email }}</td>
+            <td class="py-2 px-3">{{ craft.phone || '-' }}</td>
+            <td class="py-2 px-3">{{ formatAddress(craft) }}</td>
 
-            <td class="py-3 px-4">{{ craft.skill || '-' }}</td>
-            <td class="py-3 px-4 flex items-center space-x-1">
+            <td class="py-2 px-3">{{ craft.skill || '-' }}</td>
+            <td class="py-2 px-3 flex items-center space-x-1">
               <span>{{ craft.rating ?? 0 }}</span>
               <i class="bi bi-star-fill text-yellow-400"></i>
             </td>
+            <td class="py-2 px-3">{{ craft.orderCount ?? 0 }}</td>
             <td class="py-3 px-8">
               <span
                 :class="[
@@ -188,30 +216,30 @@
               </span>
             </td>
             <td class="py-3 px-4 flex space-x-2">
-              <button @click="viewProvider(craft)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 transition">
+              <button @click="viewProvider(craft)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition">
                 <i class="bi bi-eye"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openEditModal(craft)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 transition">
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <button @click="openEditModal(craft)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition">
                 <i class="bi bi-pencil"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
               <button
                 v-if="craft.status !== 'banned'"
                 @click="openSuspendModal(craft)"
-                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 transition"
+                class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
               >
                 <i class="bi bi-slash-circle"></i>
               </button>
               <button
                 v-else
                 @click="openReactivateModal(craft)"
-                class="p-2 rounded-lg text-green-500 hover:bg-green-100 transition"
+                class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
-              <div class="h-3 border-l border-gray-300 mt-3"></div>
-              <button @click="openDeleteModal(craft)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 transition">
+              <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
+              <button @click="openDeleteModal(craft)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -258,12 +286,12 @@
     <!-- VIEW MODAL -->
     <div v-if="showViewModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="relative bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-lg p-6 animate-fadeIn">
-        <button @click="closeViewModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700">✖</button>
+      <button @click="closeViewModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">✖</button>
 
-        <div class="flex items-center gap-4 mb-4">
-          <div class="h-16 w-16 rounded-full bg-[#e8f0fe] dark:bg-gray-800 overflow-hidden flex items-center justify-center text-[#5984C6] text-xl font-semibold">
-            <img :src="getProviderImage(selectedProvider) || defaultAvatar" alt="avatar" class="h-full w-full object-cover" @error="onImgError" />
-          </div>
+      <div class="flex items-center gap-4 mb-4">
+        <div class="h-16 w-16 rounded-full bg-[#e8f0fe] dark:bg-gray-800 overflow-hidden flex items-center justify-center text-[#5984C6] text-xl font-semibold">
+          <img :src="getProviderImage(selectedProvider) || defaultAvatar" alt="avatar" class="h-full w-full object-cover" @error="onImgError" />
+        </div>
           <div class="flex-1 min-w-0">
             <h3 class="text-2xl font-semibold text-[#5984C6] truncate">{{ selectedProvider?.name || 'Provider' }}</h3>
             <div class="mt-1">
@@ -305,6 +333,10 @@
             <p class="text-gray-500 dark:text-gray-400">Rating</p>
             <p class="font-medium flex items-center gap-1">{{ selectedProvider.rating }} <i class="bi bi-star-fill text-yellow-400"></i></p>
           </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400">Orders</p>
+            <p class="font-medium">{{ selectedProvider.orderCount ?? 0 }} total · {{ selectedProvider.completedCount ?? 0 }} completed</p>
+          </div>
         </div>
       </div>
     </div>
@@ -312,7 +344,7 @@
     <!-- EDIT MODAL -->
     <div v-if="showEditModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
-        <button @click="closeEditModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700">✖</button>
+        <button @click="closeEditModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">✖</button>
         <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">Edit Provider</h3>
         <form @submit.prevent="saveProviderChanges" class="space-y-4">
           <div>
@@ -347,16 +379,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from "vue";
+import { ref, reactive, computed, onMounted, watch, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { db } from "../../firebase/firebase";
-import { collection, onSnapshot, doc, updateDoc, deleteDoc, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
 
 /* STATE */
 const route = useRoute();
 const searchTerm = ref("");
 const activeTab = ref("company");
 const loading = ref(true);
+const sortKey = ref("createdAt");
+const sortOrder = ref("desc");
 
 const companies = ref([]);
 const craftsmen = ref([]);
@@ -385,7 +419,19 @@ const fetchProviders = async () => {
     const providersRef = collection(db, "technicians");
     const snapshot = await getDocs(providersRef);
     const allProviders = [];
-    snapshot.forEach((d) => allProviders.push({ id: d.id, ...d.data() }));
+    snapshot.forEach((d) => {
+      const data = d.data() || {};
+      allProviders.push({
+        id: d.id,
+        ...data,
+        // rating fields: prefer aggregated stored values
+        rating: data.ratingAverage !== undefined ? Number(data.ratingAverage) : (data.rating !== undefined ? Number(data.rating) : 0),
+        ratingCount: Number(data.ratingCount || 0),
+        // placeholder counts; we'll fetch accurate counts after
+        orderCount: Number(data.orderCount || 0),
+        completedCount: Number(data.completedCount || 0),
+      });
+    });
 
     const selectedCategory = route.query.category;
 
@@ -418,6 +464,51 @@ const fetchProviders = async () => {
   }
 };
 
+// Helper: fetch order counts (total and completed) for given provider ids using 'in' queries in chunks
+const fetchOrderCountsForProviderIds = async (ids = []) => {
+  if (!ids || ids.length === 0) return {};
+  const result = {};
+  // initialize
+  ids.forEach((id) => {
+    result[id] = { orderCount: 0, completedCount: 0 };
+  });
+
+  // Firestore 'in' supports up to 10 items per query
+  const chunkSize = 10;
+  for (let i = 0; i < ids.length; i += chunkSize) {
+    const chunk = ids.slice(i, i + chunkSize);
+    try {
+      // total orders for these provider ids
+      const ordersRef = collection(db, "orders");
+      const qTotal = query(ordersRef, where("technicianId", "in", chunk));
+      const snapTotal = await getDocs(qTotal);
+      snapTotal.forEach((d) => {
+        const data = d.data() || {};
+        const pid = data.technicianId;
+        if (pid && result[pid]) result[pid].orderCount++;
+      });
+
+      // completed orders for these provider ids
+      const qCompleted = query(
+        ordersRef,
+        where("technicianId", "in", chunk),
+        where("status", "==", "completed")
+      );
+      const snapCompleted = await getDocs(qCompleted);
+      snapCompleted.forEach((d) => {
+        const data = d.data() || {};
+        const pid = data.technicianId;
+        if (pid && result[pid]) result[pid].completedCount++;
+      });
+    } catch (e) {
+      // if 'in' is not supported or fails, we silently continue — caller can fall back to stored fields
+      console.error("Error fetching order counts for provider chunk:", e);
+    }
+  }
+
+  return result;
+};
+
 
 /* COMPANIES LISTENER */
 onMounted(() => {
@@ -437,9 +528,29 @@ onMounted(() => {
           status: data.status || "active",
           createdAt: data.createdAt || "",
           ...data,
+          // include rating fields if company document contains aggregated values
+          rating: data.ratingAverage !== undefined ? Number(data.ratingAverage) : (data.rating !== undefined ? Number(data.rating) : 0),
+          ratingCount: Number(data.ratingCount || 0),
+          // placeholders for order counts (will be updated by helper)
+          orderCount: Number(data.orderCount || 0),
+          completedCount: Number(data.completedCount || 0),
         });
       });
       companies.value = list;
+
+      // fetch order counts for companies and attach
+      const ids = list.map((c) => c.id).filter(Boolean);
+      if (ids.length) {
+        fetchOrderCountsForProviderIds(ids)
+          .then((map) => {
+            companies.value = companies.value.map((c) => ({
+              ...c,
+              orderCount: map[c.id]?.orderCount ?? c.orderCount ?? 0,
+              completedCount: map[c.id]?.completedCount ?? c.completedCount ?? 0,
+            }));
+          })
+          .catch((e) => console.error("Error attaching company order counts:", e));
+      }
     },
     (err) => console.error(err)
   );
@@ -452,7 +563,15 @@ onMounted(() => {
     collection(db, "technicians"),
     (snap) => {
       const allProviders = [];
-      snap.forEach((d) => allProviders.push({ id: d.id, ...d.data() }));
+      snap.forEach((d) => {
+        const data = d.data() || {};
+        allProviders.push({
+          id: d.id,
+          ...data,
+          rating: data.ratingAverage !== undefined ? Number(data.ratingAverage) : (data.rating !== undefined ? Number(data.rating) : 0),
+          ratingCount: Number(data.ratingCount || 0),
+        });
+      });
 
       const selectedCategory = route.query.category;
 
@@ -467,12 +586,52 @@ onMounted(() => {
             (p) =>
               p.skill &&
               p.skill.toLowerCase() === selectedCategory.toLowerCase()
-          );
+          ).map((p) => ({
+            ...p,
+            orderCount: Number(p.orderCount || 0),
+            completedCount: Number(p.completedCount || 0),
+          }));
+          // attach order counts for these filtered technicians
+          (async () => {
+            const ids = filteredTechnicians.value.map((p) => p.id).filter(Boolean);
+            if (ids.length) {
+              try {
+                const map = await fetchOrderCountsForProviderIds(ids);
+                filteredTechnicians.value = filteredTechnicians.value.map((p) => ({
+                  ...p,
+                  orderCount: map[p.id]?.orderCount ?? p.orderCount ?? 0,
+                  completedCount: map[p.id]?.completedCount ?? p.completedCount ?? 0,
+                }));
+              } catch (e) {
+                console.error("Error attaching technician order counts:", e);
+              }
+            }
+          })();
           activeTab.value = "craftsmen";
         }
       } else {
         // لو مفيش category → اعرض كل الفنيين
-        filteredTechnicians.value = allProviders;
+        filteredTechnicians.value = allProviders.map((p) => ({
+          ...p,
+          orderCount: Number(p.orderCount || 0),
+          completedCount: Number(p.completedCount || 0),
+        }));
+        // attach order counts for all technicians
+        (async () => {
+          const ids = filteredTechnicians.value.map((p) => p.id).filter(Boolean);
+          if (ids.length) {
+            try {
+              const map = await fetchOrderCountsForProviderIds(ids);
+              filteredTechnicians.value = filteredTechnicians.value.map((p) => ({
+                ...p,
+                orderCount: map[p.id]?.orderCount ?? p.orderCount ?? 0,
+                completedCount: map[p.id]?.completedCount ?? p.completedCount ?? 0,
+              }));
+            } catch (e) {
+              console.error("Error attaching technician order counts:", e);
+            }
+          }
+        })();
       }
 
       loading.value = false;
@@ -491,17 +650,61 @@ watch(
 );
 
 /* COMPUTED FILTERS */
-const filteredCompanies = computed(() =>
-  companies.value.filter((c) =>
+const filteredCompanies = computed(() => {
+  let filtered = companies.value.filter((c) =>
     [c.name, c.email, c.phone, c.address].join(" ").toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-);
+  );
+  // Sort the filtered results
+  return filtered.sort((a, b) => {
+    let aVal = a[sortKey.value];
+    let bVal = b[sortKey.value];
+    if (sortKey.value === "createdAt") {
+      aVal = aVal ? new Date(aVal).getTime() : 0;
+      bVal = bVal ? new Date(bVal).getTime() : 0;
+    } else {
+      aVal = (aVal ?? "").toString().toLowerCase();
+      bVal = (bVal ?? "").toString().toLowerCase();
+    }
+    if (sortOrder.value === "asc") {
+      return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+    } else {
+      return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+    }
+  });
+});
 
-const filteredCraftsmen = computed(() =>
-  filteredTechnicians.value.filter((c) =>
+const filteredCraftsmen = computed(() => {
+  let filtered = filteredTechnicians.value.filter((c) =>
     [c.name, c.email, c.phone, c.address].join(" ").toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-);
+  );
+  // Sort the filtered results
+  return filtered.sort((a, b) => {
+    let aVal = a[sortKey.value];
+    let bVal = b[sortKey.value];
+    if (sortKey.value === "createdAt") {
+      aVal = aVal ? new Date(aVal).getTime() : 0;
+      bVal = bVal ? new Date(bVal).getTime() : 0;
+    } else {
+      aVal = (aVal ?? "").toString().toLowerCase();
+      bVal = (bVal ?? "").toString().toLowerCase();
+    }
+    if (sortOrder.value === "asc") {
+      return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+    } else {
+      return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+    }
+  });
+});
+
+/* SORTING */
+const toggleSort = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortOrder.value = "desc";
+  }
+};
 
 /* ACTIONS */
 const getCollectionName = (provider) => {
@@ -598,6 +801,60 @@ const defaultAvatar = 'data:image/svg+xml;utf8,\
 </svg>';
 
 const onImgError = (e) => { if (e && e.target) e.target.src = defaultAvatar; };
+
+// realtime orders counts map and listener
+const ordersCountsMap = ref({}); // { [id]: { orderCount, completedCount } }
+let ordersUnsubscribe = null;
+
+onMounted(() => {
+  try {
+    ordersUnsubscribe = onSnapshot(collection(db, "orders"), (snap) => {
+      const byTech = {};
+      const byComp = {};
+      snap.forEach((d) => {
+        const data = d.data() || {};
+        const tech = data.technicianId || null;
+        const comp = data.companyId || data.providerId || data.providerID || null;
+        if (tech) {
+          if (!byTech[tech]) byTech[tech] = { orderCount: 0, completedCount: 0 };
+          byTech[tech].orderCount++;
+          if ((data.status || "").toLowerCase() === "completed") byTech[tech].completedCount++;
+        }
+        if (comp) {
+          if (!byComp[comp]) byComp[comp] = { orderCount: 0, completedCount: 0 };
+          byComp[comp].orderCount++;
+          if ((data.status || "").toLowerCase() === "completed") byComp[comp].completedCount++;
+        }
+      });
+
+      ordersCountsMap.value = { byTech, byComp };
+
+      // attach to technicians currently loaded
+      if (filteredTechnicians.value && filteredTechnicians.value.length) {
+        filteredTechnicians.value = filteredTechnicians.value.map((p) => ({
+          ...p,
+          orderCount: byTech[p.id]?.orderCount ?? p.orderCount ?? 0,
+          completedCount: byTech[p.id]?.completedCount ?? p.completedCount ?? 0,
+        }));
+      }
+
+      // attach to companies currently loaded
+      if (companies.value && companies.value.length) {
+        companies.value = companies.value.map((c) => ({
+          ...c,
+          orderCount: byComp[c.id]?.orderCount ?? c.orderCount ?? 0,
+          completedCount: byComp[c.id]?.completedCount ?? c.completedCount ?? 0,
+        }));
+      }
+    }, (err) => console.error("Orders realtime error:", err));
+  } catch (e) {
+    console.error("Failed to start orders realtime listener:", e);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof ordersUnsubscribe === "function") ordersUnsubscribe();
+});
 </script>
 
 <style scoped>
