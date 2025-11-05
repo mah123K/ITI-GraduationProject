@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading" class="text-center text-gray-500 mt-20">
+  <div v-if="isLoading" class="text-center text-gray-500 dark:text-white mt-20">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
     Loading Profile...
   </div>
@@ -14,8 +14,8 @@
       </button>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-      <h3 class="text-2xl font-semibold text-[#133B5D] mb-5">Personal Information</h3>
+    <div class="bg-white dark:bg-[#16222B] p-6 rounded-2xl shadow-md border border-gray-200">
+      <h3 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-5">Personal Information</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         <div class="md:col-span-2 flex flex-col items-center gap-3 mb-4">
@@ -44,44 +44,47 @@
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium mb-1">
-            <i class="fa-solid fa-user mr-2 text-[#133B5D]"></i> Name
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-user mr-2 text-[#133B5D] dark:text-white"></i> Name
           </label>
           <input
             v-model="tempTechnician.name"
             type="text"
             :disabled="!isEditing"
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+            placeholder="Enter your name"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium mb-1">
-            <i class="fa-solid fa-envelope mr-2 text-[#133B5D]"></i> Email
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-envelope mr-2 text-[#133B5D] dark:text-white"></i> Email
           </label>
           <input
             v-model="tempTechnician.email"
             type="email"
-            disabled
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100 text-gray-500"
+            :disabled="!isEditing"
+            placeholder="Email address"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 text-gray-500 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium mb-1">
-            <i class="fa-solid fa-phone mr-2 text-[#133B5D]"></i> Phone
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-phone mr-2 text-[#133B5D] dark:text-white"></i> Phone
           </label>
           <input
             v-model="tempTechnician.phone"
             type="text"
             :disabled="!isEditing"
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+            placeholder="Enter phone number"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
         
         <div>
-          <label class="block text-gray-700 font-medium mb-1">
-            <i class="fa-solid fa-star mr-2 text-[#133B5D]"></i> Years of Experience
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-star mr-2 text-[#133B5D] dark:text-white"></i> Years of Experience
           </label>
           <input
             v-model.number="tempTechnician.experience"
@@ -89,20 +92,20 @@
             min="0"
             placeholder="e.g., 5"
             :disabled="!isEditing"
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           />
         </div>
 
         <div class="md:col-span-2">
-          <label class="block text-gray-700 font-medium mb-1">
-            <i class="fa-solid fa-book-open mr-2 text-[#133B5D]"></i> Bio 
+          <label class="block text-gray-700 dark:text-white font-medium mb-1">
+            <i class="fa-solid fa-book-open mr-2 text-[#133B5D] dark:text-white"></i> Bio 
           </label>
           <textarea
             v-model="tempTechnician.bio"
             rows="4"
             :disabled="!isEditing"
-            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
             placeholder="Tell clients a bit about yourself and your skills..."
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
           ></textarea>
         </div>
 
@@ -110,35 +113,38 @@
     </div>
 
     <div
-      class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 flex flex-col md:flex-row gap-6"
+      class="bg-white dark:bg-[#16222B] p-6 rounded-2xl shadow-md border border-gray-200 flex flex-col md:flex-row gap-6"
     >
       <div class="flex-1 space-y-4">
-        <h3 class="text-xl font-semibold text-[#133B5D]">Address</h3>
+        <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white">Address</h3>
         <div>
-            <label class="block text-gray-700 font-medium mb-1">Street</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">Street</label>
             <input
               v-model="tempTechnician.address.street"
               type="text"
               :disabled="!isEditing"
-              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+              placeholder="Street name"
+              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
         <div>
-            <label class="block text-gray-700 font-medium mb-1">City</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">City</label>
             <input
               v-model="tempTechnician.address.city"
               type="text"
               :disabled="!isEditing"
-              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+              placeholder="City"
+              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
         <div>
-            <label class="block text-gray-700 font-medium mb-1">Country</label>
+            <label class="block text-gray-700 dark:text-white font-medium mb-1">Country</label>
             <input
               v-model="tempTechnician.address.country"
               type="text"
               :disabled="!isEditing"
-              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none disabled:bg-gray-100"
+              placeholder="Country"
+              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#133B5D] focus:outline-none dark:disabled:bg-gray-800 dark:bg-[#16222B] dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400"
             />
         </div>
       </div>
@@ -160,7 +166,7 @@
       <button
         @click="saveChanges"
         :disabled="isSaving"
-        class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg disabled:opacity-50 flex items-center gap-2"
+        class="cursor-pointer bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg disabled:opacity-50 flex items-center gap-2"
       >
         <svg v-if="isSaving" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
         {{ isSaving ? 'Saving...' : 'Save Changes' }}
@@ -168,13 +174,16 @@
 
       <button
         @click="cancelEdit"
-        class="bg-red-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition duration-300 shadow-lg"
+        class="bg-red-500 cursor-pointer text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-600 transition duration-300 shadow-lg"
       >
         <i class="fa-solid fa-xmark"></i> Cancel
       </button>
     </div>
   </section>
 </template>
+
+
+
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";

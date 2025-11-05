@@ -21,8 +21,8 @@ const emit = defineEmits(["order"])
     </div>
 
     <h2 class="font-semibold text-gray-700 dark:text-white">{{ service.descreption }}</h2>
-    <h2 class="font-bold text-accent-color text-lg md:text-xl">
-      {{ service.price }}
+    <h2 class="font-bold text-[#5984C6] dark:text-white text-lg md:text-xl">
+      {{ service.price }} EGP
     </h2>
 
     <button

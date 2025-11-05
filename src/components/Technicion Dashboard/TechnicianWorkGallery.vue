@@ -1,16 +1,16 @@
 <template>
   <div class="p-8">
-    <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Work Gallery</h2>
+    <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">My Work Gallery</h2>
 
     <!-- Upload Button Card -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Upload Box -->
       <div
-        class="flex flex-col items-center justify-center border-2 border-dashed border-[#133B5D]/50 rounded-2xl p-6 bg-white shadow hover:shadow-lg cursor-pointer transition"
+        class="flex flex-col items-center justify-center border-2 border-dashed border-[#133B5D]/50 rounded-2xl p-6 bg-white dark:bg-[#16222B] shadow hover:shadow-lg cursor-pointer transition"
         @click="triggerUpload"
       >
-        <i class="fa-solid fa-upload text-5xl text-[#133B5D] mb-3"></i>
-        <p class="text-[#133B5D] font-semibold">Upload Photo</p>
+        <i class="fa-solid fa-upload text-5xl text-[#133B5D] dark:text-white mb-3"></i>
+        <p class="text-[#133B5D] dark:text-white font-semibold">Upload Photo</p>
         <input
           ref="fileInput"
           type="file"
