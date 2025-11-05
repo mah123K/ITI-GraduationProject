@@ -7,12 +7,13 @@
     </div>
 
     <!-- Title + Search + Filter -->
-    <div class="flex justify-between items-center mb-4 px-4">
+    <div  class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+    <div class="flex justify-between items-center mb-4 px-4 pt-4">
       <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Orders</h3>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-4">
         <!-- Search Input (smaller) -->
-        <div class="relative w-60">
+        <div class="relative w-64">
           <input
             v-model="searchQuery"
             type="text"
@@ -26,7 +27,7 @@
         <div class="relative">
           <button
             @click="toggleFilter"
-            class="flex items-center gap-2 bg-[#1E293B] text-white px-4 py-2 rounded-lg hover:bg-[#334155] transition text-sm"
+            class="flex items-center gap-2 bg-[#1E293B] dark:bg-[#111827] text-white px-4 py-2 rounded-lg hover:bg-[#334155] dark:hover:bg-gray-800 transition text-sm"
           >
             <i class="bi bi-funnel"></i>
             Filter
@@ -35,7 +36,7 @@
           <!-- Filter Menu -->
           <div
             v-if="showFilter"
-            class="absolute right-0 mt-2 w-40 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10"
+            class="absolute right-0 mt-2 w-44 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10"
           >
             <ul>
               <li
@@ -53,6 +54,7 @@
     </div>
 
     <!-- Orders Table -->
+     
     <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
       <thead class="bg-[#5984C6] text-white">
         <tr>
@@ -81,8 +83,8 @@
           <td class="py-3 px-4 font-semibold">{{ order.amount }}EGP</td>
         <td class="py-3 px-4">
   <div class="flex flex-col">
-    <span class="text-gray-700 font-medium">{{ order.date }}</span>
-    <span class="text-gray-500 text-xs">{{ order.time }}</span>
+    <span class="text-gray-700 dark:text-gray-200 font-medium">{{ order.date }}</span>
+    <span class="text-gray-500 dark:text-gray-400 text-xs">{{ order.time }}</span>
   </div>
 </td>
 
@@ -284,6 +286,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

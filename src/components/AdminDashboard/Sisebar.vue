@@ -106,19 +106,29 @@
     <div class="flex-1 flex flex-col">
       <!-- Header -->
       <header class="flex justify-end items-center bg-white dark:bg-[#111827] shadow-sm p-4 space-x-4 relative">
-          <div
-    @click.stop="toggleUserMenu"
-    class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer overflow-hidden"
-  >
-    <img 
-      v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
-      :src="userPhoto" 
-      alt="profile" 
-      class="w-full h-full object-cover"
-      @error="handleImageError" 
-    />
-    <i v-else class="bi bi-person text-2xl text-gray-700 hover:text-white"></i>
-  </div>
+        <button 
+          @click="toggleDarkMode"
+          class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
+          :title="isDark ? 'Light mode' : 'Dark mode'"
+        >
+          <i class="fa-solid fa-sun absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 rotate-0 scale-100 dark:rotate-90 dark:scale-0 group-hover:text-[#5984C6] dark:group-hover:text-yellow-300"></i>
+          <i class="fa-solid fa-moon absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-100 transition-all duration-500 -rotate-90 scale-0 dark:rotate-0 dark:scale-100 group-hover:text-[#5984C6] dark:group-hover:text-white"></i>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+
+        <div
+          @click.stop="toggleUserMenu"
+          class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-[#5984C6] transition-all duration-300 cursor-pointer overflow-hidden"
+        >
+          <img 
+            v-if="userPhoto && userPhoto !== 'null' && !userPhoto.startsWith('undefined')" 
+            :src="userPhoto" 
+            alt="profile" 
+            class="w-full h-full object-cover"
+            @error="handleImageError" 
+          />
+          <i v-else class="bi bi-person text-2xl text-gray-700 hover:text-white"></i>
+        </div>
 
 
         <!-- 🔽 Profile Dropdown -->
@@ -196,9 +206,10 @@ export default {
     const password = ref('')
     const isUserMenuOpen = ref(false)
     const dropdown = ref(null)
-  const userEmail = ref('') // ✅ ده اللي هنستخدمه في عرض الإيميل الحقيقي
-  const userName = ref('')
-  const userPhoto = ref('')
+    const userEmail = ref('')
+    const userName = ref('')
+    const userPhoto = ref('')
+    const isDark = ref(false)
 
     const auth = getAuth()
 
@@ -301,14 +312,7 @@ export default {
         const saved = localStorage.getItem('theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const target = saved ? saved : (prefersDark ? 'dark' : 'light');
-        const root = document.documentElement;
-        if (target === 'dark') {
-          root.setAttribute('data-theme', 'dark');
-          root.classList.add('dark');
-        } else {
-          root.removeAttribute('data-theme');
-          root.classList.remove('dark');
-        }
+        applyTheme(target);
       } catch (e) {}
     })
 
@@ -396,6 +400,29 @@ export default {
       }
     }
 
+    const applyTheme = (theme) => {
+      const root = document.documentElement;
+      if (theme === 'dark') {
+        root.setAttribute('data-theme', 'dark');
+        root.classList.add('dark');
+        isDark.value = true;
+      } else {
+        root.removeAttribute('data-theme');
+        root.classList.remove('dark');
+        isDark.value = false;
+      }
+    }
+
+    const toggleDarkMode = () => {
+      const next = isDark.value ? 'light' : 'dark';
+      applyTheme(next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        // ignore
+      }
+    }
+
     // Validate photo URL
     const validatePhotoURL = (url) => {
       return url && url !== 'null' && !url.startsWith('undefined');
@@ -455,7 +482,9 @@ export default {
       userEmail,
       userName,
       userPhoto,
-      handleImageError
+      handleImageError,
+      isDark,
+      toggleDarkMode
     }
   },
 }

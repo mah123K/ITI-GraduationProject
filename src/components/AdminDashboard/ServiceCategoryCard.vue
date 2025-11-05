@@ -34,11 +34,11 @@
       <div v-else class="text-4xl">{{ category.icon }}</div>
     </div>
 
-    <!-- Category Name -->
-    <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ category.name }}</h3>
+  <!-- Category Name -->
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{{ category.name }}</h3>
 
     <!-- Provider Count -->
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">
       {{ category.providers > 0 ? category.providers + ' providers' : 'No providers yet' }}
     </p>
 
@@ -210,8 +210,24 @@
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Image URL</label>
-            <input v-model="editableService.icon" type="url" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Image</label>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full p-1 flex items-center justify-center overflow-hidden cursor-pointer" @click="triggerCategoryFile">
+                <div class="w-full h-full rounded-full bg-white dark:bg-white/5 flex items-center justify-center overflow-hidden">
+                  <img v-if="editablePreview" :src="editablePreview" alt="Category preview" class="block w-full h-full object-contain" @error="handlePreviewError" />
+                  <i v-else class="fa-solid fa-image text-xl text-gray-500"></i>
+                </div>
+              </div>
+
+              <div class="flex-1">
+                <input ref="categoryFileInput" type="file" accept="image/*" class="hidden" @change="onCategoryFileChange" />
+                <div class="flex items-center gap-2">
+                  <button type="button" @click="triggerCategoryFile" class="px-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm">Choose image</button>
+                  <p class="text-xs text-gray-500 dark:text-gray-300"> <span v-if="uploading" class="text-[#5984C6] ml-1">Uploading...</span></p>
+                </div>
+                <p v-if="uploadError" class="text-xs text-red-600 mt-1">{{ uploadError }}</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -259,6 +275,11 @@ export default {
       if (!/^https?:\/\//i.test(value)) return false;
       return /(\.png|\.jpe?g|\.gif|\.webp|\.svg)(\?.*)?$/i.test(value) || true;
     };
+    // Edit modal upload state
+    const categoryFileInput = ref(null);
+    const editablePreview = ref('');
+    const uploading = ref(false);
+    const uploadError = ref('');
     const showProviders = ref(false);
     const providers = ref([]);
     const loading = ref(false);
@@ -284,6 +305,9 @@ export default {
 
     const openEditModal = (service) => {
       editableService.value = { ...service };
+      // set preview from existing icon if available
+      editablePreview.value = service.icon || '';
+      uploadError.value = '';
       editModal.value = true;
     };
 
@@ -296,6 +320,49 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    };
+
+    const triggerCategoryFile = () => {
+      if (categoryFileInput.value) categoryFileInput.value.click();
+    };
+
+    const onCategoryFileChange = async (e) => {
+      const file = e.target?.files?.[0];
+      uploadError.value = '';
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        uploadError.value = 'Please select a valid image file.';
+        e.target.value = '';
+        return;
+      }
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        uploadError.value = 'Image size should be less than 5MB.';
+        e.target.value = '';
+        return;
+      }
+
+      const tempURL = URL.createObjectURL(file);
+      editablePreview.value = tempURL;
+      try {
+        uploading.value = true;
+        const { uploadImageOnly } = await import('@/composables/useImageUpload');
+        const uploadedUrl = await uploadImageOnly(file);
+        editableService.value.icon = uploadedUrl;
+        editablePreview.value = uploadedUrl;
+      } catch (err) {
+        console.error('Image upload failed:', err);
+        uploadError.value = 'Failed to upload image. Please try again.';
+      } finally {
+        uploading.value = false;
+        URL.revokeObjectURL(tempURL);
+        if (categoryFileInput.value) categoryFileInput.value.value = '';
+      }
+    };
+
+    const handlePreviewError = (event) => {
+      editablePreview.value = '';
+      if (event && event.target) event.target.style.display = 'none';
     };
 
     // Delete modal logic
@@ -373,6 +440,13 @@ export default {
       editableService,
       openEditModal,
       updateService,
+      categoryFileInput,
+      triggerCategoryFile,
+      onCategoryFileChange,
+      editablePreview,
+      uploading,
+      uploadError,
+      handlePreviewError,
       showDeleteModal,
       openDeleteModal,
       closeDeleteModal,
