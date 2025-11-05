@@ -670,11 +670,11 @@ watch(selectedDayInfo, () => {
       @click.self="closePopup"
     >
       <div
-        class="bg-white rounded-2xl p-6 md:p-8 w-full max-w-3xl text-center shadow-2xl relative max-h-[90vh] overflow-y-auto"
+        class="bg-white dark:bg-[#16222B]  rounded-2xl p-6 md:p-8 w-full max-w-3xl text-center shadow-2xl relative max-h-[90vh] overflow-y-auto"
       >
         <button
           @click="closePopup"
-          class="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-2xl z-10"
+          class="absolute top-3 right-4 text-gray-500 dark:text-white hover:text-red-600 text-2xl z-10"
         >
           &times;
         </button>
@@ -682,7 +682,7 @@ watch(selectedDayInfo, () => {
         <div class="subContainer flex flex-col md:flex-row gap-6">
           <div class="orderDetails w-full md:w-1/2 space-y-4">
             <div class="flex flex-col items-start">
-              <label for="photoUpload" class="font-semibold mb-2 text-lg text-accent-color"
+              <label for="photoUpload" class="font-semibold mb-2 text-lg text-accent-color dark:text-white"
                 >Upload Photos (optional)</label
               >
               <input
@@ -700,22 +700,28 @@ watch(selectedDayInfo, () => {
                 <i class="fas fa-upload"></i><span>Select Photos</span>
               </label>
               <div v-if="uploadedFiles.length > 0" class="mt-2 text-sm text-gray-600">
-                <p v-for="file in uploadedFiles" :key="file.name" class="truncate">
+                <p
+                  v-for="file in uploadedFiles"
+                  :key="file.name"
+                  v-if="file.type.startsWith('image/')"
+                  class="truncate"
+                >
                   {{ file.name }}
                 </p>
               </div>
+
             </div>
             <div>
-              <label class="block text-left font-semibold text-gray-700 mb-1">Description</label>
+              <label class="block text-left font-semibold text-gray-700 mb-1 dark:text-white">Description</label>
               <textarea
                 v-model="orderDescription"
                 placeholder="Describe your problem or custom request..."
-                class="w-full h-32 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color"
+                class="w-full h-32 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color "
                 :disabled="isPriceLocked"
               ></textarea>
             </div>
             <div>
-              <label class="block text-left font-semibold text-gray-700 mb-1">Price</label>
+              <label class="block text-left font-semibold text-gray-700 mb-1 dark:text-white">Price</label>
               <input
                 v-model="servicePrice"
                 :disabled="isPriceLocked"
@@ -723,20 +729,20 @@ watch(selectedDayInfo, () => {
                 :placeholder="
                   isPriceLocked ? 'Price set by service' : 'Enter Your Budget (Optional)...'
                 "
-                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color disabled:bg-gray-100"
+                class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color disabled:bg-gray-100 dark:disabled:bg-transparent"
               />
             </div>
           </div>
           <div class="orderTime w-full md:w-1/2 flex flex-col items-center">
-            <h3 class="text-xl font-semibold text-accent-color mb-4">Choose Appointment</h3>
+            <h3 class="text-xl font-semibold text-accent-color mb-4 dark:text-white">Choose Appointment</h3>
             <div class="w-[90%] md:w-[80%] space-y-4">
               <div>
-                <label class="block text-left font-medium mb-1 text-accent-color"
+                <label class="block text-left font-medium mb-1 text-accent-color dark:text-white"
                   >Select Available Day:</label
                 >
                 <select
                   v-model="selectedDayInfo"
-                  class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-accent-color"
+                  class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-accent-color dark:text-black dark:bg-white"
                   :disabled="activeAvailableDays.length === 0"
                 >
                   <option :value="null" disabled>
@@ -752,12 +758,12 @@ watch(selectedDayInfo, () => {
                 </select>
               </div>
               <div>
-                <label class="block text-left font-medium mb-1 text-accent-color"
+                <label class="block text-left font-medium mb-1 text-accent-color dark:text-white"
                   >Select Time:</label
                 >
                 <select
                   v-model="selectedTime"
-                  class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-accent-color"
+                  class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-accent-color dark:text-black dark:bg-white"
                   :disabled="!selectedDayInfo || availableTimeSlots.length === 0"
                 >
                   <option value="" disabled>
@@ -781,13 +787,13 @@ watch(selectedDayInfo, () => {
                 </select>
               </div>
             </div>
-            <div v-if="selectedDayInfo && selectedTime" class="mt-6 text-gray-700 text-center">
+            <div v-if="selectedDayInfo && selectedTime" class="mt-6 text-gray-700 dark:text-white text-center">
               <p>
-                You selected: <br /><span class="font-semibold text-accent-color">{{
+                You selected: <br /><span class="font-semibold text-accent-color dark:text-white ">{{
                   selectedDayInfo.display
                 }}</span>
                 at
-                <span class="font-semibold text-accent-color">{{ selectedTime }}</span>
+                <span class="font-semibold text-accent-color dark:text-white">{{ selectedTime }}</span>
               </p>
             </div>
             <div

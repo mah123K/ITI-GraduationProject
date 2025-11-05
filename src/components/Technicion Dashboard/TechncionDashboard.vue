@@ -495,22 +495,22 @@ watch(
 
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex">
+  <div class="min-h-screen bg-gray-100 dark:bg-[#0B1217] flex">
     <TechnicionDashNav :active="mainTab" @changeTab="handleTabChange" />
 
     <div class="myOrders ml-[20%] w-[80%] px-8 py-6 relative">
       <template v-if="mainTab === 'orders'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] mb-4">Orders</h2>
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-4">Orders</h2>
         <div
           class="flex space-x-6 mb-6 border-b border-gray-300 text-lg font-medium"
         >
           <button
             @click="orderTab = 'requests'"
             :class="[
-              'pb-2 border-b-2 transition-colors duration-200',
+              'pb-2 border-b-2 transition-colors duration-200 cursor-pointer',
               orderTab === 'requests'
-                ? 'border-[#133B5D] text-[#133B5D]'
-                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
             New Requests
@@ -520,8 +520,8 @@ watch(
             :class="[
               'pb-2 border-b-2 transition-colors duration-200',
               orderTab === 'upcoming'
-                ? 'border-[#133B5D] text-[#133B5D]'
-                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
             Upcoming
@@ -531,8 +531,8 @@ watch(
             :class="[
               'pb-2 border-b-2 transition-colors duration-200',
               orderTab === 'completed'
-                ? 'border-[#133B5D] text-[#133B5D]'
-                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
             Completed
@@ -548,8 +548,8 @@ watch(
             :class="[
               'pb-2 border-b-2 transition-colors duration-200',
               orderTab === 'cancelled'
-                ? 'border-[#133B5D] text-[#133B5D]'
-                : 'border-transparent text-gray-500 hover:text-[#133B5D]',
+                ? 'border-[#133B5D] text-[#133B5D] dark:border-white dark:text-white'
+                : 'border-transparent text-gray-500 dark:text-white hover:text-[#133B5D] dark:hover:text-white cursor-pointer',
             ]"
           >
             Cancelled Orders
@@ -557,7 +557,7 @@ watch(
         </div>
         <div
           v-if="!filteredOrders.length"
-          class="text-center text-gray-500 mt-10"
+          class="text-center text-gray-500 dark:text-white mt-10"
         >
           No orders found in this category.
         </div>
@@ -608,23 +608,23 @@ watch(
                 }}
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
                 {{ order.price }} EGP
               </p>
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
                 {{ order.date }}
               </p>
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
                 {{ order.time }}
               </p>
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
                 {{ formatLocation(order.location) }}
               </p>
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
                 {{ order.customer }}
               </p>
@@ -704,27 +704,27 @@ watch(
                 {{ order.descreption || "No description" }}
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Price:</span>
                 {{ order.price }} EGP
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Date:</span>
                 {{ order.date }}
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Time:</span>
                 {{ order.time }}
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Location:</span>
                 {{ formatLocation(order.location) }}
               </p>
 
-              <p>
+              <p class="text-[#133B5D] dark:text-white">
                 <span class="font-semibold text-[#133B5D] dark:text-white">Client:</span>
                 {{ order.customer }}
               </p>
@@ -740,7 +740,7 @@ watch(
       </template>
 
       <template v-else-if="mainTab === 'services'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">My Services</h2>
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">My Services</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <CreateServiceCard @createService="openCreatePopup" />
           <ServiceCard
@@ -756,10 +756,11 @@ watch(
       <template v-else-if="mainTab === 'earnings'">
         <div class="earningsSection">
           <h2
-            class="text-2xl font-semibold text-[#133B5D] mb-6 flex items-center gap-2"
+            class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6 flex items-center gap-2"
           >
             My Earnings
           </h2>
+
           <div
             class="bg-linear-to-r from-[#133B5D] to-[#1b5383] text-white rounded-2xl p-8 mb-6 shadow-lg flex justify-between items-center"
           >
@@ -770,8 +771,7 @@ watch(
               <p
                 class="text-sm mt-1 font-medium flex items-center"
                 :class="{
-                  'text-green-300':
-                    earningsGrowth === 'first' || earningsGrowth > 0,
+                  'text-green-300': earningsGrowth === 'first' || earningsGrowth > 0,
                   'text-red-300': earningsGrowth < 0,
                   'text-gray-300': earningsGrowth === 0,
                 }"
@@ -793,32 +793,33 @@ watch(
                   alt=""
                 />
 
-                <span v-if="earningsGrowth === 'first'"
-                  >New earnings this month</span
-                >
-                <span v-else
-                  >{{ earningsGrowth > 0 ? "+" : "" }}{{ earningsGrowth }}% this
-                  month</span
-                >
+                <span v-if="earningsGrowth === 'first'">
+                  New earnings this month
+                </span>
+                <span v-else>
+                  {{ earningsGrowth > 0 ? '+' : '' }}{{ earningsGrowth }}% this month
+                </span>
               </p>
             </div>
           </div>
-          <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
-            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">
+
+          <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6 mb-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
               Earnings Overview
             </h3>
             <div class="h-[300px]">
               <canvas id="earningsChart"></canvas>
             </div>
           </div>
-          <div class="bg-white rounded-2xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-[#133B5D] mb-4">
+
+          <div class="bg-white dark:bg-[#16222B] rounded-2xl shadow-md p-6">
+            <h3 class="text-xl font-semibold text-[#133B5D] dark:text-white mb-4">
               Recent Orders
             </h3>
             <div class="overflow-x-auto">
-              <table class="min-w-full text-left border-collapse">
+              <table class="min-w-full text-left border-collapse dark:text-gray-200">
                 <thead>
-                  <tr class="border-b text-gray-600">
+                  <tr class="border-b text-gray-600 dark:text-gray-300">
                     <th class="py-2 px-3">Date</th>
                     <th class="py-2 px-3">Service</th>
                     <th class="py-2 px-3">Client</th>
@@ -829,7 +830,7 @@ watch(
                   <tr
                     v-for="order in orders"
                     :key="order.id"
-                    class="border-b hover:bg-gray-50 text-sm"
+                    class="border-b hover:bg-gray-50 dark:hover:bg-[#1E2A33] text-sm transition"
                   >
                     <td class="py-3 px-3">{{ order.date }}</td>
                     <td class="py-3 px-3">{{ order.descreption }}</td>
@@ -839,13 +840,13 @@ watch(
                         <span
                           class="px-2 py-1 rounded text-xs font-semibold mb-1"
                           :class="{
-                            'bg-green-100 text-green-700':
+                            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300':
                               order.status === 'completed',
-                            'bg-yellow-100 text-yellow-700':
+                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300':
                               order.status === 'pending',
-                            'bg-gray-100 text-gray-700':
+                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200':
                               order.status === 'in-progress',
-                            'bg-red-100 text-red-700':
+                            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300':
                               order.status === 'cancelled',
                           }"
                         >
@@ -854,16 +855,17 @@ watch(
                             order.status.slice(1)
                           }}
                         </span>
-                        <span class="text-sm text-[#133B5D] font-medium">
+                        <span class="text-sm text-[#133B5D] dark:text-gray-100 font-medium">
                           {{ order.price }} EGP
                         </span>
                       </div>
                     </td>
                   </tr>
+
                   <tr v-if="!orders.length">
                     <td
                       colspan="4"
-                      class="text-center py-4 text-gray-500"
+                      class="text-center py-4 text-gray-500 dark:text-gray-300"
                     >
                       No recent orders yet
                     </td>
@@ -875,15 +877,16 @@ watch(
         </div>
       </template>
 
+
       <template v-else-if="mainTab === 'appointments'">
         <div
           v-if="!technicianId"
-          class="text-center text-gray-500 mt-10 p-6 bg-white rounded-lg shadow"
+          class="text-center text-gray-500 mt-10 p-6 bg-white dark:bg-[#16222B] rounded-lg shadow"
         >
           <p>Loading user information...</p>
         </div>
-        <div v-else class="p-6 bg-white rounded-2xl shadow-md">
-          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">
+        <div v-else class="p-6 bg-white dark:bg-[#16222B] rounded-2xl shadow-md">
+          <h2 class="text-2xl font-semibold text-[#133B5D] mb-6 dark:text-white ">
             My Availability
           </h2>
 
@@ -901,7 +904,7 @@ watch(
             <div
               v-for="day in days"
               :key="day.name"
-              class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 hover:bg-gray-100 transition-colors"
+              class="flex flex-col md:flex-row md:items-center gap-4 p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-[#16222B]  hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors d "
             >
               <div
                 class="flex items-center space-x-3 flex-shrink-0 w-full md:w-1/4"
@@ -910,11 +913,11 @@ watch(
                   type="checkbox"
                   :id="`avail-${day.name}`"
                   v-model="day.active"
-                  class="h-5 w-5 text-[#133B5D] rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
+                  class="h-5 w-5 text-[#133B5D] dark:text-white rounded focus:ring-[#133B5D] border-gray-300 cursor-pointer"
                 />
                 <label
                   :for="`avail-${day.name}`"
-                  class="text-lg font-semibold text-gray-800 cursor-pointer"
+                  class="text-lg font-semibold text-gray-800 dark:text-white cursor-pointer"
                   >{{ day.name }}</label
                 >
               </div>
@@ -927,13 +930,13 @@ watch(
                   <div class="flex-1 w-full sm:w-auto">
                     <label
                       :for="`start-${day.name}`"
-                      class="block text-sm font-medium text-gray-600 mb-1"
+                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white"
                       >Start Time</label
                     >
                     <select
                       :id="`start-${day.name}`"
                       v-model="day.start"
-                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]"
+                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white"
                     >
                       <option
                         v-for="time in timeOptions"
@@ -948,13 +951,13 @@ watch(
                   <div class="flex-1 w-full sm:w-auto">
                     <label
                       :for="`end-${day.name}`"
-                      class="block text-sm font-medium text-gray-600 mb-1"
+                      class="block text-sm font-medium text-gray-600 mb-1 dark:text-white"
                       >End Time</label
                     >
                     <select
                       :id="`end-${day.name}`"
                       v-model="day.end"
-                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D]"
+                      class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#133B5D] focus:border-[#133B5D] text-black bg-white"
                     >
                       <option
                         v-for="time in timeOptions"
@@ -1017,13 +1020,13 @@ watch(
       </template>
 
       <template v-else-if="mainTab === 'Techsettings'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Settings</h2>
+        <h2 class="text-2xl font-semibold text-[#133B5D] dark:text-white mb-6">Settings</h2>
 
         <ManageTechnicianProfile @showNotification="triggerAlert" />
       </template>
 
       <template v-else-if="mainTab === 'chat'">
-        <h2 class="text-2xl font-semibold text-[#133B5D] mb-6">Chat</h2>
+        <h2 class="text-2xl font-semibold text-[#133B5D]  dark:text-white mb-6">Chat</h2>
         <ChatPage />
       </template>
 

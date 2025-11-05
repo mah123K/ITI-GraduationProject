@@ -23,6 +23,25 @@ const totalEarnings = computed(() => {
     .reduce((sum, o) => sum + (parseFloat(o.price) || 0), 0);
 });
 
+
+const isDark = ref(false);
+
+const applyTheme = (mode) => {
+  isDark.value = mode === 'dark';
+  document.documentElement.classList.toggle('dark', isDark.value);
+};
+
+const toggleDarkMode = () => {
+  const next = isDark.value ? 'light' : 'dark';
+  applyTheme(next);
+  try {
+    localStorage.setItem('theme', next);
+  } catch (e) {
+    // ignore
+  }
+};
+
+
 onMounted(async () => {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -89,6 +108,10 @@ const handleLogout = async () => {
           <p class="text-sm opacity-80 font-medium">My Earnings:</p>
           <p class="text-lg font-bold">{{ totalEarnings?.toLocaleString?.() || 0 }} EGP</p>
         </div>
+        <button @click="toggleDarkMode" class="cursor-pointer mt-2 " :title="isDark ? 'Light mode' : 'Dark mode'">
+            <i v-if="isDark" class="fa-solid fa-sun text-yellow-400 text-xl"></i>
+            <i v-else class="fa-solid fa-moon text-xl" :style="{ color: 'WHITE' }"></i>
+          </button>
       </div>
 
       <nav class="flex flex-col w-full mt-2 space-y-1">
