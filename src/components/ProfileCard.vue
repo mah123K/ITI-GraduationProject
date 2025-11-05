@@ -88,7 +88,7 @@
       v-else
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
-      class="flex flex-col sm:flex-row items-start bg-(--surface) rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
+      class="flex flex-col sm:flex-row items-start dark:bg-(--surface) rounded-2xl overflow-hidden shadow-xl p-4 gap-4 sm:gap-6 hover:shadow-2xl transition-shadow duration-200"
     >
       <img
         src="../images/lamp-big-3.jpg"
@@ -112,12 +112,16 @@
           <div class="flex items-center gap-6 text-sm text-(--text-primary) space-x-6 rtl:space-x-reverse">
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-star text-[#FF9529]"></i>
-              <span class="font-bold">{{ profile.rating }}</span>
+              <span class="font-bold">{{ profile.rating.toFixed() }}</span>
             </div>
 
             <div class="flex items-center gap-1">
               <i class="fa-solid fa-location-dot text-accent-color"></i>
-              <span class="dark:text-accent-color">{{ profile.location }}</span>
+              <span class="font-semibold">{{ profile.location }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <img src="../images/mechanical (1).png" class="w-5 h-5" alt="">
+              <span class="font-semibold">{{ ordersCompleted > 0 ? "+" + ordersCompleted : 0 }}</span>
             </div>
           </div>
           <button

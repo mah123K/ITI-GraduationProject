@@ -189,39 +189,43 @@
     "ordersCompleted": "طلبات مكتملة",
     "viewProfile": "عرض الملف الشخصي"
   },
-  "topBar": {
-    "filterButton": "تصفية",
-    "filtersTitle": "الفلاتر",
-    "clearAll": "مسح الكل",
-    "searchPlaceholder": "ابحث بالكلمات المفتاحية...",
-    "categoryTitle": "الموقع",
-    "locations": {
-      "cairo": "القاهرة",
-      "alexandria": "الإسكندرية",
-      "giza": "الجيزة",
-      "suez": "السويس",
-      "aswan": "أسوان",
-      "luxor": "الأقصر",
-      "redSea": "البحر الأحمر"
-    },
-    "priceTitle": "السعر",
-    "price": {
-      "low": "أقل من $50",
-      "medium": "$50 - $200",
-      "high": "أكثر من $200"
-    },
-    "ratingTitle": "التقييم",
-    "rating": {
-      "fourStars": "4 نجوم فأكثر",
-      "threeStars": "3 نجوم فأكثر"
-    },
-    "resultsText": "عرض {displayed} من {total} نتائج",
-    "sort": {
-      "default": "الترتيب الافتراضي",
-      "rating": "حسب التقييم",
-      "location": "حسب الموقع"
-    }
+ "topBar": {
+  "filterButton": "تصفية",
+  "filtersTitle": "الفلاتر",
+  "clearAll": "مسح الكل",
+  "searchPlaceholder": "ابحث بالكلمات المفتاحية...",
+  "categoryTitle": "الموقع",
+  "locations": {
+    "cairo": "القاهرة",
+    "alexandria": "الإسكندرية",
+    "giza": "الجيزة",
+    "suez": "السويس",
+    "aswan": "أسوان",
+    "luxor": "الأقصر",
+    "redSea": "البحر الأحمر"
   },
+  "projectsTitle": "المشروعات",
+  "projects": {
+    "few": "عدد قليل من المشروعات (<10)",
+    "medium": "عدد متوسط (10–50)",
+    "many": "عدد كبير (>50)"
+  },
+  "ratingTitle": "التقييم",
+  "rating": {
+    "fiveStars": "٥ نجوم فأعلى",
+    "fourStars": "٤ نجوم فأعلى",
+    "threeStars": "٣ نجوم فأعلى",
+    "twoStars": "نجمتان فأعلى",
+    "oneStars": "نجمة فأعلى"
+  },
+  "resultsText": "عرض {displayed} من أصل {total} نتيجة",
+  "sort": {
+    "default": "الترتيب الافتراضي",
+    "ratingDesc": "التقييم (من الأعلى إلى الأدنى)",
+    "ratingAsc": "التقييم (من الأدنى إلى الأعلى)",
+    "locationClosest": "الموقع (الأقرب أولاً)"
+  }
+},
   "loginPage": {
     "heroTitle": "بيتك،<br />في رعايتنا",
     "welcome": "مرحبًا بعودتك إلى<br />تشطيباتي",
