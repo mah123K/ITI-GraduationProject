@@ -1,4 +1,5 @@
 <script setup>
+import { uploadImageOnly } from "@/composables/useImageUpload";
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { db, auth } from "@/firebase/firebase";
@@ -8,6 +9,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  updateDoc, 
   serverTimestamp,
   query,
   where,
@@ -152,6 +154,67 @@ const technicianMemberSince = computed(() => {
   });
 });
 
+
+// 🧠 Analyze uploaded image using OpenAI Vision API (manual trigger)
+const analyzeImageWithAI = async () => {
+  try {
+    if (uploadedFiles.value.length === 0) {
+      triggerAlert("Please upload a photo first.");
+      return;
+    }
+
+    const file = uploadedFiles.value[0];
+    if (!file.type.startsWith("image/")) {
+      triggerAlert("Invalid file type. Please select an image.");
+      return;
+    }
+
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (!apiKey) throw new Error("Missing OpenAI API key");
+
+    // Convert the image to Base64 for sending
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    await new Promise((resolve) => (reader.onload = resolve));
+    const base64Image = reader.result;
+
+    triggerAlert("Analyzing image, please wait...");
+
+    // Call OpenAI API
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        input: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "input_text",
+                text: "Describe this home maintenance problem in one short sentence:",
+              },
+              { type: "input_image", image_url: base64Image, detail: "low" },
+            ],
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    const aiDescription = data?.output?.[0]?.content?.[0]?.text || "Could not generate description.";
+    orderDescription.value = aiDescription;
+    triggerAlert("AI description generated successfully!");
+  } catch (err) {
+    console.error("AI analysis error:", err);
+    triggerAlert("Failed to analyze image.");
+  }
+};
+
+
 // --- Availability Logic ---
 const generateTimeSlots = (startStr, endStr, intervalMinutes = 30) => {
   const slots = [];
@@ -259,6 +322,20 @@ const handleFileUpload = (event) => {
   uploadedFiles.value = Array.from(event.target.files);
 };
 
+
+// 🟩 Upload images using Cloudinary (same as WorkGallery)
+const uploadImagesToCloudinary = async (files) => {
+  const urls = [];
+  for (const file of files) {
+    const imageUrl = await uploadImageOnly(file); // ✅ same Cloudinary method
+    urls.push(imageUrl);
+  }
+  return urls;
+};
+
+
+
+
 const submitOrder = async () => {
   if (!selectedDayInfo.value || !selectedTime.value || !clientUser.value || !technician.value) {
     triggerAlert("Please select an available day and time.");
@@ -300,7 +377,17 @@ const submitOrder = async () => {
       orderCode: verificationCode,
     };
 
+    // Add order first
     const docRef = await addDoc(collection(db, "orders"), orderData);
+
+    // 🔹 Upload any attached images to Firebase
+    // 🔹 Upload any attached images to Firebase (same logic as WorkGallery)
+    if (uploadedFiles.value.length > 0) {
+      const imageUrls = await uploadImagesToCloudinary(uploadedFiles.value);
+      await updateDoc(docRef, { imageUrls });
+    }
+
+
 
     console.log("Order submitted with ID:", docRef.id);
     triggerAlert("Order submitted successfully!");
@@ -719,6 +806,14 @@ watch(selectedDayInfo, () => {
                 class="w-full h-32 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-accent-color "
                 :disabled="isPriceLocked"
               ></textarea>
+              <button
+                @click="analyzeImageWithAI"
+                class="mt-2 bg-accent-color text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer flex items-center gap-2"
+              >
+                <i class="fa-solid fa-magic-wand-sparkles"></i>
+                Generate with AI
+              </button>
+
             </div>
             <div>
               <label class="block text-left font-semibold text-gray-700 mb-1 dark:text-white">Price</label>

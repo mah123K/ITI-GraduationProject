@@ -1,36 +1,53 @@
 <script setup>
 import { ref, computed } from "vue"
-  const props = defineProps({
-    order: Object,
-  })
 
-  const emit = defineEmits(["acceptOrder","declineOrder"])
-  const showDetails = ref(false)
+const props = defineProps({
+  order: Object,
+})
 
-  const handleAccept = () => {
-    emit("acceptOrder", props.order.id)
+const emit = defineEmits(["accept-order", "decline-order"]);
+const showDetails = ref(false)
+
+// 🟩 NEW refs for decline reason popup
+const showReasonPopup = ref(false)
+const declineReason = ref("")
+
+const handleAccept = () => {
+  emit("acceptOrder", props.order.id)
+}
+
+const handleDecline = () => {
+  // show popup instead of direct emit
+  showReasonPopup.value = true
+}
+
+const confirmDecline = () => {
+  if (declineReason.value.trim() !== "") {
+    emit("decline-order", { id: props.order.id, reason: declineReason.value.trim() });
+    showReasonPopup.value = false
+    declineReason.value = ""
   }
-  const handleDecline = () => {
-  emit("declineOrder", props.order.id)
-  }
+}
+
+const cancelDecline = () => {
+  showReasonPopup.value = false
+  declineReason.value = ""
+}
 
 const formatLocation = (loc) => {
   if (!loc) return "—";
-  if (typeof loc === "string") return loc; // في حال اتخزنت كنص
+  if (typeof loc === "string") return loc;
   if (typeof loc === "object") {
-    const parts = [loc.street, loc.city, loc.country]
-      .filter(Boolean)
-      .join(", ");
+    const parts = [loc.street, loc.city, loc.country].filter(Boolean).join(", ");
     return parts || "Location not specified";
   }
   return "—";
 };
 
-
-  const shortDescription = computed(() => {
+const shortDescription = computed(() => {
   const desc = props.order.descreption || ""
   return desc.length > 15 ? desc.slice(0, 15) + "..." : desc
-  })
+})
 </script>
 <template>
   <div class="order rounded-2xl shadow-md p-5 w-[31%] bg-white dark:bg-[#16222B] m-2 relative">
@@ -125,6 +142,18 @@ const formatLocation = (loc) => {
       </div>
     </div>
   </div>
+  <transition name="fade">
+    <div v-if="showReasonPopup" class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50">
+      <div class="bg-white dark:bg-[#16222B] dark:text-white p-6 rounded-2xl shadow-xl w-[400px] text-center">
+        <h3 class="text-xl font-semibold mb-4 text-[#133B5D] dark:text-white">Enter reason for cancellation</h3>
+        <textarea v-model="declineReason" rows="4" class="w-full border rounded-lg p-2 dark:bg-[#16222B] dark:text-white border-gray-300 focus:ring-2 focus:ring-[#133B5D]" placeholder="Type the reason..."></textarea>
+        <div class="flex justify-end gap-3 mt-4">
+          <button @click="cancelDecline" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Cancel</button>
+          <button @click="confirmDecline" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-5 py-2 rounded-lg font-semibold">Submit</button>
+        </div>
+      </div>
+    </div>
+  </transition>
   <div
     v-if="showDetails"
     class="fixed inset-0 bg-[#0000008a]  flex justify-center items-center z-50" @click.self="showDetails = false"
@@ -150,6 +179,20 @@ const formatLocation = (loc) => {
         <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Time:</span> {{ order.time }}</p>
         <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Location:</span> {{ formatLocation(order.location) }}</p>
         <p class="text-[#133B5D] dark:text-white"><span class="font-bold text-[#133B5D] dark:text-white">Client:</span> {{ order.customer }}</p>
+        <!-- 🖼️ Display attached photos if exist -->
+      <div v-if="order.imageUrls && order.imageUrls.length" class="mt-4">
+        <p class="font-bold text-[#133B5D] dark:text-white mb-2">Attached Photos:</p>
+        <div class="grid grid-cols-2 gap-3">
+          <img
+            v-for="(url, index) in order.imageUrls"
+            :key="index"
+            :src="url"
+            class="w-full h-32 object-cover rounded-lg shadow-md hover:scale-105 transition-transform"
+            alt="Uploaded photo"
+          />
+        </div>
+      </div>
+
       </div>
     </div>
   </div>
