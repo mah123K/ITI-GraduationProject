@@ -26,6 +26,8 @@ import ManageTechnicianProfile from "./MannageTechnicionProfile.vue";
 import TechnicianWorkGallery from "./TechnicianWorkGallery.vue";
 // NEW: Import the AlertPopup component
 import AlertPopup from "../AlertPopup.vue"; // <-- Adjust path if needed
+// ✅ NEW: use the same Cloudinary uploader used elsewhere
+import { uploadImageOnly } from "@/composables/useImageUpload";
 
 // 🟦 Refs & states
 const technicianId = ref(null);
@@ -37,6 +39,7 @@ const orderTab = ref("requests");
 
 const showPopup = ref(false);
 const selectedService = ref(null);
+// NOTE: now this will hold a **Cloudinary HTTPS URL** (not blob:)
 const newImage = ref(null);
 const serviceTitle = ref("");
 const servicePrice = ref("");
@@ -225,7 +228,6 @@ const updateOrderStatus = async (id, status, reason = "") => {
   }
 };
 
-
 // 🟩 Technician actions
 const handleAcceptOrder = (id) => updateOrderStatus(id, "unconfirmed");
 const handleConfirmPayment = (id) => updateOrderStatus(id, "upcoming"); // after client pays
@@ -240,7 +242,7 @@ const openEditPopup = (service) => {
   selectedService.value = service;
   serviceTitle.value = service.descreption;
   servicePrice.value = service.price;
-  newImage.value = null;
+  newImage.value = null; // will be replaced by Cloudinary URL if user uploads
   showPopup.value = true;
 };
 
@@ -252,9 +254,24 @@ const openCreatePopup = () => {
   showPopup.value = true;
 };
 
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) newImage.value = URL.createObjectURL(file);
+// ✅ REPLACED: upload to Cloudinary instead of using object URL
+const handleImageChange = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  try {
+    if (!file.type.startsWith("image/")) {
+      triggerAlert("Please select an image file.");
+      return;
+    }
+    triggerAlert("Uploading image...");
+    const url = await uploadImageOnly(file); // Cloudinary HTTPS URL
+    newImage.value = url;
+    triggerAlert("Image uploaded successfully ✅");
+  } catch (err) {
+    console.error("Service image upload failed:", err);
+    triggerAlert("Image upload failed. Please try again.");
+  }
 };
 
 const deleteImage = () => {
@@ -273,9 +290,11 @@ const saveChanges = async () => {
       technicianId.value,
       "services"
     );
+
     const payload = {
       descreption: serviceTitle.value,
       price: servicePrice.value,
+      // ✅ always store a permanent URL (prefer Cloudinary URL if uploaded in this session)
       image:
         newImage.value ||
         selectedService.value?.image ||
@@ -284,16 +303,13 @@ const saveChanges = async () => {
 
     if (selectedService.value?.id) {
       await updateDoc(doc(servicesCol, selectedService.value.id), payload);
-      // UPDATED
       triggerAlert("Service updated.");
     } else {
       await addDoc(servicesCol, { ...payload, createdAt: serverTimestamp() });
-      // UPDATED
       triggerAlert("Service created.");
     }
   } catch (e) {
     console.error("saveChanges error:", e);
-    // UPDATED
     triggerAlert("Failed to save service.");
   }
 
@@ -306,11 +322,9 @@ const handleDeleteService = async (serviceId) => {
     await deleteDoc(
       doc(db, "technicians", technicianId.value, "services", serviceId)
     );
-    // UPDATED
     triggerAlert("Service deleted.");
   } catch (e) {
     console.error("delete service error:", e);
-    // UPDATED
     triggerAlert("Failed to delete service.");
   }
 };
@@ -334,7 +348,6 @@ const formatLocation = (loc) => {
   }
   return "—";
 };
-
 
 // 🟩 Filtered Orders
 const filteredOrders = computed(() =>
@@ -464,6 +477,7 @@ watch(
   { immediate: true }
 );
 </script>
+
 
 
 
