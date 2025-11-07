@@ -47,22 +47,28 @@ const servicePrice = ref("");
 const availabilityLoading = ref(true);
 const availabilitySaving = ref(false);
 const days = ref([
-  { name: "Monday", active: false, start: "09:00", end: "17:00" },
-  { name: "Tuesday", active: false, start: "09:00", end: "17:00" },
-  { name: "Wednesday", active: false, start: "09:00", end: "17:00" },
-  { name: "Thursday", active: false, start: "09:00", end: "17:00" },
-  { name: "Friday", active: false, start: "09:00", end: "17:00" },
-  { name: "Saturday", active: false, start: "09:00", end: "17:00" },
-  { name: "Sunday", active: false, start: "09:00", end: "17:00" },
+  { name: "Monday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Tuesday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Wednesday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Thursday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Friday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Saturday", active: false, start: "09:00 AM", end: "9:00 PM" },
+  { name: "Sunday", active: false, start: "09:00 AM", end: "9:00 PM" },
 ]);
 const timeOptions = ref([]);
-for (let h = 0; h < 24; h++) {
+
+// Generate times from 9:00 AM to 11:00 PM (inclusive)
+for (let h = 9; h <= 23; h++) {
   for (let m = 0; m < 60; m += 30) {
-    const hour = h.toString().padStart(2, "0");
+    const period = h >= 12 ? "PM" : "AM";
+    let hour12 = h % 12;
+    if (hour12 === 0) hour12 = 12; // convert 0 → 12
     const minute = m.toString().padStart(2, "0");
-    timeOptions.value.push(`${hour}:${minute}`);
+    const label = `${hour12}:${minute} ${period}`;
+    timeOptions.value.push(label);
   }
 }
+
 
 // 🟩 Notification system (REPLACED)
 const showPopupMessage = ref(false);

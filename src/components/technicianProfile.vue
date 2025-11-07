@@ -215,19 +215,33 @@ const analyzeImageWithAI = async () => {
 };
 
 
-// --- Availability Logic ---
+// ✅ Converts "09:00 AM" → "09:00 PM" into 12-hour slot list (every 30 mins)
 const generateTimeSlots = (startStr, endStr, intervalMinutes = 30) => {
   const slots = [];
   if (!startStr || !endStr) return slots;
+
   try {
-    const [startH, startM] = startStr.split(":").map(Number);
-    const [endH, endM] = endStr.split(":").map(Number);
-    let current = new Date();
+    // parse 12h strings with AM/PM
+    const parse12h = (str) => {
+      const [time, period] = str.split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+      return { hours, minutes };
+    };
+
+    const { hours: startH, minutes: startM } = parse12h(startStr);
+    const { hours: endH, minutes: endM } = parse12h(endStr);
+
+    const current = new Date();
     current.setHours(startH, startM, 0, 0);
     const end = new Date();
     end.setHours(endH, endM, 0, 0);
+
+    // if end < start (invalid), skip
     if (end <= current) return slots;
-    while (current < end) {
+
+    while (current <= end) {
       slots.push(
         current.toLocaleTimeString([], {
           hour: "2-digit",
@@ -242,6 +256,7 @@ const generateTimeSlots = (startStr, endStr, intervalMinutes = 30) => {
   }
   return slots;
 };
+
 
 const activeAvailableDays = computed(() => {
   const available = [];
@@ -272,7 +287,7 @@ const availableTimeSlots = computed(() => {
   const dayName = selectedDayInfo.value.name;
   const schedule = availabilitySchedule.value.find((d) => d.name === dayName && d.active);
   if (schedule && schedule.start && schedule.end) {
-    return generateTimeSlots(schedule.start, schedule.end, 60);
+    return generateTimeSlots(schedule.start, schedule.end, 30);
   }
   return [];
 });
@@ -318,9 +333,43 @@ const closePopup = () => {
   showPopup.value = false;
 };
 
-const handleFileUpload = (event) => {
-  uploadedFiles.value = Array.from(event.target.files);
+// ✅ Add below your existing uploadedFiles ref
+const previewUrls = ref([]);
+const uploadStatus = ref("");
+
+const handleFileUpload = async (event) => {
+  const files = Array.from(event.target.files || []);
+  uploadedFiles.value = files;
+  previewUrls.value = [];
+  uploadStatus.value = "";
+
+  // 🟦 Step 1: show previews first
+  for (const file of files) {
+    if (file && file.type && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewUrls.value.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // 🟦 Step 2: upload (after short wait to render previews)
+  if (files.length > 0) {
+    uploadStatus.value = "Uploading image...";
+    await new Promise((resolve) => setTimeout(resolve, 200)); // let DOM render
+    try {
+      const urls = await uploadImagesToCloudinary(files);
+      uploadStatus.value = "Image uploaded successfully!";
+      console.log("✅ Uploaded URLs:", urls);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      uploadStatus.value = "Upload failed. Please try again.";
+    }
+  }
 };
+
+
 
 
 // 🟩 Upload images using Cloudinary (same as WorkGallery)
@@ -786,16 +835,37 @@ watch(selectedDayInfo, () => {
               >
                 <i class="fas fa-upload"></i><span>Select Photos</span>
               </label>
-              <div v-if="uploadedFiles.length > 0" class="mt-2 text-sm text-gray-600">
+              <div v-if="uploadedFiles.length > 0" class="mt-2 text-sm text-gray-600 w-full">
                 <p
-                  v-for="file in uploadedFiles"
-                  :key="file.name"
-                  v-if="file.type.startsWith('image/')"
-                  class="truncate"
+                    v-for="(file, i) in uploadedFiles"
+                    :key="i"
+                    v-if="file && file.type && file.type.startsWith('image/')"
+                    class="truncate"
+                  >
+                    {{ file.name }}
+                  </p>
+
+                <!-- ✅ New: small image preview -->
+                <div class="flex flex-wrap gap-3 mt-3">
+                  <img
+                    v-for="(src, i) in previewUrls"
+                    :key="i"
+                    :src="src"
+                    alt="Preview"
+                    class="w-20 h-20 object-cover rounded-lg border border-gray-300 shadow-sm"
+                  />
+                </div>
+
+                <!-- ✅ New: upload status -->
+                <p
+                  v-if="uploadStatus"
+                  class="mt-2 text-sm font-medium"
+                  :class="uploadStatus.includes('success') ? 'text-green-600' : uploadStatus.includes('Uploading') ? 'text-blue-600' : 'text-red-600'"
                 >
-                  {{ file.name }}
+                  {{ uploadStatus }}
                 </p>
               </div>
+
 
             </div>
             <div>
