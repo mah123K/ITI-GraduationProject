@@ -28,6 +28,7 @@ const popupMessageContent = ref("");
 
 // 🟦 Work Gallery images from Firestore
 const galleryImages = ref([]);
+const isCustomService = ref(false);
 
 // NEW: Helper functions for custom alert popup
 const triggerAlert = (message) => {
@@ -155,7 +156,7 @@ const technicianMemberSince = computed(() => {
 });
 
 
-// 🧠 Analyze uploaded image using OpenAI Vision API (manual trigger)
+// 🧠 Analyze uploaded image using Google Gemini Vision API
 const analyzeImageWithAI = async () => {
   try {
     if (uploadedFiles.value.length === 0) {
@@ -169,50 +170,49 @@ const analyzeImageWithAI = async () => {
       return;
     }
 
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) throw new Error("Missing OpenAI API key");
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // ✳️ تأكد إنك ضايفها في .env
+    if (!apiKey) throw new Error("Missing Gemini API key");
 
-    // Convert the image to Base64 for sending
+    // 🔹 حوّل الصورة Base64
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    await new Promise((resolve) => (reader.onload = resolve));
-    const base64Image = reader.result;
+    const base64Image = await new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
     triggerAlert("Analyzing image, please wait...");
 
-    // Call OpenAI API
-    const response = await fetch("https://api.openai.com/v1/responses", {
+    // 🔹 استدعاء Gemini API
+    const response = await fetch("http://localhost:5000/gemini/analyze", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        input: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "input_text",
-                text: "Describe this home maintenance problem in one short sentence:",
-              },
-              { type: "input_image", image_url: base64Image, detail: "low" },
-            ],
-          },
-        ],
+        base64: base64Image,
+        mimeType: file.type,
+        prompt: "صف المشكلة الموجودة في الصورة بجملة قصيرة وواضحة بالعربية.",
       }),
     });
 
+
+
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
     const data = await response.json();
-    const aiDescription = data?.output?.[0]?.content?.[0]?.text || "Could not generate description.";
-    orderDescription.value = aiDescription;
+    const aiText =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "تعذر تحليل الصورة، حاول مرة أخرى.";
+    orderDescription.value = aiText;
     triggerAlert("AI description generated successfully!");
   } catch (err) {
     console.error("AI analysis error:", err);
     triggerAlert("Failed to analyze image.");
   }
 };
+
+
 
 
 // ✅ Converts "09:00 AM" → "09:00 PM" into 12-hour slot list (every 30 mins)
@@ -310,6 +310,7 @@ const openPopup = (service = null, price = null) => {
     router.push("/login");
     return;
   }
+
   showPopup.value = true;
   selectedDayInfo.value = null;
   selectedTime.value = "";
@@ -317,17 +318,22 @@ const openPopup = (service = null, price = null) => {
   orderDescription.value = "";
 
   if (service && price) {
+    // 🔹 Predefined technician service
     serviceTitle.value = service;
     servicePrice.value = price;
     orderDescription.value = service;
     isPriceLocked.value = true;
+    isCustomService.value = false; // hide AI button
   } else {
+    // 🔹 Custom service
     serviceTitle.value = "Custom Service Request";
     servicePrice.value = "";
     orderDescription.value = "";
     isPriceLocked.value = false;
+    isCustomService.value = true; // show AI button
   }
 };
+
 
 const closePopup = () => {
   showPopup.value = false;
@@ -391,6 +397,18 @@ const submitOrder = async () => {
     return;
   }
 
+  if (isCustomService.value) {
+  if (!orderDescription.value.trim()) {
+    triggerAlert("Please provide a description for your custom service.");
+    isSubmitting.value = false;
+    return;
+  }
+  if (!servicePrice.value.trim()) {
+    triggerAlert("Please enter an estimated price or budget.");
+    isSubmitting.value = false;
+    return;
+  }
+} 
   isSubmitting.value = true;
 
   try {
@@ -877,6 +895,7 @@ watch(selectedDayInfo, () => {
                 :disabled="isPriceLocked"
               ></textarea>
               <button
+                v-if="isCustomService"
                 @click="analyzeImageWithAI"
                 class="mt-2 bg-accent-color text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#4a74b3] transition cursor-pointer flex items-center gap-2"
               >

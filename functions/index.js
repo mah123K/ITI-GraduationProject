@@ -121,3 +121,44 @@ exports.sendEmailNotification = onDocumentCreated(
     }
   }
 );
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// ✅ Gemini Vision proxy endpoint
+app.post("/gemini/analyze", async (req, res) => {
+  try {
+    const { base64, mimeType, prompt } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY; // ضيفه في .env
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: prompt || "صف الصورة بجملة قصيرة وواضحة بالعربية." },
+                { inlineData: { mimeType, data: base64 } },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Gemini proxy error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+exports.api = app;
