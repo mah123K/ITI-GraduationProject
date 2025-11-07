@@ -6,13 +6,18 @@ const props = defineProps({
   order: Object,
 });
 
-const emit = defineEmits(["markCompleted", "cancelOrder"]);
+const emit = defineEmits(["mark-completed", "cancel-order"]);
 
-// 🟩 States for popup input
+
+// 🟩 States for popup input (verification code)
 const showCodePopup = ref(false);
 const enteredCode = ref("");
 const showAlert = ref(false);
 const alertMessage = ref("");
+
+// 🟩 NEW: States for cancellation reason popup
+const showCancelPopup = ref(false);
+const cancelReason = ref("");
 
 // 🟦 Handle mark completed flow
 const handleMarkCompleted = () => {
@@ -35,11 +40,28 @@ const confirmCode = () => {
   }
 };
 
+// 🟦 Updated cancel order flow — show reason popup
 const handleCancelOrder = () => {
-  emit("cancelOrder", props.order.id);
+  showCancelPopup.value = true;
 };
 
-// Format location helper
+// 🟦 Confirm cancel with reason
+const confirmCancel = () => {
+  if (cancelReason.value.trim() !== "") {
+    emit("cancel-order", { id: props.order.id, reason: cancelReason.value.trim() });
+
+    showCancelPopup.value = false;
+    cancelReason.value = "";
+  }
+};
+
+// 🟦 Cancel popup (close without submitting)
+const cancelPopup = () => {
+  showCancelPopup.value = false;
+  cancelReason.value = "";
+};
+
+// 🟦 Format location helper
 const formatLocation = (loc) => {
   if (!loc) return "—";
   if (typeof loc === "string") return loc;
@@ -52,7 +74,7 @@ const formatLocation = (loc) => {
   return "—";
 };
 
-// Short description logic
+// 🟦 Short description logic
 const shortDescription = computed(() => {
   const desc = (props.order.descreption || "").trim();
   if (!desc) return "";
@@ -62,12 +84,13 @@ const shortDescription = computed(() => {
   return desc;
 });
 
-// Full details modal toggle
+// 🟦 Full details modal toggle
 const showDetails = ref(false);
 
-// Check if payment is confirmed
+// 🟦 Check if payment is confirmed
 const isConfirmed = computed(() => props.order.status === "upcoming");
 </script>
+
 
 <template> 
   <div
@@ -275,6 +298,19 @@ const isConfirmed = computed(() => props.order.status === "upcoming");
       </div>
     </div>
   </div>
+  <!-- 🟩 Cancel Reason Popup -->
+  <transition name="fade">
+    <div v-if="showCancelPopup" class="fixed inset-0 bg-[#0000008a] flex justify-center items-center z-50">
+      <div class="bg-white dark:bg-[#16222B] dark:text-white p-6 rounded-2xl shadow-xl w-[400px] text-center">
+        <h3 class="text-xl font-semibold mb-4 text-[#133B5D] dark:text-white">Enter reason for cancellation</h3>
+        <textarea v-model="cancelReason" rows="4" class="w-full border rounded-lg p-2 dark:bg-[#16222B] dark:text-white border-gray-300 focus:ring-2 focus:ring-[#133B5D]" placeholder="Type the reason..."></textarea>
+        <div class="flex justify-end gap-3 mt-4">
+          <button @click="cancelPopup" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Cancel</button>
+          <button @click="confirmCancel" class="bg-[#133B5D] hover:bg-[#1b5383] text-white px-5 py-2 rounded-lg font-semibold">Submit</button>
+        </div>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <style scoped>

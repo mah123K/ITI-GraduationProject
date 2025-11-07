@@ -179,7 +179,7 @@ const listenForServices = () => {
 };
 
 // 🟩 Orders helpers (updated flow)
-const updateOrderStatus = async (id, status) => {
+const updateOrderStatus = async (id, status, reason = "") => {
   try {
     const orderRef = doc(db, "orders", id);
     const orderSnap = await getDoc(orderRef);
@@ -187,76 +187,53 @@ const updateOrderStatus = async (id, status) => {
 
     await updateDoc(orderRef, { status });
 
-    // ✅ Create notification for the client
     if (orderData?.clientId) {
-      const notifCol = collection(
-        db,
-        "users",
-        orderData.clientId,
-        "notifications"
-      );
+      const notifCol = collection(db, "users", orderData.clientId, "notifications");
+
+      const clientRef = doc(db, "users", orderData.clientId);
+      const clientSnap = await getDoc(clientRef);
+      const clientData = clientSnap.exists() ? clientSnap.data() : null;
+      const clientEmail = clientData?.email;
 
       const messages = {
-        unconfirmed:
-          "Your order has been accepted. Please complete your payment to confirm it.",
-        upcoming:
-          "Payment received successfully. Your order is now confirmed and scheduled.",
-        completed: "Your order has been completed successfully!",
-        declined: "Technician declined your order.",
-        cancelled: "Technician cancelled your order.",
+        unconfirmed: "تم قبول الأوردر ✅ الفني وافق على طلبك، برجاء إتمام الدفع لتأكيد الحجز.",
+        upcoming: "✅ تم استلام الدفع بنجاح! الأوردر الخاص بك تم تأكيده.",
+        completed: "🎉 تم إتمام الأوردر بنجاح! شكرًا لاستخدامك موقع Tashtebaty.",
+        declined: reason
+          ? `❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.\n\nالسبب: "${reason}"`
+          : "❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.",
+        cancelled: reason
+          ? `⚠️ تم إلغاء الأوردر من قبل الفني.\n\nالسبب: "${reason}"`
+          : "⚠️ تم إلغاء الأوردر من قبل الفني.",
       };
 
-      // ✅ Create notification for the client
-if (orderData?.clientId) {
-  const notifCol = collection(db, "users", orderData.clientId, "notifications");
-
-  // 🟦 جِيب إيميل العميل
-  const clientRef = doc(db, "users", orderData.clientId);
-  const clientSnap = await getDoc(clientRef);
-  const clientData = clientSnap.exists() ? clientSnap.data() : null;
-  const clientEmail = clientData?.email;
-
-  const messages = {
-    unconfirmed:
-      "تم قبول الأوردر ✅ الفني وافق على طلبك، برجاء إتمام الدفع لتأكيد الحجز.",
-    upcoming:
-      "✅ تم استلام الدفع بنجاح! الأوردر الخاص بك تم تأكيده.",
-    completed:
-      "🎉 تم إتمام الأوردر بنجاح! شكرًا لاستخدامك موقع Tashtebaty.",
-    declined: "❌ الفني اعتذر عن تنفيذ الأوردر الخاص بك.",
-    cancelled: "⚠️ تم إلغاء الأوردر من قبل الفني.",
-  };
-
-  await addDoc(notifCol, {
-    orderId: id,
-    title: "Order Status Update",
-    message: messages[status] || `Order status updated to ${status}`,
-    status,
-    email: orderData?.clientEmail || clientEmail || "noemail@tashtebaty.com",
-    isRead: false,
-    timestamp: serverTimestamp(),
-  });
-}
-
-
-
+      await addDoc(notifCol, {
+        orderId: id,
+        title: "Order Status Update",
+        message: messages[status] || `Order status updated to ${status}`,
+        status,
+        email: orderData?.clientEmail || clientEmail || "noemail@tashtebaty.com",
+        isRead: false,
+        timestamp: serverTimestamp(),
+      });
     }
 
-    // UPDATED
     triggerAlert(`Order marked as ${status}`);
   } catch (error) {
     console.error("Error updating order:", error);
-    // UPDATED
     triggerAlert("Failed to update order.");
   }
 };
+
 
 // 🟩 Technician actions
 const handleAcceptOrder = (id) => updateOrderStatus(id, "unconfirmed");
 const handleConfirmPayment = (id) => updateOrderStatus(id, "upcoming"); // after client pays
 const handleMarkCompletedOrder = (id) => updateOrderStatus(id, "completed");
-const handleDeclineOrder = (id) => updateOrderStatus(id, "declined");
-const handleCancelOrder = (id) => updateOrderStatus(id, "cancelled");
+const handleDeclineOrder = ({ id, reason }) =>
+  updateOrderStatus(id, "declined", reason);
+const handleCancelOrder = ({ id, reason }) =>
+  updateOrderStatus(id, "cancelled", reason);
 
 // 🟩 Services popups
 const openEditPopup = (service) => {
@@ -567,9 +544,8 @@ watch(
               v-for="order in filteredOrders"
               :key="order.id"
               :order="order"
-              @acceptOrder="handleAcceptOrder"
-              @declineOrder="handleDeclineOrder"
-              class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
+              @accept-order="handleAcceptOrder"
+              @decline-order="handleDeclineOrder"
             />
           </template>
           <template v-else-if="orderTab === 'upcoming'">
@@ -577,9 +553,8 @@ watch(
               v-for="order in filteredOrders"
               :key="order.id"
               :order="order"
-              @markCompleted="handleMarkCompletedOrder"
-              @cancelOrder="handleCancelOrder"
-              class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4"
+              @mark-completed="handleMarkCompletedOrder"
+              @cancel-order="handleCancelOrder"
             />
           </template>
           <template v-else-if="orderTab === 'completed'">
