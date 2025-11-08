@@ -13,25 +13,10 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./assets/App.vue";
 import "./assets/main.css";
+import i18n from "./i18n";
 
-
-// import { createI18n } from "vue-i18n";
-import i18n from './i18n';
-
-
-
-
-// const i18n = createI18n({
-//   legacy: false, // Use Composition API mode
-//   locale: localStorage.getItem("lang") || "en", // Default locale
-//   fallbackLocale: "en", // Fallback locale
-//   messages: {
-//     en: en, // English translations
-//     ar: ar, // Arabic translations
-//   },
-// });
 // ================================
-// 📦 Components Imports
+// 🔹 Components Imports (unchanged)
 // ================================
 import HomePage from "./components/HomePage.vue";
 import OfferPage from "./components/OfferPage.vue";
@@ -70,9 +55,7 @@ import ServiceCard from "./components/Technicion Dashboard/ServiceCard.vue";
 import UserOrders from "./components/UserOrders.vue";
 import PaymentSuccess from "./components/PaymentSuccess.vue";
 import PaymentFailed from "./components/PaymentFailed.vue";
-
-// ✅ New Payment Page
-import PaymentPage from "./components/PaymentPage.vue"; // 🆕 Added line
+import PaymentPage from "./components/PaymentPage.vue";
 
 // ================================
 // ⚙️ Firebase Config
@@ -106,36 +89,10 @@ const routes = [
   { path: "/chat", component: ChatPage },
   { path: "/manageUserProfile", component: ManageUserProfile },
   { path: "/forgot-password", component: forgotpassword, alias: "/forgotpassword" },
-
-  // ✅ صفحة الطلبات الجديدة (My Orders)
-  {
-    path: "/my-orders",
-    name: "MyOrders",
-    component: UserOrders,
-    meta: { requiresAuth: true },
-  },
-
-  // ✅ صفحة الدفع المخصصة (قبل Paymob iframe)
-  {
-    path: "/payment",
-    name: "PaymentPage",
-    component: PaymentPage, // 🆕 Added route
-    meta: { requiresAuth: true },
-  },
-
-  // ✅ صفحات الدفع (نجاح / فشل)
-  {
-    path: "/payment-success",
-    name: "PaymentSuccess",
-    component: PaymentSuccess,
-  },
-  {
-    path: "/payment-failed",
-    name: "PaymentFailed",
-    component: PaymentFailed,
-  },
-
-  // Admin Dashboard
+  { path: "/my-orders", name: "MyOrders", component: UserOrders, meta: { requiresAuth: true } },
+  { path: "/payment", name: "PaymentPage", component: PaymentPage, meta: { requiresAuth: true } },
+  { path: "/payment-success", name: "PaymentSuccess", component: PaymentSuccess },
+  { path: "/payment-failed", name: "PaymentFailed", component: PaymentFailed },
   {
     path: "/dashboard",
     component: DashboardLayout,
@@ -158,21 +115,8 @@ const routes = [
       },
     ],
   },
-
-  // Technician Dashboard
-  {
-    path: "/technician-dashboard",
-    component: TechncionDashboard,
-    meta: { requiresTechnician: true },
-  },
-
-  // Technician Chat
-  {
-    path: "/technician-chat",
-    name: "TechnicianChat",
-    component: ChatPage,
-    meta: { requiresTechnician: true },
-  },
+  { path: "/technician-dashboard", component: TechncionDashboard, meta: { requiresTechnician: true } },
+  { path: "/technician-chat", name: "TechnicianChat", component: ChatPage, meta: { requiresTechnician: true } },
 ];
 
 const router = createRouter({
@@ -183,18 +127,12 @@ const router = createRouter({
   },
 });
 
-// ================================
-// 🧭 Save last visited dashboard route
-// ================================
 router.afterEach((to) => {
   if (to.path.startsWith("/dashboard") || to.path.startsWith("/technician-dashboard")) {
     localStorage.setItem("lastDashboardRoute", to.fullPath);
   }
 });
 
-// ================================
-// 🧱 Navigation Guard
-// ================================
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
   const requiresAdmin = to.meta.requiresAdmin;
@@ -216,25 +154,20 @@ router.beforeEach(async (to, from, next) => {
 });
 
 // ================================
-// 🚀 Mount Vue app *after* Firebase auth is ready
+// 🚀 Mount app BEFORE Firebase check
 // ================================
-let appInitialized = false;
+const app = createApp(App);
+app.use(router);
+app.use(i18n);
+app.mount("#app");
 
+// ================================
+// 🧭 Firebase user listener
+// ================================
 onAuthStateChanged(auth, async (user) => {
-  if (!appInitialized) {
-    const app = createApp(App);
-    app.use(router);
-    app.use(i18n)
-    app.mount("#app");
-    appInitialized = true;
-  }
-
   if (!user) {
     localStorage.removeItem("lastDashboardRoute");
-    if (
-      router.currentRoute.value.meta.requiresAdmin ||
-      router.currentRoute.value.meta.requiresTechnician
-    ) {
+    if (router.currentRoute.value.meta.requiresAdmin || router.currentRoute.value.meta.requiresTechnician) {
       router.push("/login");
     }
     return;
@@ -254,7 +187,6 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem("lastDashboardRoute", "/technician-dashboard");
         lastRoute = "/technician-dashboard";
       }
-
       if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
         router.replace(lastRoute);
       }
@@ -263,14 +195,11 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem("lastDashboardRoute", "/dashboard");
         lastRoute = "/dashboard";
       }
-
       if (currentPath === "/" || currentPath === "/login" || currentPath === "/signup") {
         router.replace(lastRoute);
       }
-    } else {
-      if (currentPath === "/login" || currentPath === "/signup") {
-        router.replace("/");
-      }
+    } else if (currentPath === "/login" || currentPath === "/signup") {
+      router.replace("/");
     }
   } catch (error) {
     console.error("Error restoring dashboard route:", error);
