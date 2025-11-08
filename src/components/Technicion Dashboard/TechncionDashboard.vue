@@ -773,7 +773,7 @@ watch(
               >
                 <img
                   v-if="earningsGrowth === 'first'"
-                  src="../images/increase.png"
+                  src="../../images/increase.png"
                   class="w-5 h-5 mr-1"
                   alt=""
                 />
@@ -781,8 +781,8 @@ watch(
                   v-else
                   :src="
                     earningsGrowth > 0
-                      ? '../images/increase.png'
-                      : '../images/decrease.png'
+                      ? '../../images/increase.png'
+                      : '../../images/decrease.png'
                   "
                   class="w-5 h-5 mr-1"
                   alt=""
