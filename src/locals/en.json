@@ -1,0 +1,406 @@
+{
+  "navbar": {
+    "home": "Home",
+    "services": "Services",
+    "plumbing": "Plumbing",
+    "electrical": "Electrical",
+    "finishing": "Finishing",
+    "carpentry": "Carpentry",
+    "offers": "Offers",
+    "about": "About",
+    "contact": "Contact Us",
+    "hello": "Hello, {name}",
+    "manageProfile": "Manage your Profile",
+    "switchAccount": "Switch Account",
+    "logout": "Log out",
+    "signup": "Sign Up",
+    "login": "Login",
+    "myOrders": "My Orders",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications yet",
+    "myOrdersTitle": "My Orders"
+  },
+  "footer": {
+    "description": "Tashtebaty exists to simplify home maintenance for every household in Egypt by connecting users with skilled, verified technicians.",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "contactUs": "Contact Us",
+    "links": {
+      "about": "About us",
+      "contact": "Contact",
+      "services": "Services",
+      "offers": "Offers",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "cookie": "Cookie policy"
+    }
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "prompt": "Enter your email to get a reset link.",
+    "emailPlaceholder": "Enter your email",
+    "button": "Send Reset Link",
+    "backToLogin": "Back to Login"
+  },
+  "home": {
+    "services": {
+      "title": "Our Services",
+      "plumbing": "Plumbing",
+      "finishing": "Finishing",
+      "electrical": "Electrical",
+      "carpentry": "Carpentry"
+    },
+    "howItWorks": {
+  "title": "Our Working Progress",
+  "subtitle": "Book trusted home maintenance in four simple steps.",
+  "step1": {
+    "title": "Browse Services",
+    "text": "Explore categories like plumbing, electrical, etc."
+  },
+  "step2": {
+    "title": "Book a Technician",
+    "text": "Choose a verified technician, set time & location."
+  },
+  "step3": {
+    "title": "Pay Securely",
+    "text": "Pay online via Paymob or cash; track everything in your order."
+  },
+  "step4": {
+    "title": "Job Done & Rated",
+    "text": "Technician completes the task, you confirm & leave a rating."
+  }
+},
+    "offers": {
+      "title": "Exclusive Offers",
+      "seeMore": "see more",
+      "loading": "Loading offers...",
+      "claim": "Claim offer",
+      "noOffers": "No offers available at the moment."
+    },
+    "whyUs": {
+      "title": "Why Choose US?",
+      "point1": "We serve over 60,000 happy customers and they continue to order regularly.",
+      "point2": "Flexible prices, choose the price suitable for you and negotiate.",
+      "point3": "All workers and technicians are contracted with us and all their data is fully available.",
+      "point4": "Continuous follow-up during and until the completion of the order implementation."
+    },
+    "feedback": {
+      "title": "Our Customers Feedback",
+      "name": "Customer Name"
+    },
+    "gallery": {
+      "title": "Our Work Gallery",
+      "description": "Take a look at some of our completed projects  from home repairs to full renovations. Every project is handled with care, precision, and quality."
+    },
+    "contactInfo": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
+    }
+  },
+  "aboutUs": {
+    "hero": {
+      "title": "About Tashtebaty",
+      "subtitle": "We provide the highest quality with the best Prices in the market",
+      "description": "A leading Egyptian platform founded in 2025 by five founders united by a single goal: to simplify access to the best home maintenance and professional services in Egypt. Tashtebaty was born from our belief in the necessity of building a bridge of trust and professionalism between our valued customers and the most skilled craftsmen and technicians."
+    },
+    "features": {
+      "title": "Our special features",
+      "subtitle": "We don't just fix homes, we deliver an experience.",
+      "feature1Title": "Certified Technicians",
+      "feature1Text": "Every professional is highly skilled and verified, specializing in their exact trade—no generalists. You get a true expert every time.",
+      "feature2Title": "24/7 Priority Support",
+      "feature2Text": "Get an instant response and dedicated assistance from our support team, ensuring your issue is tracked and addressed around the clock, from start to finish.",
+      "feature3Title": "Transparent Pricing Policy",
+      "feature3Text": "No hidden fees or surprise costs. We provide clear, detailed estimates before any work begins, so you always know what you're paying for."
+    },
+    "stats": {
+      "services": "Completed services",
+      "users": "Registered users",
+      "orders": "Repeated Orders",
+      "rating": "Average rating"
+    },
+    "whyUs": {
+      "title": "Why choose us?",
+      "description": "Tashtebaty is your trusted Egyptian platform, solving the hassle of finding reliable help since 2025. We meticulously vet and contract every professional from quick repairs (plumbing, electrics) to full home finishing. We guarantee expert workmanship, clear pricing, and continuous support from order to completion, ensuring total peace of mind with every service.",
+      "point1": "Use best materials and labor in every project.",
+      "point2": "Integrity and honesty from top to bottom.",
+      "point3": "Affordable and fair prices.",
+      "point4": "Licensed and Insured.",
+      "point5": "We care about our customers and give personal attention."
+    },
+    "feedback": {
+      "title": "Our Customers Feedback",
+      "samir": {
+        "name": "Samir Mohamed",
+        "text": "My main breaker kept tripping, which was a huge hassle. I used Tashtebaty and an electrician was dispatched incredibly fast. I appreciated the clear communication about the fee structure before he started the repair. He fixed the wiring issue quickly and professionally, and the system follow-up was excellent. I feel much safer now. If you need speed and trustworthy help, this is the service to use!"
+      },
+      "mona": {
+        "name": "Mona Adel",
+        "text": "I finally decided to get my kitchen cabinets updated, and I booked a carpenter through Tashtebaty. I was so impressed! The quality of the work was top-notch, and the technician's data was transparently provided upfront. The price was great, and they finished ahead of schedule. Knowing they check in after completion shows they really care. This is my new go-to for home maintenance. Highly recommend!"
+      },
+      "mai": {
+        "name": "Mai Tarek",
+        "text": "Highly recommend Tashtebaty for reliable and quality work."
+      },
+      "khaled": {
+        "name": "Khaled Nabil",
+        "text": "I needed a plumber for an urgent leak, and I used Tashtebaty for the first time. The process was incredibly smooth. I loved that all the plumber's info was right there no guessing! The price was fair, and the follow up call after the job was finished was a fantastic touch. I'm definitely a regular customer now! Highly recommend for reliable service"
+      }
+    }
+  
+  },
+
+  "contactUs": {
+    "header": {
+      "title": "Contact Us",
+      "subtitle": "We are here to help you with your issue"
+    },
+    "info": {
+      "addressTitle": "Address",
+      "addressText": "Basharim Center, Giza",
+      "phoneTitle": "Phone",
+      "phoneText": "+201234567890",
+      "emailTitle": "Email",
+      "emailText": "example@gmail.com"
+    },
+    "form": {
+      "title": "Write a Feedback",
+      "placeholderName": "Name",
+      "placeholderEmail": "Your email",
+      "placeholderPhone": "Your phone",
+      "placeholderSubject": "Subject",
+      "placeholderMessage": "Write your message...",
+      "submitButton": "Submit",
+      "success": "Your message has been sent!",
+      "errorRequired": "Please fill in all required fields",
+      "errorGeneral": "Something went wrong. Please try again."
+    }
+  },
+  "offersPage": {
+    "banner1": {
+      "tag": "Limited Time",
+      "title": "SIGN UP AND GET",
+      "subtitle": "DISCOUNT VOUCHER!",
+      "text": "on your first order!",
+      "button": "Get Started"
+    },
+    "banner2": {
+      "title": "REFER A FRIEND",
+      "text": "You both get 100 EGP credit when they book!",
+      "subtitle": "FOR EACH",
+      "button": "Share Now"
+    },
+    "grid": {
+      "loading": "Loading special offers...",
+      "emptyTitle": "No Offers Available",
+      "emptyText": "Please check back later for new promotions!",
+      "suffix": "off",
+      "buttonClaiming": "Claiming...",
+      "buttonClaimed": "Claimed",
+      "buttonClaim": "Claim Offer"
+    }
+  },
+  "profilesPage": {
+    "titleSuffix": "Profiles",
+    "allProfiles": "All Profiles",
+    "loadingError": "Failed to load profiles. Please try again.",
+    "fallbackLocation": "Not specified",
+    "fallbackBio": "No bio provided.",
+    "fallbackNA": "N/A",
+    "ordersCompleted": "Orders Completed",
+    "viewProfile": "View Profile"
+  },
+  "topBar": {
+    "filterButton": "Filter",
+    "filtersTitle": "Filters",
+    "clearAll": "Clear all",
+    "searchPlaceholder": "Search keywords...",
+    "categoryTitle": "Location",
+    "locations": {
+      "cairo": "Cairo",
+      "alexandria": "Alexandria",
+      "giza": "Giza",
+      "suez": "Suez",
+      "aswan": "Aswan",
+      "luxor": "Luxor",
+      "redSea": "Red Sea"
+    },
+    "priceTitle": "Price",
+    "price": {
+      "low": "Under $50",
+      "medium": "$50–$200",
+      "high": "Over $200"
+    },
+    "ratingTitle": "Rating",
+    "rating": {
+      "fourStars": "4 stars & up",
+      "threeStars": "3 stars & up"
+    },
+    "resultsText": "Showing {displayed} of {total} results",
+    "sort": {
+      "default": "Default sort",
+      "rating": "Rating",
+      "location": "Location"
+    }
+  },
+  "loginPage": {
+    "heroTitle": "Your home,<br />our care",
+    "welcome": "Welcome back!",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "forgotPassword": "Forgot password?",
+    "signInButton": "Sign In",
+    "divider": "or continue with",
+    "googleButton": "Sign in with Google",
+    "promptSignup": "Don't have an account?",
+    "signupLink": "Sign up",
+    "errors": {
+      "notFoundDB": "User not found in database.",
+      "notFoundEmail": "No user found with this email.",
+      "wrongPassword": "Incorrect password.",
+      "generic": "Login failed. Please check your credentials.",
+      "googleFailed": "Google Sign-In failed.",
+      "reset": {
+        "enterEmail": "Please enter your email.",
+        "sent": "Password reset email sent! Check your inbox.",
+        "noAccount": "No account found with this email.",
+        "failed": "Failed to send reset email."
+      }
+    }
+  },
+  "signUpPage": {
+    "title": "Sign Up",
+    "subtitle": "Create your account and get started today",
+    "tabs": {
+      "client": "Client",
+      "technician": "Technician",
+      "company": "Company"
+    },
+    "client": {
+      "title": "Client Registration",
+      "profilePic": "Profile Picture (Optional)",
+      "fullName": "Full Name *",
+      "email": "Email *",
+      "password": "Password *",
+      "confirmPassword": "Confirm Password *",
+      "phone": "Phone Number *",
+      "country": "Country *",
+      "street": "Street Address *",
+      "city": "City *"
+    },
+    "technician": {
+      "title": "Technician Registration",
+      "idCard": "ID Card",
+      "profilePic": "Profile Picture",
+      "fullName": "Full Name *",
+      "username": "Username *",
+      "email": "Email *",
+      "password": "Password *",
+      "confirmPassword": "Confirm Password *",
+      "phone": "Phone Number *",
+      "skill": "Work type (e.g., Plumbing) *",
+      "workArea": "Work Area (City / Region) *",
+      "experience": "Years of Experience",
+      "address": "Address",
+      "bio": "Bio (Describe your service)"
+    },
+    "company": {
+      "title": "Company Registration",
+      "taxCard": "Tax Card",
+      "logo": "Company Logo",
+      "companyName": "Company Name *",
+      "username": "Username *",
+      "email": "Email *",
+      "password": "Password *",
+      "confirmPassword": "Confirm Password *",
+      "phone": "Phone *",
+      "bio": "Bio (Describe your company)",
+      "address": "Address",
+      "city": "City",
+      "website": "Website / Social Links",
+      "teamSize": "Team Size",
+      "crn": "Company Registration Number (CRN)"
+    },
+    "signUpButton": "Sign Up",
+    "promptLogin": "Already have an account?",
+    "loginLink": "Login here",
+    "alerts": {
+      "imageSize": "Image should be less than 5MB",
+      "allFields": "All required fields must be filled",
+      "invalidEmail": "The email address is not valid",
+      "passwordMismatch": "Passwords do not match",
+      "phoneDigits": "Phone number must contain digits only",
+      "success": "Registration successful",
+      "genericError": "Signup failed. Please try again.",
+      "genericErrorWithCode": "Signup failed: {message}"
+    }
+  },
+  "userProfile": {
+    "sidebar": {
+      "editProfile": "Edit Profile",
+      "myOrders": "My Recent Orders",
+      "back": "Back"
+    },
+    "orders": {
+      "title": "Recent Orders",
+      "table": {
+        "orderId": "Order ID",
+        "date": "Date",
+        "status": "Status",
+        "total": "Total",
+        "actions": "Actions"
+      },
+      "viewButton": "View",
+      "totalSales": "Total Delivered Sales:",
+      "statusDelivered": "Delivered",
+      "statusPending": "Pending",
+      "statusCancelled": "Cancelled" 
+    },
+    "profile": {
+      "title": "Personal Information",
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "password": "Password",
+        "confirmPassword": "Confirm Password"
+      }
+    },
+    "address": {
+      "title": "Address",
+      "labels": {
+        "street": "Street",
+        "city": "City",
+        "country": "Country"
+      },
+      "mapNote": "Address will automatically update the map location",
+      "mapUpdating": "Updating map location..."
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "modal": {
+      "title": "Order #{id}",
+      "labels": {
+        "date": "Date:",
+        "status": "Status:",
+        "total": "Total:",
+        "notes": "Notes:"
+      },
+      "noNotes": "No additional notes.",
+      "close": "Close", 
+      "previous": "Previous",
+      "next": "Next" 
+    },
+    "alerts": {
+      "passwordMismatch": "Passwords do not match!",
+      "saveSuccess": "Changes saved successfully!",
+      "saveError": "Failed to save changes. Please try again.",
+      "imageSize": "Image size should be less than 5MB"
+    }
+  }
+}

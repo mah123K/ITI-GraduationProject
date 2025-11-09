@@ -1,0 +1,21 @@
+# Dependency folders
+node_modules/
+dist/
+
+# Environment files
+.env
+functions/.env
+gemini-server/.env
+
+# Logs & system junk
+*.log
+.DS_Store
+
+# VSCode / IDE configs
+.vscode/
+.idea/
+
+# Build artifacts
+*.local
+*.cache
+tmp/

@@ -1,0 +1,52 @@
+<script>
+import FooterLayout from "../layout/FooterLayout.vue";
+import NavBar from "../layout/NavBar.vue";
+import TechncionDashboard from "../components/Technicion Dashboard/TechncionDashboard.vue";
+import TechnicionDashNav from "../layout/TechnicionDashNav.vue";
+import MannageUserProfile from "../components/MannageUserProfile.vue";
+
+export default {
+  name: "App",
+  data() {
+    return {};
+  },
+  computed: {
+    hideLayout() {
+      const hiddenRoutes = ["/login", "/signup", "/dashboard","/technician-dashboard", "/technician-chat"];
+      return hiddenRoutes.some((path) => this.$route.path.startsWith(path));
+    },
+    
+    // --- FIX ---
+    // I have REMOVED the two duplicate 'currentLocale' properties.
+    // They were causing a JavaScript error.
+    
+  },
+  components: {
+    NavBar,
+    TechncionDashboard,
+    FooterLayout,
+    TechnicionDashNav,
+    MannageUserProfile,
+  },
+  
+  // This 'watch' block is 100% correct and will
+  // work perfectly once the error above is fixed.
+  watch: {
+    '$i18n.locale': {
+      handler(newLang) {
+        document.documentElement.lang = newLang;
+        document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+      },
+      immediate: true 
+    }
+  }
+};
+</script>
+
+<template>   
+  <nav-bar v-if="!hideLayout" />
+  <router-view />
+  <footer-layout v-if="!hideLayout" />
+</template>
+
+<style scoped></style>

@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* If you used my "Option 2 (CSS Variables)" method,
+ your variables MUST be in this file, like this:
+*/
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -----------------------
+   🌤️ Light Mode
+   ----------------------- */
+:root {
+  --bg: #ffffff;
+  --surface: #DAECF6;
+  --text-primary: #0f1720;
+  --text-muted: #6b7280;
+  --accent: #5984c6;
+  --accent-contrast: #ffffff;
+  --border: #e6e9ee;
+  --shadow: 0 1px 3px rgba(2, 6, 23, 0.06);
+  --focus-ring: rgba(14, 165, 255, 0.3);
+  --section: #ffffff;
+
+  /* 🩵 Navbar - Light */
+  --nav-bg: #ffffff;
+  --nav-text: #334155; /* لون النص الافتراضي */
+  --nav-hover-color: #2563eb; /* أزرق أنيق عند الهوفر */
+  --nav-active-color: #5984c6; /* أزرق غامق للأكتف */
+  --nav-border: #e2e8f0;
+  --nav-hover-bg: transparent;
+
+  /* 🩵 Footer - Light */
+  --footer-bg: #5984c6; /* أزرق فاتح ناعم */
+  --footer-text: #ffffff;
+  --footer-link-hover: #0ea5ff;
+}
+
+/* -----------------------
+   🌑 Dark Mode (supports both [data-theme="dark"] and .dark)
+   ----------------------- */
+:root[data-theme="dark"],
+.dark {
+  --bg: #0b1217;
+  --surface: #16222b;
+  --text-primary: #e9eef5;
+  --text-muted: #9ca3af;
+  --accent: #5a8bd8;
+  
+  --accent-contrast: #ffffff;
+  --border: #1e2a34;
+  --shadow: 0 1px 3px rgba(2, 6, 23, 0.06);
+  --focus-ring: rgba(14, 165, 255, 0.3);
+  --section: #16222b;
+
+  /* 🌚 Navbar - Dark */
+  --nav-bg: #111a20;
+  --nav-text: #e9eef5;
+  --nav-hover: #7fb7ff;
+  --nav-border: #1e2a34;
+  --nav-hover-bg: transparent;
+  --nav-hover-color: #7fb7ff;
+  --nav-active-color: #5a8bd8;
+
+  /* 🌚 Footer - Dark */
+  --footer-bg: #111a20;
+  --footer-text: #e9eef5;
+  --footer-link-hover: #5a8bd8;
+}
+
+/* -----------------------
+   🔗 Footer hover styles
+   ----------------------- */
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+.dark .footer-link:hover,
+:root[data-theme="dark"] .footer-link:hover {
+  color: var(--footer-link-hover);
+  text-decoration: none;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+/* Base app look using tokens */
+html,
+body,
+#app {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Helpful utility classes mapped to tokens (use as needed) */
+.bg-surface {
+  background-color: var(--surface);
+}
+.text-muted {
+  color: var(--text-muted);
+}
+.shadow-card {
+  box-shadow: var(--shadow);
+}
+.border-tokens {
+  border-color: var(--border);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@theme {
+  --color-accent-color: #5984c6;
+  --color-secondry-color: #daecf6;
+  --color-secondary-blue: #daecf6;
+  --color-dark-blue: #0b161b;
+}
+@plugin "daisyui" {
+}
+@layer components {
+  .main-header {
+    @apply text-[48px] font-semibold text-accent-color  mt-10 mb-5 text-center;
+  }
+  /* Map token-based utilities used in components */
+  .theme-bg {
+    background-color: var(--bg);
+  }
+  .theme-text {
+    color: var(--text-primary);
+  }
+}
+/* -----------------------
+   ✅ Fix checkbox & radio color
+   ----------------------- */
+
+/* خلي المتصفح يختار ألوان Light/Dark الطبيعية */
+:root {
+  color-scheme: light dark;
+}
+
+/* رجّع اللون الطبيعي لعلامة الصح أو النقطة بلون الـ accent */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}
