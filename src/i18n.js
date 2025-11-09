@@ -1,8 +1,8 @@
 import { createI18n } from "vue-i18n";
 
 // ✅ Import the translation files (Vite will bundle them correctly for Netlify)
-import en from "./locals/en.json";
-import ar from "./locals/ar.json";
+import en from "../public/locals/en.json";
+import ar from "../public/locals/ar.json";
 console.log("✅ EN:", en);
 console.log("✅ AR:", ar);
 

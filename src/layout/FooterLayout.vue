@@ -36,7 +36,7 @@
     </div>
 
     <!-- Contact & Social -->
-    <div class="ms-0 sm:ms-10 text-left sm:text-left">
+    <div class="ms-0 sm:ms-10 rtl:text-right text-left sm:text-left">
       <h6 class="footer-title">{{ $t('footer.contactUs') }}</h6>
       <div class="flex gap-x-4 mt-2 rtl:justify-start justify-start">
         <a href="#" class="footer-icon">
