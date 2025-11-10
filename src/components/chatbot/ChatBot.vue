@@ -7,9 +7,9 @@
             <div v-if="isOpen" class="w-80 sm:w-96 h-[500px] mb-4 bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200">
                 
                 <!-- Header -->
-                <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center flex-shrink-0">
+                <div class="bg-accent-color text-white p-4 rounded-t-lg flex justify-between items-center flex-shrink-0">
                     <h3 class="font-bold text-lg">Chat with AI</h3>
-                    <button @click="toggleChat" class="p-1 rounded-full hover:bg-blue-700 transition-colors">
+                    <button @click="toggleChat" class="p-1 rounded-full hover:bg-accent-color transition-colors">
                         <!-- Close Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -26,7 +26,7 @@
                             class="inline-block p-3 rounded-lg max-w-[85%]"
                             :class="{
                                 'bg-gray-200 text-gray-800 rounded-bl-none': msg.role === 'bot',
-                                'bg-blue-600 text-white rounded-br-none': msg.role === 'user'
+                                'bg-accent-color text-white rounded-br-none': msg.role === 'user'
                             }"
                         >
                             <!-- Display uploaded image if it exists -->
@@ -66,7 +66,7 @@
                     <div class="flex items-center space-x-2">
                         <!-- Attach Icon -->
                         <button
-                            class="text-gray-500 hover:text-blue-600 p-2 rounded-full transition-colors"
+                            class="text-gray-500 hover:text-accent-color p-2 rounded-full transition-colors"
                             @click="triggerFileUpload"
                             :disabled="isLoading"
                         >
@@ -87,7 +87,7 @@
                         
                         <!-- Send Button -->
                         <button 
-                            class="bg-blue-600 text-white rounded-full p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            class=" bg-accent-color text-white rounded-full p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center hover:bg-accent-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             @click="sendMessage"
                             :disabled="isLoading"
                         >
@@ -102,10 +102,10 @@
         </transition>
 
         <!-- Chat Bubble / Icon -->
-        <button @click="toggleChat" class="bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center cursor-pointer shadow-xl hover:bg-blue-700 transition-all duration-300 ease-in-out transform hover:scale-110">
+        <button @click="toggleChat" class="bg-accent-color dark:bg-dark-blue text-white rounded-full w-15 h-15 flex items-center justify-center cursor-pointer shadow-xl hover:bg-accent-blue transition-all duration-300 ease-in-out transform hover:scale-110">
             <!-- Show Chat Icon when closed -->
-            <svg v-if="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <svg v-if="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-10 w-30" fill="currentColor" viewBox="0 0 640 544">
+                <path d="M352 64C352 46.3 337.7 32 320 32C302.3 32 288 46.3 288 64L288 128L192 128C139 128 96 171 96 224L96 448C96 501 139 544 192 544L448 544C501 544 544 501 544 448L544 224C544 171 501 128 448 128L352 128L352 64zM160 432C160 418.7 170.7 408 184 408L216 408C229.3 408 240 418.7 240 432C240 445.3 229.3 456 216 456L184 456C170.7 456 160 445.3 160 432zM280 432C280 418.7 290.7 408 304 408L336 408C349.3 408 360 418.7 360 432C360 445.3 349.3 456 336 456L304 456C290.7 456 280 445.3 280 432zM400 432C400 418.7 410.7 408 424 408L456 408C469.3 408 480 418.7 480 432C480 445.3 469.3 456 456 456L424 456C410.7 456 400 445.3 400 432zM224 240C250.5 240 272 261.5 272 288C272 314.5 250.5 336 224 336C197.5 336 176 314.5 176 288C176 261.5 197.5 240 224 240zM368 288C368 261.5 389.5 240 416 240C442.5 240 464 261.5 464 288C464 314.5 442.5 336 416 336C389.5 336 368 314.5 368 288zM64 288C64 270.3 49.7 256 32 256C14.3 256 0 270.3 0 288L0 384C0 401.7 14.3 416 32 416C49.7 416 64 401.7 64 384L64 288zM608 256C590.3 256 576 270.3 576 288L576 384C576 401.7 590.3 416 608 416C625.7 416 640 401.7 640 384L640 288C640 270.3 625.7 256 608 256z"/>
             </svg>
             
             <!-- Show Close Icon when open -->
