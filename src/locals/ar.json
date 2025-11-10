@@ -243,8 +243,9 @@
     }
   },
   "loginPage": {
-    "heroTitle": "بيتك،<br />في رعايتنا",
-    "welcome": "مرحبًا بعودتك إلى<br />تشطيباتي",
+    "heroTitle": "بيتك بأمان<br />في رعايتنا",
+    "welcomeTitle": "مرحبًا بعودتك إلى<br /><span class=\"text-[#5984C6]\">ت</span>شطيباتي",
+    "welcome": "مرحبًا بعودتك!",
     "emailLabel": "البريد الإلكتروني",
     "emailPlaceholder": "أدخل بريدك الإلكتروني",
     "passwordLabel": "كلمة المرور",

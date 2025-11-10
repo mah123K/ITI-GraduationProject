@@ -244,6 +244,7 @@
   },
   "loginPage": {
     "heroTitle": "Your home,<br />our care",
+    "welcomeTitle": "Welcome back to<br /><span class=\"text-[#5984C6]\">T</span>ashteebaty",
     "welcome": "Welcome back!",
     "emailLabel": "Email",
     "emailPlaceholder": "Enter your email",

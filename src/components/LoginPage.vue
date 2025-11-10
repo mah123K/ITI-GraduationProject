@@ -5,11 +5,11 @@
   />
 
   <div class="min-h-screen dark:bg-dark-blue flex flex-col lg:flex-row bg-white mt-2 rtl:lg:flex-row-reverse">
+
+    <!-- Left Section -->
     <div
       class="relative lg:w-1/2 w-full flex items-center justify-center overflow-hidden min-h-[45vh] md:min-h-[50vh] lg:min-h-screen"
     >
-      <img src="../images/white logo.png" alt="" class="absolute z-100 lg:w-[350px] w-[200px] lg:top-15 top-7" />
-
       <div
         class="absolute left-[10%] md:left-[15%] lg:left-[20%] top-5 md:top-8 lg:top-10 bottom-5 md:bottom-8 lg:bottom-20 w-[80%] md:w-[75%] lg:w-[70%] bg-[#5984C6] rounded-l-3xl rtl:rounded-l-none rtl:rounded-r-3xl rtl:left-auto rtl:right-[10%] md:rtl:right-[15%] lg:rtl:right-[20%]"
       ></div>
@@ -17,23 +17,33 @@
       <img
         src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1760978847/worker.png_siviza.png"
         alt="Worker"
-        class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[70vh] object-contain z-10 rtl:left-auto rtl:right-[20px] md:rtl:right-[50px] lg:rtl:right-[70px]"
+        class="absolute bottom-5 md:bottom-8 lg:bottom-20 left-[20px] md:left-[50px] lg:left-[70px] h-[40vh] md:h-[45vh] lg:h-[80vh] object-contain z-10 rtl:left-auto rtl:right-[20px] md:rtl:right-[50px] lg:rtl:right-[70px]"
       />
-      <!-- <div
-        class="absolute text-white text-3xl md:text-4xl lg:text-4xl font-bold leading-[1.1] z-20 lg:left-[45%] left-[37%] top-[30%] md:top-[28%] lg:top-[35%] transform -translate-y-1/2 rtl:left-auto rtl:right-1/2 rtl:translate-x-1/2 rtl:text-right"
-        v-html="$t('loginPage.welcome')"
-      ></div> -->
+<div
+  class="absolute text-white text-3xl md:text-4xl lg:text-5xl font-bold z-20 left-1/2 top-[30%] md:top-[28%] lg:top-[30%] transform -translate-y-1/2 rtl:text-center rtl:left-1/2 rtl:right-auto rtl:translate-x-[-50%] rtl:top-[25%] rtl-hero-title"
+  v-html="$t('loginPage.heroTitle')"
+></div>
+
+      <!-- <img
+        src="../images/white logo.png"
+        alt="Logo"
+        class="absolute z-50 lg:w-[350px] w-[200px] lg:top-15 top-7 rtl:invisible"
+      /> -->
     </div>
 
-    <div class="w-full lg:w-1/2 xl:w-1/3 flex flex-col justify-center lg:justify-start p-6 md:p-8 lg:p-8 lg:mt-10">
+    <!-- Right Section -->
+    <div
+      class="w-full lg:w-1/2 xl:w-1/3 flex flex-col justify-center lg:justify-start p-6 md:p-8 lg:p-8 lg:mt-10"
+    >
       <div class="w-full max-w-md mx-auto">
-        <h2 class="text-2xl md:text-3xl font-semibold text-black mb-6 rtl:text-right" v-html="$t('loginPage.welcome')"></h2>
+        <h2 class="text-2xl md:text-3xl font-semibold text-black dark:text-white mb-6 rtl:text-right" v-html="$t('loginPage.welcomeTitle')">
+        </h2>
 
         <form @submit.prevent="handleSignIn" class="space-y-5">
           <div class="mb-6 lg:mb-8 text-left rtl:text-right">
-            <label for="email" class="block text-sm font-medium text-black dark:text-white mb-2">{{
-              $t('loginPage.emailLabel')
-            }}</label>
+            <label for="email" class="block text-sm font-medium text-black dark:text-white mb-2">
+              {{ $t('loginPage.emailLabel') }}
+            </label>
             <div class="relative">
               <div
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none rtl:left-auto rtl:right-0 rtl:pl-0 rtl:pr-3"
@@ -54,9 +64,9 @@
           </div>
 
           <div class="text-left rtl:text-right">
-            <label for="password" class="block text-sm font-medium text-black mb-2 dark:text-white">{{
-              $t('loginPage.passwordLabel')
-            }}</label>
+            <label for="password" class="block text-sm font-medium text-black dark:text-white mb-2">
+              {{ $t('loginPage.passwordLabel') }}
+            </label>
 
             <div class="relative">
               <div
@@ -79,14 +89,14 @@
           </div>
 
           <div class="flex justify-end rtl:justify-start mb-4 lg:mb-6">
-            <router-link to="/forgot-password" class="text-sm text-[#5984C6] hover:text-blue-500">{{
-              $t('loginPage.forgotPassword')
-            }}</router-link>
+            <router-link to="/forgot-password" class="text-sm text-[#5984C6] hover:text-blue-500">
+              {{ $t('loginPage.forgotPassword') }}
+            </router-link>
           </div>
 
           <button
             type="submit"
-            class="w-full  py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-[#5984C6] hover:bg-[#4a73b1] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5984C6]"
+            class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-[#5984C6] hover:bg-[#4a73b1] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5984C6]"
           >
             {{ $t('loginPage.signInButton') }}
           </button>
@@ -101,7 +111,7 @@
         <button
           @click="handleGoogleSignIn"
           type="button"
-          class="w-full  flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
+          class="w-full flex items-center justify-center border border-gray-300 rounded-lg py-3 hover:bg-gray-100 transition duration-200"
         >
           <img
             src="https://res.cloudinary.com/dhmzl1tb0/image/upload/v1761736435/search_1_kmka0a.png"
@@ -113,14 +123,16 @@
 
         <p class="mt-6 text-center text-gray-600 text-sm dark:text-white">
           {{ $t('loginPage.promptSignup') }}
-          <router-link to="/signup" class="ml-1 rtl:ml-0 rtl:mr-1 font-medium text-[#5984C6] hover:text-blue-500">{{
-            $t('loginPage.signupLink')
-          }}</router-link>
+          <router-link to="/signup" class="ml-1 rtl:ml-0 rtl:mr-1 font-medium text-[#5984C6] hover:text-blue-500">
+            {{ $t('loginPage.signupLink') }}
+          </router-link>
         </p>
       </div>
     </div>
+
   </div>
 </template>
+
 
 <script setup>
 import { ref } from "vue";
@@ -280,4 +292,13 @@ const handleGoogleSignIn = async () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.rtl-hero-title {
+  margin-top: 24px; 
+  margin-bottom: 24px;
+margin-left: 15px;
+    line-height: 1.5;
+}
+
+</style>
