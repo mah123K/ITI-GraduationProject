@@ -3,25 +3,21 @@
 // ===============================
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { setGlobalOptions } = require("firebase-functions/v2/options");
+const { defineSecret, defineString } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
-require("dotenv").config();
 
 // ===============================
-// ✅ Firebase & SendGrid Init
+// ✅ Secrets & Firebase Init
 // ===============================
+const SENDGRID_API_KEY = defineSecret("SENDGRID_API_KEY");
+const SENDGRID_FROM = "mahmoudsolimanofficial1@gmail.com";
+
 admin.initializeApp();
-setGlobalOptions({ region: "us-central1" });
-
-const SENDGRID_API_KEY =
-  process.env.SENDGRID_API_KEY || process.env.sendgrid_key;
-
-if (SENDGRID_API_KEY) {
-  sgMail.setApiKey(SENDGRID_API_KEY);
-  console.log("✅ SendGrid Key Loaded Successfully");
-} else {
-  console.error("❌ Missing SendGrid API key");
-}
+setGlobalOptions({
+  region: "us-central1",
+  secrets: [SENDGRID_API_KEY],
+});
 
 // ===============================
 // ✅ Function: Send Email on Notification Create
@@ -29,6 +25,7 @@ if (SENDGRID_API_KEY) {
 exports.sendEmailNotification = onDocumentCreated(
   "users/{userId}/notifications/{notificationId}",
   async (event) => {
+    sgMail.setApiKey(SENDGRID_API_KEY.value());
     const data = event.data.data();
     const userId = event.params.userId;
 
@@ -39,7 +36,7 @@ exports.sendEmailNotification = onDocumentCreated(
     const clientSnap = await clientRef.get();
     const clientEmail = clientSnap.exists ? clientSnap.data().email : null;
 
-    const emailToSend = data.email || clientEmail || "noemail@tashtebaty.com";
+    const emailToSend = data.email || clientEmail;
 
     if (!emailToSend) {
       console.warn("⚠️ Missing email field in notification document");
@@ -49,7 +46,7 @@ exports.sendEmailNotification = onDocumentCreated(
     const msg = {
       to: emailToSend,
       from: {
-        email: "mahmoudsolimanofficial1@gmail.com",
+        email: SENDGRID_FROM,
         name: "Tashtebaty Support",
       },
       subject: "Tashtebaty | New Notification",
@@ -112,53 +109,12 @@ exports.sendEmailNotification = onDocumentCreated(
       `,
     };
 
-
     try {
+      console.log("FROM EMAIL VALUE:", SENDGRID_FROM);
       await sgMail.send(msg);
       console.log("✅ Email sent successfully to:", emailToSend);
     } catch (error) {
-      console.error("❌ Error sending email:", error);
+      console.error("❌ Error sending email:", error?.response?.body || error);
     }
   }
 );
-const express = require("express");
-const fetch = require("node-fetch");
-const cors = require("cors");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-// ✅ Gemini Vision proxy endpoint
-app.post("/gemini/analyze", async (req, res) => {
-  try {
-    const { base64, mimeType, prompt } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY; // ضيفه في .env
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: prompt || "صف الصورة بجملة قصيرة وواضحة بالعربية." },
-                { inlineData: { mimeType, data: base64 } },
-              ],
-            },
-          ],
-        }),
-      }
-    );
-
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error("Gemini proxy error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-exports.api = app;

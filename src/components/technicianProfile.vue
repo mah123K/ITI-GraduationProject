@@ -1,5 +1,4 @@
 <script setup>
-console.log("Gemini Key from Vite:", import.meta.env.VITE_GEMINI_API_KEY);
 import { uploadImageOnly } from "@/composables/useImageUpload";
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
