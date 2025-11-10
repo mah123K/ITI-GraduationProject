@@ -2,66 +2,66 @@
   <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Title -->
     <div>
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard Overview</h2>
-      <p class="text-gray-500 dark:text-gray-300 mt-1">Monitor your platform’s performance and key metrics</p>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.dashboard.title') }}</h2>
+      <p class="text-gray-500 dark:text-gray-300 mt-1">{{ $t('adminDashboard.dashboard.subtitle') }}</p>
     </div>
 
     <!-- Cards -->
     <div class="grid grid-cols-4 gap-6 mt-8 max-w-6xl">
       <!-- Users -->
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Users</p>
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">{{ $t('adminDashboard.dashboard.totalUsers') }}</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalUsers }}</p>
           <div class="bg-blue-100 text-blue-500 w-12 h-12 flex items-center justify-center rounded-full">
             <i class="bi bi-people-fill text-xl"></i>
           </div>
         </div>
-        <p class="text-sm" :class="userChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ userChange >=0 ? '+' : ''}}{{ userChange }}% since last week </p>
+        <p class="text-sm" :class="userChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ userChange >=0 ? '+' : ''}}{{ userChange }}% {{ $t('adminDashboard.dashboard.sinceLastWeek') }} </p>
       </div>
 
       <!-- Companies -->
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Companies</p>
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">{{ $t('adminDashboard.dashboard.totalCompanies') }}</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalCompanies }}</p>
           <div class="bg-green-100 text-green-500 w-12 h-12 flex items-center justify-center rounded-full">
             <i class="bi bi-building text-xl"></i>
           </div>
         </div>
-        <p class="text-sm" :class="companyChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ companyChange >=0 ? '+' : ''}}{{ companyChange }}% since last week </p>
+        <p class="text-sm" :class="companyChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ companyChange >=0 ? '+' : ''}}{{ companyChange }}% {{ $t('adminDashboard.dashboard.sinceLastWeek') }} </p>
       </div>
 
       <!-- Craftsmen -->
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Craftsmen</p>
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">{{ $t('adminDashboard.dashboard.totalCraftsmen') }}</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalCraftsmen }}</p>
           <div class="bg-yellow-100 text-yellow-500 w-12 h-12 flex items-center justify-center rounded-full">
             <i class="bi bi-hammer text-xl"></i>
           </div>
         </div>
-        <p class="text-sm" :class="craftsmenChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ craftsmenChange >=0 ? '+' : ''}}{{ craftsmenChange }}% since last week </p>
+        <p class="text-sm" :class="craftsmenChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ craftsmenChange >=0 ? '+' : ''}}{{ craftsmenChange }}% {{ $t('adminDashboard.dashboard.sinceLastWeek') }} </p>
       </div>
 
       <!-- Orders -->
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 shadow-md rounded-2xl p-5 cursor-pointer hover:-translate-y-1 transition-all duration-300">
-        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">Total Orders</p>
+        <p class="text-gray-500 dark:text-gray-300 text-sm font-medium">{{ $t('adminDashboard.dashboard.totalOrders') }}</p>
         <div class="flex justify-between items-center mt-4">
           <p class="text-3xl font-bold">{{ totalOrders }}</p>
           <div class="bg-red-100 text-red-500 w-12 h-12 flex items-center justify-center rounded-full">
             <i class="bi bi-cart-fill text-xl"></i>
           </div>
         </div>
-        <p class="text-sm" :class="ordersChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ ordersChange >=0 ? '+' : ''}}{{ ordersChange }}% since last week </p>
-        <p class="text-gray-400 dark:text-gray-300 text-xs mt-2">Pending price: {{ pendingOrdersCount }}</p>
+        <p class="text-sm" :class="ordersChange >=0 ? 'text-green-500' : 'text-red-500'"> {{ ordersChange >=0 ? '+' : ''}}{{ ordersChange }}% {{ $t('adminDashboard.dashboard.sinceLastWeek') }} </p>
+        <p class="text-gray-400 dark:text-gray-300 text-xs mt-2">{{ $t('adminDashboard.dashboard.pendingPrice') }} {{ pendingOrdersCount }}</p>
       </div>
     </div>
 
     <!-- Monthly Revenue Chart + Top Rated Providers -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10 max-w-6xl">
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Monthly Revenue</h2>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{{ $t('adminDashboard.dashboard.monthlyRevenue') }}</h2>
         <div class="w-full h-60 md:h-72 lg:h-96">
           <canvas id="revenueChart" class="w-full h-full"></canvas>
         </div>
@@ -69,11 +69,11 @@
 
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 p-6 rounded-2xl shadow-md">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Top Rated Providers</h2>
-          <span class="text-sm text-gray-500 dark:text-gray-300">Top 5</span>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.dashboard.topRatedProviders') }}</h2>
+          <span class="text-sm text-gray-500 dark:text-gray-300">{{ $t('adminDashboard.dashboard.top5') }}</span>
         </div>
         <div class="space-y-3">
-          <div v-if="!topProviders.length" class="text-gray-500 dark:text-gray-300">No providers found</div>
+          <div v-if="!topProviders.length" class="text-gray-500 dark:text-gray-300">{{ $t('adminDashboard.dashboard.noProviders') }}</div>
           <div v-for="p in topProviders" :key="p.id" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
             <div class="h-12 w-12 rounded-full bg-[#e8f0fe] dark:bg-gray-800 overflow-hidden flex items-center justify-center text-[#5984C6] font-semibold">
               <img :src="p.image || defaultAvatar" alt="avatar" class="w-full h-full object-cover" @error="(e)=>e.target.src=defaultAvatar" />

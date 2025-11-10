@@ -4,8 +4,8 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Service Categories</h1>
-        <p class="text-gray-500 dark:text-gray-300">Manage all service categories available on your platform</p>
+        <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.services.title') }}</h1>
+        <p class="text-gray-500 dark:text-gray-300">{{ $t('adminDashboard.services.subtitle') }}</p>
       </div>
 
       <!-- Add Category Button -->
@@ -13,14 +13,14 @@
         @click="showModal = true"
         class="bg-[#5984C6] hover:bg-[#4968a0] text-white font-semibold px-5 py-2.5 rounded-lg shadow-md transition-colors duration-200 flex items-center"
       >
-        Add Category
+        {{ $t('adminDashboard.services.addCategory') }}
         <i class="fas fa-plus ml-2"></i>
       </button>
     </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <p class="text-gray-500">Loading categories...</p>
+      <p class="text-gray-500">{{ $t('adminDashboard.services.loadingProviders') }}</p>
     </div>
 
     <!-- Service Category Grid -->
@@ -39,20 +39,20 @@
       class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
     >
       <div class="bg-white dark:bg-[#1f2937] rounded-lg shadow-lg p-6 w-full max-w-md">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Add New Category</h2>
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.services.addNewCategory') }}</h2>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Category Name</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ $t('adminDashboard.services.categoryName') }}</label>
           <input
             v-model="newCategory.name"
             type="text"
-            placeholder="e.g. Painting"
+            :placeholder="$t('adminDashboard.services.categoryName')"
             class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Category Image</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{{ $t('adminDashboard.services.categoryImage') }}</label>
           <div class="flex items-center gap-4">
             <div
               class="w-16 h-16 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden cursor-pointer hover:opacity-80 transition"
@@ -77,9 +77,9 @@
                 class="hidden"
               />
               <button type="button" @click="triggerCategoryFile" class="px-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm">
-                Choose image
+                {{ $t('adminDashboard.services.chooseImage') }}
               </button>
-              <p class="text-xs text-gray-500 dark:text-gray-300 mt-1"> <span v-if="uploading" class="text-[#5984C6] ml-1">Uploading...</span></p>
+              <p class="text-xs text-gray-500 dark:text-gray-300 mt-1"> <span v-if="uploading" class="text-[#5984C6] ml-1">{{ $t('adminDashboard.services.uploading') }}</span></p>
               <p v-if="uploadError" class="text-xs text-red-600 mt-1">{{ uploadError }}</p>
             </div>
           </div>
@@ -90,13 +90,13 @@
             @click="showModal = false"
             class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700"
           >
-            Cancel
+            {{ $t('adminDashboard.services.cancel') }}
           </button>
           <button
             @click="saveCategory"
             class="px-4 py-2 bg-[#5984C6] hover:bg-[#4968a0] text-white rounded-lg font-semibold"
           >
-            Save
+            {{ $t('adminDashboard.services.save') }}
           </button>
         </div>
       </div>

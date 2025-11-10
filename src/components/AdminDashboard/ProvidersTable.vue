@@ -2,7 +2,7 @@
   <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Provider Management</h2>
+      <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">{{ $t('adminDashboard.providers.title') }}</h2>
 
       <!-- Search -->
       <div class="flex items-center space-x-4">
@@ -10,7 +10,7 @@
           <input
             v-model="searchTerm"
             type="text"
-            placeholder="Search for a provider..."
+            :placeholder="$t('adminDashboard.providers.searchPlaceholder')"
             class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
           />
           <svg
@@ -37,7 +37,7 @@
             : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300',
         ]"
       >
-        Company
+        {{ $t('adminDashboard.providers.company') }}
       </button>
       <button
         @click="activeTab = 'craftsmen'"
@@ -48,21 +48,21 @@
             : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300',
         ]"
       >
-        Craftsmen
+        {{ $t('adminDashboard.providers.craftsmen') }}
       </button>
     </div>
 
     <!-- Loading -->
     <div v-if="loading" class="text-center py-6 text-gray-400">
-      Loading {{ activeTab === 'company' ? 'companies' : 'craftsmen' }}...
+      {{ $t('adminDashboard.providers.loading') }} {{ activeTab === 'company' ? $t('adminDashboard.providers.loadingCompanies') : $t('adminDashboard.providers.loadingCraftsmen') }}...
     </div>
 
     <!-- Companies Table -->
     <div v-else-if="activeTab === 'company'" class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="flex justify-between items-center mb-4 p-4">
-        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Companies</h3>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.providers.allCompanies') }}</h3>
         <button @click="toggleSort('createdAt')" class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition">
-          Sort by Created
+          {{ $t('adminDashboard.providers.sortByCreated') }}
           <svg :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
           </svg>
@@ -71,15 +71,15 @@
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">Profile</th>
-            <th class="py-3 px-4 text-left">Company Name</th>
-            <th class="py-3 px-4 text-left">Email</th>
-            <th class="py-3 px-4 text-left">Phone</th>
-            <th class="py-3 px-4 text-left">Address</th>
-            <th class="py-3 px-4 text-left">Rating</th>
-            <th class="py-3 px-4 text-left">Orders</th>
-            <th class="py-3 px-4 text-left">Created</th>
-            <th class="py-3 px-6 text-left">Status</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.profile') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.companyName') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.email') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.phone') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.address') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.rating') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.orders') }}</th>
+            <th class="py-3 px-6 text-left">{{ $t('adminDashboard.providers.status') }}</th>
+                <th class="py-3 px-16  text-left">{{ $t('adminDashboard.providers.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -115,15 +115,15 @@
                     : 'bg-green-100 text-green-600',
                 ]"
               >
-                {{ company.status || 'active' }}
+                {{ company.status === 'banned' ? $t('adminDashboard.providers.banned') : company.status === 'pending' ? $t('adminDashboard.providers.pending') : $t('adminDashboard.providers.active') }}
               </span>
             </td>
             <td class="py-3 px-6 flex space-x-2">
-              <button @click="viewProvider(company)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition">
+              <button @click="viewProvider(company)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition" :title="$t('adminDashboard.providers.view')">
                 <i class="bi bi-eye"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
-              <button @click="openEditModal(company)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition">
+              <button @click="openEditModal(company)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition" :title="$t('adminDashboard.providers.edit')">
                 <i class="bi bi-pencil"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
@@ -131,6 +131,7 @@
                 v-if="company.status !== 'banned'"
                 @click="openSuspendModal(company)"
                 class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                :title="$t('adminDashboard.providers.suspend')"
               >
                 <i class="bi bi-slash-circle"></i>
               </button>
@@ -138,11 +139,12 @@
                 v-else
                 @click="openReactivateModal(company)"
                 class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
+                :title="$t('adminDashboard.providers.reactivate')"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
-              <button @click="openDeleteModal(company)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition">
+              <button @click="openDeleteModal(company)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition" :title="$t('adminDashboard.providers.delete')">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -154,9 +156,9 @@
     <!-- Craftsmen Table -->
     <div v-else class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="flex justify-between items-center mb-4 p-4">
-        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">All Craftsmen</h3>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.providers.allCraftsmen') }}</h3>
         <button @click="toggleSort('createdAt')" class="flex items-center gap-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition">
-          Sort by Created
+          {{ $t('adminDashboard.providers.sortByCreated') }}
           <svg :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
           </svg>
@@ -165,18 +167,16 @@
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">Profile</th>
-            <th class="py-3 px-4 text-left">Name</th>
-            <th class="py-3 px-4 text-left">Email</th>
-            <th class="py-3 px-4 text-left">Phone</th>
-            <th class="py-3 px-4 text-left">Address</th>
-            <th class="py-3 px-4 text-left">Skill</th>
-            <th class="py-3 px-4
-            
-           text-left">Rating</th>
-            <th class="py-3 px-4 text-left">Orders</th>
-            <th class="py-3 px-8 text-left">Status</th>
-            <th class="py-3 px-16  text-left">Actions</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.profile') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.name') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.email') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.phone') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.address') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.skill') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.rating') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.providers.orders') }}</th>
+            <th class="py-3 px-8 text-left">{{ $t('adminDashboard.providers.status') }}</th>
+            <th class="py-3 px-16  text-left">{{ $t('adminDashboard.providers.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -212,15 +212,15 @@
                     : 'bg-green-100 text-green-600',
                 ]"
               >
-                {{ craft.status || 'active' }}
+                {{ craft.status === 'banned' ? $t('adminDashboard.providers.banned') : craft.status === 'pending' ? $t('adminDashboard.providers.pending') : $t('adminDashboard.providers.active') }}
               </span>
             </td>
             <td class="py-3 px-4 flex space-x-2">
-              <button @click="viewProvider(craft)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition">
+              <button @click="viewProvider(craft)" class="p-2 rounded-lg text-blue-500 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900 transition" :title="$t('adminDashboard.providers.view')">
                 <i class="bi bi-eye"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
-              <button @click="openEditModal(craft)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition">
+              <button @click="openEditModal(craft)" class="p-2 rounded-lg text-yellow-500 hover:bg-yellow-100 dark:text-yellow-400 dark:hover:bg-yellow-900/30 transition" :title="$t('adminDashboard.providers.edit')">
                 <i class="bi bi-pencil"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
@@ -228,6 +228,7 @@
                 v-if="craft.status !== 'banned'"
                 @click="openSuspendModal(craft)"
                 class="p-2 rounded-lg text-red-500 hover:bg-orange-100 dark:text-red-400 dark:hover:bg-red-900/30 transition"
+                :title="$t('adminDashboard.providers.suspend')"
               >
                 <i class="bi bi-slash-circle"></i>
               </button>
@@ -235,11 +236,12 @@
                 v-else
                 @click="openReactivateModal(craft)"
                 class="p-2 rounded-lg text-green-500 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30 transition"
+                :title="$t('adminDashboard.providers.reactivate')"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
               <div class="h-3 border-l border-gray-300 dark:border-gray-600 mt-3"></div>
-              <button @click="openDeleteModal(craft)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition">
+              <button @click="openDeleteModal(craft)" class="p-2 rounded-lg text-red-500 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/30 transition" :title="$t('adminDashboard.providers.delete')">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -254,31 +256,31 @@
 
       <!-- Delete Modal -->
       <div v-if="showDeleteModal" class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn">
-        <h3 class="text-xl font-semibold text-red-600 mb-4">Delete Provider</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to delete "<strong>{{ selectedActionProvider?.name }}</strong>"?</p>
+        <h3 class="text-xl font-semibold text-red-600 mb-4">{{ $t('adminDashboard.providers.deleteProvider') }}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('adminDashboard.providers.confirmDelete') }} "<strong>{{ selectedActionProvider?.name }}</strong>"?</p>
         <div class="flex justify-center space-x-4">
-          <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
-          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+          <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">{{ $t('adminDashboard.providers.delete') }}</button>
+          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">{{ $t('adminDashboard.providers.cancel') }}</button>
         </div>
       </div>
 
       <!-- Suspend Modal -->
       <div v-if="showSuspendModal" class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn">
-        <h3 class="text-xl font-semibold  text-red-600 mb-4">Suspend Provider</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-6">Suspend "<strong>{{ selectedActionProvider?.name }}</strong>" temporarily?</p>
+        <h3 class="text-xl font-semibold  text-red-600 mb-4">{{ $t('adminDashboard.providers.suspendProvider') }}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('adminDashboard.providers.confirmSuspend') }} "<strong>{{ selectedActionProvider?.name }}</strong>"?</p>
         <div class="flex justify-center space-x-4">
-          <button @click="confirmSuspend" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-600">Suspend</button>
-          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+          <button @click="confirmSuspend" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-600">{{ $t('adminDashboard.providers.suspend') }}</button>
+          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">{{ $t('adminDashboard.providers.cancel') }}</button>
         </div>
       </div>
 
       <!-- Reactivate Modal -->
       <div v-if="showReactivateModal" class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn">
-        <h3 class="text-xl font-semibold text-green-600 mb-4">Reactivate Provider</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-6">Reactivate "<strong>{{ selectedActionProvider?.name }}</strong>"?</p>
+        <h3 class="text-xl font-semibold text-green-600 mb-4">{{ $t('adminDashboard.providers.reactivateProvider') }}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('adminDashboard.providers.confirmReactivate') }} "<strong>{{ selectedActionProvider?.name }}</strong>"?</p>
         <div class="flex justify-center space-x-4">
-          <button @click="confirmReactivate" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Reactivate</button>
-          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+          <button @click="confirmReactivate" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">{{ $t('adminDashboard.providers.reactivate') }}</button>
+          <button @click="closeModals" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">{{ $t('adminDashboard.providers.cancel') }}</button>
         </div>
       </div>
     </div>
@@ -301,7 +303,7 @@
                   : selectedProvider?.status === 'pending' ? 'bg-yellow-100 text-yellow-600'
                   : 'bg-green-100 text-green-600'
                 ]">
-                {{ selectedProvider?.status || 'active' }}
+                {{ selectedProvider?.status === 'banned' ? $t('adminDashboard.providers.banned') : selectedProvider?.status === 'pending' ? $t('adminDashboard.providers.pending') : $t('adminDashboard.providers.active') }}
               </span>
             </div>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate"><i class="bi bi-geo-alt-fill mr-1"></i>{{ formatAddress(selectedProvider) }}</p>
@@ -310,32 +312,32 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300 text-sm">
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Email</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.email') }}</p>
             <p class="font-medium break-all">{{ selectedProvider?.email || '-' }}</p>
           </div>
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Phone</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.phone') }}</p>
             <p class="font-medium">{{ selectedProvider?.phone || '-' }}</p>
           </div>
           <div class="sm:col-span-2">
-            <p class="text-gray-500 dark:text-gray-400">Address</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.address') }}</p>
             <p class="font-medium wrap-break-word">{{ formatAddress(selectedProvider) }}</p>
           </div>
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Created</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.created') }}</p>
             <p class="font-medium">{{ selectedProvider?.createdAt ? new Date(selectedProvider.createdAt).toLocaleString() : '-' }}</p>
           </div>
           <div v-if="selectedProvider?.skill">
-            <p class="text-gray-500 dark:text-gray-400">Skill</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.skill') }}</p>
             <p class="font-medium">{{ selectedProvider.skill }}</p>
           </div>
           <div v-if="selectedProvider?.rating !== undefined">
-            <p class="text-gray-500 dark:text-gray-400">Rating</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.rating') }}</p>
             <p class="font-medium flex items-center gap-1">{{ selectedProvider.rating }} <i class="bi bi-star-fill text-yellow-400"></i></p>
           </div>
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Orders</p>
-            <p class="font-medium">{{ selectedProvider.orderCount ?? 0 }} total · {{ selectedProvider.completedCount ?? 0 }} completed</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.providers.orders') }}</p>
+            <p class="font-medium">{{ selectedProvider.orderCount ?? 0 }} {{ $t('adminDashboard.providers.total') }} · {{ selectedProvider.completedCount ?? 0 }} {{ $t('adminDashboard.providers.completed') }}</p>
           </div>
         </div>
       </div>
@@ -345,33 +347,33 @@
     <div v-if="showEditModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
         <button @click="closeEditModal" class="absolute top-4 right-6 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">✖</button>
-        <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">Edit Provider</h3>
+        <h3 class="text-2xl font-semibold text-[#5984C6] mb-4">{{ $t('adminDashboard.providers.editProvider') }}</h3>
         <form @submit.prevent="saveProviderChanges" class="space-y-4">
           <div>
-            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">Name</label>
+            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.providers.name') }}</label>
             <input v-model="editForm.name" type="text" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]"/>
           </div>
           <div>
-            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">Email</label>
+            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.providers.email') }}</label>
             <input v-model="editForm.email" type="email" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]"/>
           </div>
           <div>
-            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">Phone</label>
+            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.providers.phone') }}</label>
             <input v-model="editForm.phone" type="text" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]"/>
           </div>
           <div>
-            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">Address</label>
+            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.providers.address') }}</label>
             <input v-model="editForm.address" type="text" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]"/>
           </div>
           <div>
-            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">Status</label>
+            <label class="block mb-1 font-medium text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.providers.status') }}</label>
             <select v-model="editForm.status" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#5984C6]">
-              <option value="active">Active</option>
-              <option value="banned">Banned</option>
-              <option value="pending">Pending</option>
+              <option value="active">{{ $t('adminDashboard.providers.active') }}</option>
+              <option value="banned">{{ $t('adminDashboard.providers.banned') }}</option>
+              <option value="pending">{{ $t('adminDashboard.providers.pending') }}</option>
             </select>
           </div>
-          <button type="submit" class="w-full bg-[#5984C6] text-white py-2 rounded-lg hover:bg-[#4968a0] transition">Save Changes</button>
+          <button type="submit" class="w-full bg-[#5984C6] text-white py-2 rounded-lg hover:bg-[#4968a0] transition">{{ $t('adminDashboard.providers.saveChanges') }}</button>
         </form>
       </div>
     </div>

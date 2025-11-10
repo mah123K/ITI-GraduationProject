@@ -2,11 +2,11 @@
   <div class="min-h-screen bg-gray-50 dark:bg-[#0f172a] p-6">
     <div class="max-w-2xl mx-auto bg-white dark:bg-[#1f2937] shadow-md rounded-2xl p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Admin Profile Settings</h2>
+        <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">{{ $t('adminDashboard.adminProfile.title') }}</h2>
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="text-center py-8 text-gray-600 dark:text-gray-300">Loading profile...</div>
+      <div v-if="loading" class="text-center py-8 text-gray-600 dark:text-gray-300">{{ $t('adminDashboard.adminProfile.loading') }}</div>
 
       <!-- Content -->
       <div v-else>
@@ -27,12 +27,12 @@
               <i v-else class="fa-solid fa-user text-4xl text-gray-500"></i>
             </div>
             
-            <!-- Delete Image Button -->
+          <!-- Delete Image Button -->
          <button
   v-if="photoURL"
   @click="deleteProfileImage"
   class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm"
-  title="Remove profile picture"
+  :title="$t('adminDashboard.adminProfile.removeProfilePicture')"
 >
   <i class="fa-solid fa-xmark text-[10px]"></i>
 </button>
@@ -41,7 +41,7 @@
 
           <!-- Upload Instructions -->
           <p class="text-sm text-gray-500 dark:text-gray-300 mt-2">
-            {{ photoURL ? 'Click to change picture' : 'Click to add picture' }}
+            {{ photoURL ? $t('adminDashboard.adminProfile.clickToChange') : $t('adminDashboard.adminProfile.clickToAdd') }}
           </p>
 
           <!-- Hidden Input for image -->
@@ -57,7 +57,7 @@
         <!-- Profile Info -->
         <div class="space-y-4">
           <div>
-            <label class="block text-gray-700 dark:text-gray-200 mb-1">Name</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ $t('adminDashboard.adminProfile.name') }}</label>
             <input
               v-model="name"
               type="text"
@@ -66,7 +66,7 @@
           </div>
 
           <div>
-            <label class="block text-gray-700 dark:text-gray-200 mb-1">Email</label>
+            <label class="block text-gray-700 dark:text-gray-200 mb-1">{{ $t('adminDashboard.adminProfile.email') }}</label>
             <input
               v-model="email"
               type="email"
@@ -80,7 +80,7 @@
             :disabled="saving"
             class="w-full bg-[#5984C6] text-white py-2 rounded-lg hover:bg-[#4a6ea8] transition"
           >
-            {{ saving ? "Saving..." : "Save Changes" }}
+            {{ saving ? $t('adminDashboard.adminProfile.saving') : $t('adminDashboard.adminProfile.saveChanges') }}
           </button>
         </div>
         
@@ -226,13 +226,13 @@ export default {
     async onFileChange(e) {
       const file = e.target.files[0];
       if (!file) {
-        this.errorMessage = "No file selected.";
+        this.errorMessage = this.$t('adminDashboard.adminProfile.noFileSelected');
         return;
       }
 
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        this.errorMessage = "Please select a valid image file.";
+        this.errorMessage = this.$t('adminDashboard.adminProfile.selectValidImage');
         this.$refs.fileInput.value = '';
         return;
       }
@@ -240,7 +240,7 @@ export default {
       // Validate file size (max 5MB)
       const maxSize = 5 * 1024 * 1024; // 5MB in bytes
       if (file.size > maxSize) {
-        this.errorMessage = "Image size should be less than 5MB.";
+        this.errorMessage = this.$t('adminDashboard.adminProfile.imageSizeError');
         this.$refs.fileInput.value = '';
         return;
       }
@@ -287,19 +287,19 @@ export default {
                 });
                 window.dispatchEvent(event);
 
-                this.successMessage = "Profile picture updated successfully!";
+        this.successMessage = this.$t('adminDashboard.adminProfile.success');
               }
             }
           } catch (uploadError) {
             console.error("Error uploading image:", uploadError);
-            this.errorMessage = "Failed to upload image. Please try again.";
+            this.errorMessage = this.$t('adminDashboard.adminProfile.error');
           } finally {
             URL.revokeObjectURL(tempURL);
           }
         };
 
         img.onerror = () => {
-          this.errorMessage = "Failed to load image. Please try another file.";
+          this.errorMessage = this.$t('adminDashboard.adminProfile.errorProcessingImage');
           this.file = null;
           this.photoURL = null;
           URL.revokeObjectURL(tempURL);
@@ -325,7 +325,7 @@ export default {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = "Please login first.";
+          this.errorMessage = this.$t('adminDashboard.adminProfile.loginFirst');
           return;
         }
 
@@ -395,13 +395,13 @@ export default {
             } 
           }));
 
-          this.successMessage = 'Profile picture removed successfully';
+          this.successMessage = this.$t('adminDashboard.adminProfile.success');
         } catch (error) {
           throw error; // Re-throw to be caught by outer try-catch
         }
       } catch (error) {
         console.error('Error removing profile picture:', error);
-        this.errorMessage = 'Failed to remove profile picture.';
+        this.errorMessage = this.$t('adminDashboard.adminProfile.error');
         
         // Try to revert changes if backend operations fail
         try {
@@ -430,7 +430,7 @@ export default {
       try {
         const user = auth.currentUser;
         if (!user) {
-          this.errorMessage = "Please login first.";
+          this.errorMessage = this.$t('adminDashboard.adminProfile.loginFirst');
           return;
         }
 
@@ -458,7 +458,7 @@ export default {
             }
           } catch (uploadError) {
             console.error("Error uploading to Cloudinary:", uploadError);
-            this.errorMessage = "Failed to upload image. Please try again.";
+            this.errorMessage = this.$t('adminDashboard.adminProfile.errorProcessingImage');
             this.saving = false;
             return;
           }
@@ -495,10 +495,10 @@ export default {
           // ignore
         }
 
-        this.successMessage = "Profile updated successfully!";
+        this.successMessage = this.$t('adminDashboard.adminProfile.changesSaved');
       } catch (err) {
         console.error("Error updating profile:", err);
-        this.errorMessage = "Failed to update profile.";
+        this.errorMessage = this.$t('adminDashboard.adminProfile.saveError');
       } finally {
         this.saving = false;
         // Clear messages after delay

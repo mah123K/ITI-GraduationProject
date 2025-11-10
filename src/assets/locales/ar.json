@@ -339,7 +339,7 @@
       "totalSales": "إجمالي المبيعات المسلمة:",
       "statusDelivered": "تم التوصيل",
       "statusPending": "قيد الانتظار",
-      "statusCancelled": "ملغى" 
+      "statusCancelled": "ملغى"
     },
     "profile": {
       "title": "المعلومات الشخصية",
@@ -384,5 +384,81 @@
       "saveError": "فشل حفظ التغييرات. يرجى المحاولة مرة أخرى.",
       "imageSize": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت"
     }
+  },
+  "adminDashboard": {
+    "providers": {
+      "title": "إدارة المزودين",
+      "searchPlaceholder": "البحث عن مزود...",
+      "loading": "جار تحميل المزودين...",
+      "company": "الشركة",
+      "craftsmen": "الحرفيين",
+      "loadingCompanies": "جار تحميل الشركات...",
+      "loadingCraftsmen": "جار تحميل الحرفيين...",
+      "allCompanies": "جميع الشركات",
+      "allCraftsmen": "جميع الحرفيين",
+      "sortByCreated": "الترتيب حسب التاريخ",
+      "profile": "الملف الشخصي",
+      "companyName": "اسم الشركة",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "address": "العنوان",
+      "skill": "المهارة",
+      "rating": "التقييم",
+      "orders": "الطلبات",
+      "created": "تم الإنشاء",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "active": "نشط",
+      "banned": "محظور",
+      "pending": "معلق",
+      "view": "عرض",
+      "edit": "تعديل",
+      "suspend": "تعليق",
+      "reactivate": "إعادة تفعيل",
+      "delete": "حذف",
+      "deleteProvider": "حذف المزود",
+      "confirmDelete": "هل أنت متأكد من حذف",
+      "suspendProvider": "تعليق المزود",
+      "confirmSuspend": "هل أنت متأكد من تعليق",
+      "reactivateProvider": "إعادة تفعيل المزود",
+      "confirmReactivate": "هل أنت متأكد من إعادة تفعيل",
+      "editProvider": "تعديل المزود",
+      "saveChanges": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "total": "إجمالي",
+      "completed": "مكتمل",
+      "deleteModalTitle": "حذف المزود",
+      "deleteModalText": "هل أنت متأكد من حذف \"{name}\"?",
+      "suspendModalTitle": "تعليق المزود",
+      "suspendModalText": "تعليق \"{name}\" مؤقتًا؟",
+      "reactivateModalTitle": "إعادة تفعيل المزود",
+      "reactivateModalText": "إعادة تفعيل \"{name}\"?",
+      "viewModalTitle": "عرض تفاصيل المزود",
+      "editModalTitle": "تعديل المزود",
+      "close": "إغلاق",
+      "createdLabel": "تم الإنشاء",
+      "skillLabel": "المهارة",
+      "ratingLabel": "التقييم",
+      "ordersLabel": "الطلبات",
+      "deleteConfirmText": "هل أنت متأكد من حذف هذا المزود؟",
+      "inactive": "غير نشط",
+      "statuses": {
+        "active": "نشط",
+        "banned": "محظور",
+        "pending": "معلق"
+      },
+      "viewModal": {
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "address": "العنوان",
+        "created": "تم الإنشاء",
+        "skill": "المهارة",
+        "rating": "التقييم",
+        "orders": "الطلبات",
+        "total": "إجمالي",
+        "completed": "مكتمل"
+      }
+    }
   }
-  }
+}

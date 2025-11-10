@@ -1,16 +1,16 @@
 <template>
   <div class="p-6 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 min-h-screen">
-    <h1 class="text-3xl font-bold text-[#133B5D] dark:text-[#8db4ff] mb-6">Manage Offers</h1>
+    <h1 class="text-3xl font-bold text-[#133B5D] dark:text-[#8db4ff] mb-6">{{ $t('adminDashboard.offers.title') }}</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <!-- 1. Add New Offer Form -->
       <div class="lg:col-span-1">
         <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Add New Offer</h2>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{{ $t('adminDashboard.offers.addNewOffer') }}</h2>
           <form @submit.prevent="addOffer" class="space-y-4">
             <div>
-              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Title</label>
+              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">{{ $t('adminDashboard.offers.titleLabel') }}</label>
               <input
                 v-model="newOffer.title"
                 type="text"
@@ -20,7 +20,7 @@
               />
             </div>
             <div>
-              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Description</label>
+              <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">{{ $t('adminDashboard.offers.descriptionLabel') }}</label>
               <input
                 v-model="newOffer.description"
                 type="text"
@@ -40,7 +40,7 @@
               />
             </div> -->
             <div>
-            <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">Upload Image</label>
+            <label class="block text-gray-700 dark:text-gray-200 font-medium mb-1">{{ $t('adminDashboard.offers.uploadImage') }}</label>
             <input
             type="file"
             accept="image/*"
@@ -55,7 +55,7 @@
               class="w-full bg-accent-color text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#1b5383] transition duration-300 shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <svg v-if="isSaving" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              {{ isSaving ? 'Saving...' : 'Add Offer' }}
+              {{ isSaving ? $t('adminDashboard.offers.saving') : $t('adminDashboard.offers.addOffer') }}
             </button>
           </form>
         </div>
@@ -64,18 +64,18 @@
       <!-- 2. Existing Offers List -->
       <div class="lg:col-span-2">
         <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Current Offers</h2>
-          
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{{ $t('adminDashboard.offers.currentOffers') }}</h2>
+
           <!-- Loading State -->
           <div v-if="isLoading" class="text-center text-gray-500 dark:text-gray-300 py-10">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#133B5D] mx-auto mb-3"></div>
-            Loading offers...
+            {{ $t('adminDashboard.offers.loading') }}
           </div>
 
           <!-- Empty State -->
           <div v-else-if="offers.length === 0" class="text-center text-gray-500 dark:text-gray-300 py-10">
             <i class="fa-solid fa-tags text-3xl mb-3"></i>
-            <p>No offers found. Add one using the form!</p>
+            <p>{{ $t('adminDashboard.offers.noOffers') }}</p>
           </div>
 
           <!-- Offers List -->
@@ -95,7 +95,7 @@
               <button
                 @click="deleteOffer(offer.id)"
                 class="text-red-500 hover:text-red-700 transition duration-300"
-                title="Delete Offer"
+                :title="$t('adminDashboard.offers.delete')"
               >
                 <i class="fa-solid fa-trash-can text-lg"></i>
               </button>
@@ -156,7 +156,7 @@ const handleFileChange = (event) => {
 const addOffer = async () => {
   if (!newOffer.value.title || !newOffer.value.description || !newOffer.value.image) {
     // Replaced alert with confirm for consistency
-    if (!confirm("Please fill in all fields.")) {
+    if (!confirm($t('adminDashboard.offers.fillAllFields'))) {
       return;
     }
   }
@@ -185,7 +185,7 @@ const addOffer = async () => {
  * Deletes an offer document from Firestore by its ID.
  */
 const deleteOffer = async (id) => {
-  if (!confirm("Are you sure you want to delete this offer?")) {
+  if (!confirm($t('adminDashboard.offers.deleteConfirm'))) {
     return;
   }
   

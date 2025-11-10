@@ -8,21 +8,23 @@
       }"
       class="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full"
     >
-      {{ category.status }}
+      {{ category.status === 'Active' ? $t('adminDashboard.serviceCategoryCard.active') : $t('adminDashboard.serviceCategoryCard.inactive') }}
     </span>
 
     <!-- Action Buttons -->
     <div class="absolute top-4 left-4 flex gap-2">
-      <button 
+      <button
         @click="openEditModal(category)"
         class="text-blue-500 hover:text-blue-700"
+        :title="$t('adminDashboard.serviceCategoryCard.edit')"
       >
         <i class="fas fa-edit"></i>
       </button>
 
-      <button 
+      <button
         @click="openDeleteModal(category)"
         class="text-red-500 hover:text-red-700"
+        :title="$t('adminDashboard.serviceCategoryCard.delete')"
       >
         <i class="fas fa-trash"></i>
       </button>
@@ -35,20 +37,20 @@
     </div>
 
   <!-- Category Name -->
-  <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{{ category.name }}</h3>
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{{ $t(`home.services.${category.name.toLowerCase()}`) }}</h3>
 
     <!-- Provider Count -->
     <p class="text-sm text-gray-500 dark:text-gray-300 mb-4">
-      {{ category.providers > 0 ? category.providers + ' providers' : 'No providers yet' }}
+      {{ category.providers > 0 ? category.providers + ' ' + $t('adminDashboard.serviceCategoryCard.providersCount') : $t('adminDashboard.serviceCategoryCard.noProvidersYet') }}
     </p>
 
     <!-- View Providers Button -->
-    <button 
+    <button
       @click="showProviders = true"
       class="bg-[#5984C6] text-white px-4 py-2 rounded-lg hover:bg-[#4968a0] transition-colors duration-200 flex items-center gap-2"
     >
       <i class="fas fa-eye"></i>
-      View Providers
+      {{ $t('adminDashboard.serviceCategoryCard.viewProviders') }}
     </button>
 
     <!-- Providers Modal -->
@@ -57,7 +59,7 @@
         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold text-gray-800">
-              {{ category.name }} Providers
+              {{ $t(`home.services.${category.name.toLowerCase()}`) }} {{ $t('adminDashboard.serviceCategoryCard.providersTitle') }}
             </h2>
             <button @click="showProviders = false" class="text-gray-500 hover:text-gray-700">
               <i class="fas fa-times text-xl"></i>
@@ -68,12 +70,12 @@
         <div class="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
           <div v-if="loading" class="text-center py-8">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5984C6] mx-auto"></div>
-            <p class="mt-4 text-gray-600 dark:text-gray-300">Loading providers...</p>
+            <p class="mt-4 text-gray-600 dark:text-gray-300">{{ $t('adminDashboard.serviceCategoryCard.loadingProviders') }}</p>
           </div>
 
           <div v-else-if="!providers.length" class="text-center py-8">
             <i class="fas fa-user-slash text-4xl text-gray-400 mb-4"></i>
-            <p class="text-gray-600 dark:text-gray-300">No providers found for this service</p>
+            <p class="text-gray-600 dark:text-gray-300">{{ $t('adminDashboard.serviceCategoryCard.noProviders') }}</p>
           </div>
 
           <div v-else class="grid gap-6">
@@ -88,7 +90,7 @@
               <div class="flex-1">
                 <h3 class="font-semibold text-gray-800 dark:text-gray-100">{{ provider.userType === 'company' ? (provider.companyName || provider.name) : provider.name }}</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300">
-                  {{ provider.userType === 'company' ? 'Company' : 'Technician' }}
+                  {{ provider.userType === 'company' ? $t('adminDashboard.services.company') : $t('adminDashboard.services.technician') }}
                 </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
                   <i class="fas fa-map-marker-alt text-xs mr-1"></i>
@@ -120,7 +122,7 @@
     <div v-if="selectedProvider" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Provider Details</h2>
+          <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $t('adminDashboard.serviceCategoryCard.providerDetails') }}</h2>
           <button @click="selectedProvider = null" class="text-gray-500 hover:text-gray-700">
             <i class="fas fa-times text-xl"></i>
           </button>
@@ -138,19 +140,19 @@
               <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 {{ selectedProvider.userType === 'company' ? (selectedProvider.companyName || selectedProvider.name) : selectedProvider.name }}
               </h3>
-              <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.userType === 'company' ? 'Company' : 'Technician' }}</p>
+              <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.userType === 'company' ? $t('adminDashboard.services.company') : $t('adminDashboard.services.technician') }}</p>
             </div>
           </div>
 
           <div class="grid gap-4">
             <div v-if="selectedProvider.description" class="space-y-2">
-              <h4 class="font-semibold text-gray-700 dark:text-gray-200">About</h4>
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.about') }}</h4>
               <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.description }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
-                <h4 class="font-semibold text-gray-700 dark:text-gray-200">Contact</h4>
+                <h4 class="font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.contact') }}</h4>
                 <p class="text-gray-600 dark:text-gray-300">
                   <i class="fas fa-envelope mr-2"></i>{{ selectedProvider.email }}
                 </p>
@@ -161,7 +163,7 @@
 
               <div class="space-y-2">
                 <h4 class="font-semibold text-gray-700 dark:text-gray-200">
-                  <i class="fas fa-map-marker-alt mr-2"></i>Location
+                  <i class="fas fa-map-marker-alt mr-2"></i>{{ $t('adminDashboard.serviceCategoryCard.location') }}
                 </h4>
                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
                   <p class="text-gray-600 dark:text-gray-300">{{ formatAddress(selectedProvider) }}</p>
@@ -170,16 +172,16 @@
             </div>
 
             <div v-if="selectedProvider.userType !== 'company'" class="space-y-2">
-              <h4 class="font-semibold text-gray-700 dark:text-gray-200">Experience</h4>
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.experience') }}</h4>
               <p class="text-gray-600 dark:text-gray-300">{{ selectedProvider.experience }} years</p>
             </div>
 
             <div v-if="selectedProvider.portfolio" class="space-y-2">
-              <h4 class="font-semibold text-gray-700 dark:text-gray-200">Portfolio</h4>
-              <a :href="selectedProvider.portfolio" target="_blank" 
+              <h4 class="font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.portfolio') }}</h4>
+              <a :href="selectedProvider.portfolio" target="_blank"
                 class="text-[#5984C6] hover:text-[#4968a0] inline-flex items-center gap-2">
                 <i class="fas fa-external-link-alt"></i>
-                View Portfolio
+                {{ $t('adminDashboard.serviceCategoryCard.viewPortfolio') }}
               </a>
             </div>
           </div>
@@ -188,29 +190,29 @@
     </div>
 
     <!-- Edit Service Modal -->
-    <div 
-      v-if="editModal" 
+    <div
+      v-if="editModal"
       class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-lg max-w-md w-full p-6">
-        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Edit Service</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">{{ $t('adminDashboard.serviceCategoryCard.editService') }}</h2>
 
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Name</label>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.name') }}</label>
             <input v-model="editableService.name" type="text" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Status</label>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.status') }}</label>
             <select v-model="editableService.status" class="w-full border dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option value="Active">{{ $t('adminDashboard.serviceCategoryCard.active') }}</option>
+              <option value="Inactive">{{ $t('adminDashboard.serviceCategoryCard.inactive') }}</option>
             </select>
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Image</label>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">{{ $t('adminDashboard.serviceCategoryCard.image') }}</label>
             <div class="flex items-center gap-4">
               <div class="w-16 h-16 rounded-full p-1 flex items-center justify-center overflow-hidden cursor-pointer" @click="triggerCategoryFile">
                 <div class="w-full h-full rounded-full bg-white dark:bg-white/5 flex items-center justify-center overflow-hidden">
@@ -222,8 +224,8 @@
               <div class="flex-1">
                 <input ref="categoryFileInput" type="file" accept="image/*" class="hidden" @change="onCategoryFileChange" />
                 <div class="flex items-center gap-2">
-                  <button type="button" @click="triggerCategoryFile" class="px-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm">Choose image</button>
-                  <p class="text-xs text-gray-500 dark:text-gray-300"> <span v-if="uploading" class="text-[#5984C6] ml-1">Uploading...</span></p>
+                  <button type="button" @click="triggerCategoryFile" class="px-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm">{{ $t('adminDashboard.serviceCategoryCard.chooseImage') }}</button>
+                  <p class="text-xs text-gray-500 dark:text-gray-300"> <span v-if="uploading" class="text-[#5984C6] ml-1">{{ $t('adminDashboard.serviceCategoryCard.uploading') }}</span></p>
                 </div>
                 <p v-if="uploadError" class="text-xs text-red-600 mt-1">{{ uploadError }}</p>
               </div>
@@ -233,28 +235,28 @@
 
         <div class="flex justify-end mt-6 gap-3">
           <button @click="editModal = false" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
-            Cancel
+            {{ $t('adminDashboard.serviceCategoryCard.cancel') }}
           </button>
           <button @click="updateService" class="px-4 py-2 bg-[#5984C6] text-white rounded-lg hover:bg-[#4968a0]">
-            Save Changes
+            {{ $t('adminDashboard.serviceCategoryCard.saveChanges') }}
           </button>
         </div>
       </div>
     </div>
 
     <!--  Delete Service Modal -->
-    <div 
-      v-if="showDeleteModal" 
+    <div
+      v-if="showDeleteModal"
       class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
     >
       <div class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
-        <h3 class="text-xl font-semibold text-red-600 mb-4">Delete Service</h3>
+        <h3 class="text-xl font-semibold text-red-600 mb-4">{{ $t('adminDashboard.serviceCategoryCard.deleteService') }}</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
-          Are you sure you want to delete "<strong>{{ selectedDeleteService?.name }}</strong>"?
+          {{ $t('adminDashboard.serviceCategoryCard.deleteConfirm') }} "<strong>{{ selectedDeleteService?.name }}</strong>"?
         </p>
         <div class="flex justify-center space-x-4">
-          <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
-          <button @click="closeDeleteModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+          <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">{{ $t('adminDashboard.serviceCategoryCard.delete') }}</button>
+          <button @click="closeDeleteModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">{{ $t('adminDashboard.serviceCategoryCard.cancel') }}</button>
         </div>
       </div>
     </div>

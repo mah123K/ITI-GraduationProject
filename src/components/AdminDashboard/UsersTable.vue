@@ -2,14 +2,14 @@
   <div class="bg-white dark:bg-[#1f2937] dark:text-gray-100 shadow-lg rounded-2xl p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">Client Management</h2>
+      <h2 class="text-2xl font-semibold text-[#5984C6] dark:text-[#8db4ff]">{{ $t('adminDashboard.users.title') }}</h2>
 
       <!-- Search -->
       <div class="relative">
         <input
           v-model="searchTerm"
           type="text"
-          placeholder="Search for clients..."
+          :placeholder="$t('adminDashboard.users.searchPlaceholder')"
           class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-[#5984C6]"
         />
         <svg
@@ -30,7 +30,7 @@
 
     <!-- Loading -->
     <div v-if="loading" class="text-center py-6 text-gray-400 dark:text-gray-300">
-      Loading clients...
+      {{ $t('adminDashboard.users.loading') }}
     </div>
 
     <!-- Table -->
@@ -38,21 +38,21 @@
       <table class="min-w-full text-sm text-gray-700 dark:text-gray-200">
         <thead class="bg-[#5984C6] text-white">
           <tr>
-            <th class="py-3 px-4 text-left">Profile</th>
-            <th class="py-3 px-4 text-left">Name</th>
-            <th class="py-3 px-4 text-left">Phone</th>
-            <th class="py-3 px-4 text-left">Address</th>
-            <th class="py-3 px-12 text-left">Email</th>
-            <th class="py-3 px-4 text-left">Status</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.users.profile') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.users.name') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.users.phone') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.users.address') }}</th>
+            <th class="py-3 px-12 text-left">{{ $t('adminDashboard.users.email') }}</th>
+            <th class="py-3 px-4 text-left">{{ $t('adminDashboard.users.status') }}</th>
             <th class="py-3 px-4 text-left">
               <button @click="toggleSort('createdAt')" class="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded">
-                Created
+                {{ $t('adminDashboard.users.created') }}
                 <svg v-if="sortKey === 'createdAt'" :class="['w-4 h-4 transition-transform', sortOrder === 'asc' ? 'rotate-180' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                 </svg>
               </button>
             </th>
-            <th class="py-3 px-8 text-left">Actions</th>
+            <th class="py-3 px-8 text-left">{{ $t('adminDashboard.users.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -69,7 +69,7 @@
                
               </div>
             </td>
-            <td class="py-3 px-6">{{ client.name || "No name" }}</td>
+            <td class="py-3 px-6">{{ client.name || $t('adminDashboard.users.noName') }}</td>
             <td class="py-3 px-6">{{ client.phone || "-" }}</td>
             <td class="py-3 px-8">{{ formatClientAddress(client) }}</td>
             <td class="py-3 px-2">{{ client.email }}</td>
@@ -84,13 +84,7 @@
                     : 'bg-green-100 text-green-600',
                 ]"
               >
-                {{
-                  client.status === "banned"
-                    ? "Suspended"
-                    : client.status === "pending"
-                    ? "Pending"
-                    : "Active"
-                }}
+                {{ $t(`adminDashboard.users.${client.status || 'active'}`) }}
               </span>
             </td>
             <td class="py-3 px-4">
@@ -104,6 +98,7 @@
               <button
                 @click="openModal('view', client)"
                 class="p-2 text-blue-500 hover:bg-blue-100 rounded-lg"
+                :title="$t('adminDashboard.users.view')"
               >
                 <i class="bi bi-eye"></i>
               </button>
@@ -112,6 +107,7 @@
                 v-if="client.status !== 'banned'"
                 @click="openModal('ban', client)"
                 class="p-2 text-red-500 hover:bg-orange-100 rounded-lg"
+                :title="$t('adminDashboard.users.suspend')"
               >
                 <i class="bi bi-slash-circle"></i>
               </button>
@@ -119,6 +115,7 @@
                 v-else
                 @click="openModal('reactivate', client)"
                 class="p-2 text-green-500 hover:bg-green-100 rounded-lg"
+                :title="$t('adminDashboard.users.reactivate')"
               >
                 <i class="bi bi-check-circle"></i>
               </button>
@@ -126,6 +123,7 @@
               <button
                 @click="openModal('delete', client)"
                 class="p-2 text-red-500 hover:bg-red-100 rounded-lg"
+                :title="$t('adminDashboard.users.delete')"
               >
                 <i class="bi bi-trash"></i>
               </button>
@@ -138,7 +136,7 @@
         v-if="filteredClients.length === 0"
         class="text-center py-6 text-gray-500 dark:text-gray-300"
       >
-        No clients found.
+        {{ $t('adminDashboard.users.noClientsYet') }}
       </div>
     </div>
 
@@ -152,23 +150,22 @@
         v-if="modalType === 'delete'"
         class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
       >
-        <h3 class="text-xl font-semibold text-red-600 mb-4">Delete User</h3>
+        <h3 class="text-xl font-semibold text-red-600 mb-4">{{ $t('adminDashboard.users.deleteUser') }}</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
-          Are you sure you want to delete
-          "<strong>{{ selectedClient?.name }}</strong>"?
+          {{ $t('adminDashboard.users.confirmDelete') }} "<strong>{{ selectedClient?.name }}</strong>"?
         </p>
         <div class="flex justify-center space-x-4">
           <button
             @click="confirmAction"
             class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
-            Delete
+            {{ $t('adminDashboard.users.delete') }}
           </button>
           <button
             @click="closeModal"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            Cancel
+            {{ $t('adminDashboard.users.cancel') }}
           </button>
         </div>
       </div>
@@ -178,22 +175,22 @@
         v-else-if="modalType === 'ban'"
         class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
       >
-        <h3 class="text-xl font-semibold text-red-600 mb-4">Suspend User</h3>
+        <h3 class="text-xl font-semibold text-red-600 mb-4">{{ $t('adminDashboard.users.suspendUser') }}</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
-          Suspend "<strong>{{ selectedClient?.name }}</strong>" temporarily?
+          {{ $t('adminDashboard.users.confirmSuspend') }} "<strong>{{ selectedClient?.name }}</strong>"?
         </p>
         <div class="flex justify-center space-x-4">
           <button
             @click="confirmAction"
             class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
-            Suspend
+            {{ $t('adminDashboard.users.suspend') }}
           </button>
           <button
             @click="closeModal"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            Cancel
+            {{ $t('adminDashboard.users.cancel') }}
           </button>
         </div>
       </div>
@@ -204,23 +201,23 @@
         class="bg-white dark:bg-[#111827] dark:text-gray-100 rounded-2xl shadow-xl w-full max-w-sm p-6 text-center animate-fadeIn"
       >
         <h3 class="text-xl font-semibold text-green-600 mb-4">
-          Reactivate User
+          {{ $t('adminDashboard.users.reactivateUser') }}
         </h3>
         <p class="text-gray-600 dark:text-gray-300 mb-6">
-          Reactivate "<strong>{{ selectedClient?.name }}</strong>"?
+          {{ $t('adminDashboard.users.confirmReactivate') }} "<strong>{{ selectedClient?.name }}</strong>"?
         </p>
         <div class="flex justify-center space-x-4">
           <button
             @click="confirmAction"
             class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
           >
-            Reactivate
+            {{ $t('adminDashboard.users.reactivate') }}
           </button>
           <button
             @click="closeModal"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            Cancel
+            {{ $t('adminDashboard.users.cancel') }}
           </button>
         </div>
       </div>
@@ -235,7 +232,7 @@
             <img :src="getUserImage(selectedClient) || defaultAvatar" alt="avatar" class="h-full w-full object-cover" @error="onUserImgError" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-2xl font-semibold text-[#5984C6] truncate">{{ selectedClient?.name || 'Client' }}</h3>
+            <h3 class="text-2xl font-semibold text-[#5984C6] truncate">{{ selectedClient?.name || $t('adminDashboard.users.client') }}</h3>
             <div class="mt-1">
               <span
                 :class="[
@@ -247,7 +244,7 @@
                     : 'bg-green-100 text-green-600',
                 ]"
               >
-                {{ selectedClient?.status || 'active' }}
+                {{ $t(`adminDashboard.users.${selectedClient?.status || 'active'}`) }}
               </span>
             </div>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate"><i class="bi bi-geo-alt-fill mr-1"></i>{{ formatClientAddress(selectedClient) }}</p>
@@ -256,19 +253,19 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300 text-sm">
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Email</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.users.email') }}</p>
             <p class="font-medium break-all">{{ selectedClient?.email || '-' }}</p>
           </div>
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Phone</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.users.phone') }}</p>
             <p class="font-medium">{{ selectedClient?.phone || '-' }}</p>
           </div>
           <div class="sm:col-span-2">
-            <p class="text-gray-500 dark:text-gray-400">Address</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.users.address') }}</p>
             <p class="font-medium wrap-break-word">{{ formatClientAddress(selectedClient) }}</p>
           </div>
           <div>
-            <p class="text-gray-500 dark:text-gray-400">Created</p>
+            <p class="text-gray-500 dark:text-gray-400">{{ $t('adminDashboard.users.created') }}</p>
             <p class="font-medium">{{ selectedClient?.createdAt ? new Date(selectedClient.createdAt).toLocaleString() : '-' }}</p>
           </div>
         </div>
@@ -278,7 +275,7 @@
             @click="closeModal"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
           >
-            Close
+            {{ $t('adminDashboard.users.close') }}
           </button>
         </div>
       </div>

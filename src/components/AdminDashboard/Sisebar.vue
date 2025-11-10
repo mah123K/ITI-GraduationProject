@@ -10,7 +10,7 @@
             alt="Logo"
             class="h-16 mb-3"
           />
-          <h2 class="text-lg font-semibold tracking-wide">Tashtibaty Admin</h2>
+          <h2 class="text-lg font-semibold tracking-wide">{{ $t('adminDashboard.sidebar.title') }}</h2>
           <div class="w-full h-px bg-gray-400 mt-5"></div>
         </div>
 
@@ -20,7 +20,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard' }"
           >
-            <i class="bi bi-house"></i><span>Dashboard</span>
+            <i class="bi bi-house"></i><span>{{ $t('adminDashboard.sidebar.dashboard') }}</span>
           </router-link>
 
           <router-link
@@ -28,7 +28,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/users' }"
           >
-            <i class="bi bi-people"></i><span>Users</span>
+            <i class="bi bi-people"></i><span>{{ $t('adminDashboard.sidebar.users') }}</span>
           </router-link>
 
           <router-link
@@ -36,7 +36,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/services' }"
           >
-            <i class="bi bi-briefcase"></i><span>Services</span>
+            <i class="bi bi-briefcase"></i><span>{{ $t('adminDashboard.sidebar.services') }}</span>
           </router-link>
 
           <router-link
@@ -44,7 +44,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/providers' }"
           >
-            <i class="bi bi-building"></i><span>Providers</span>
+            <i class="bi bi-building"></i><span>{{ $t('adminDashboard.sidebar.providers') }}</span>
           </router-link>
 
           <router-link
@@ -52,7 +52,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/orders' }"
           >
-            <i class="bi bi-receipt"></i><span>Orders</span>
+            <i class="bi bi-receipt"></i><span>{{ $t('adminDashboard.sidebar.orders') }}</span>
           </router-link>
 
           <router-link
@@ -60,7 +60,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/payments' }"
           >
-            <i class="bi bi-credit-card"></i><span>Payments</span>
+            <i class="bi bi-credit-card"></i><span>{{ $t('adminDashboard.sidebar.payments') }}</span>
           </router-link>
 
           <router-link
@@ -68,7 +68,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/support' }"
           >
-            <i class="bi bi-question-circle"></i><span>Support</span>
+            <i class="bi bi-question-circle"></i><span>{{ $t('adminDashboard.sidebar.support') }}</span>
           </router-link>
 
           <!-- <router-link
@@ -85,7 +85,7 @@
             class="flex items-center space-x-2 p-2 rounded-md transition-colors duration-200"
             :class="{ 'bg-[#5984C6]': $route.path === '/dashboard/addoffer' }"
           >
-              <i class="bi bi-tags"></i><span>Offers</span>
+              <i class="bi bi-tags"></i><span>{{ $t('adminDashboard.sidebar.offers') }}</span>
           </router-link>
         </nav>
       </div>
@@ -97,24 +97,56 @@
       class="flex items-center justify-center space-x-1 text-white font-medium text-sm py-1 px-3 rounded-xl transition-all duration-500 border border-white hover:bg-white hover:text-[#133B5D]"
     >
       <i class="bi bi-box-arrow-right text-lg"></i>
-      <span>Logout</span>
+      <span>{{ $t('adminDashboard.sidebar.logout') }}</span>
     </button>
   </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col">
-      <!-- Header -->
-      <header class="flex justify-end items-center bg-white dark:bg-[#111827] shadow-sm p-4 space-x-4 relative">
-        <button 
-          @click="toggleDarkMode"
-          class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
-          :title="isDark ? 'Light mode' : 'Dark mode'"
-        >
-          <i class="fa-solid fa-sun absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500 rotate-0 scale-100 dark:rotate-90 dark:scale-0 group-hover:text-[#5984C6] dark:group-hover:text-yellow-300"></i>
-          <i class="fa-solid fa-moon absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-100 transition-all duration-500 -rotate-90 scale-0 dark:rotate-0 dark:scale-100 group-hover:text-[#5984C6] dark:group-hover:text-white"></i>
-          <span class="sr-only">Toggle theme</span>
-        </button>
+   <div class="flex-1 flex flex-col">
+    <header class="flex justify-end items-center bg-white dark:bg-[#111827] shadow-sm p-4 space-x-4 relative">
+      <!-- زر تغيير اللغة مع انيميشن -->
+      <button
+        ref="langButton"
+        @click="toggleLanguage"
+        class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200 language-switch-button"
+        :title="$t('adminDashboard.sidebar.switchToEnglish')"
+      >
+        <i
+          class="fa-solid fa-language absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-600 transition-all duration-500  dark:text-gray-100  group-hover:text-[#5984C6] dark:group-hover:text-white language-icon"
+        ></i>
+        <span class="sr-only">Toggle language</span>
+      </button>
+
+      <!-- زر الوضع الداكن / الفاتح -->
+      <button
+        @click="toggleDarkMode"
+        class="group relative h-9 w-9 rounded-full border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:border-[#5984C6] dark:hover:border-[#5984C6] transition-colors duration-200"
+        :title="isDark ? $t('adminDashboard.sidebar.lightMode') : $t('adminDashboard.sidebar.darkMode')"
+      >
+       
+  <!-- SVG شمس تظهر في الوضع الفاتح -->
+  <svg
+    id="sunIcon"
+    xmlns="http://www.w3.org/2000/svg"
+    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 transition-all duration-500"
+    :class="{
+      'rotate-0 scale-100 text-yellow-500 group-hover:text-yellow-600': !isDark,
+      'rotate-90 scale-0 text-gray-600 group-hover:text-yellow-400': isDark
+    }"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M12 3v1m0 16v1m8.66-12.34l-.7.7M5.05 18.95l-.7.7M21 12h1M2 12H1m16.95 6.95l.7.7M5.05 5.05l.7.7" />
+  </svg>
+
+        <i
+          class="fa-solid fa-moon absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-100 transition-all duration-500 -rotate-90 scale-0 dark:rotate-0 dark:scale-100 group-hover:text-[#5984C6] dark:group-hover:text-white"
+        ></i>
+        <span class="sr-only">Toggle theme</span>
+      </button>
+
 
         <div
           @click.stop="toggleUserMenu"
@@ -131,12 +163,15 @@
         </div>
 
 
-        <!-- 🔽 Profile Dropdown -->
+        <!--  Profile Dropdown -->
         <transition name="fade-slide">
           <div
             v-if="isUserMenuOpen"
             ref="dropdown"
-            class="absolute top-16 right-4 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50"
+            :class="[
+              'absolute top-16 bg-white dark:bg-[#1f2937] w-60 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50',
+              $i18n.locale === 'ar' ? 'left-4' : 'right-4'
+            ]"
           >
             <div class="flex flex-col items-center py-4 border-b border-gray-200">
               <div
@@ -159,7 +194,7 @@
             <div class="flex flex-col py-2">
             <div @click="goToProfile" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
   <i class="fa-solid fa-user-gear text-[#5984C6]"></i>
-  <span>Profile Settings</span>
+  <span>{{ $t('adminDashboard.sidebar.profileSettings') }}</span>
 </div>
 
 
@@ -168,7 +203,7 @@
                 class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-repeat text-[#5984C6]"></i>
-                <span>Switch Account</span>
+                <span>{{ $t('adminDashboard.sidebar.switchAccount') }}</span>
               </div>
 
               <div
@@ -176,7 +211,7 @@
                 class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
               >
                 <i class="fa-solid fa-arrow-right-from-bracket text-[#5984C6]"></i>
-                <span>Logout</span>
+                <span>{{ $t('adminDashboard.sidebar.logout') }}</span>
               </div>
             </div>
           </div>
@@ -206,6 +241,7 @@ export default {
     const password = ref('')
     const isUserMenuOpen = ref(false)
     const dropdown = ref(null)
+    const langButton = ref(null)
     const userEmail = ref('')
     const userName = ref('')
     const userPhoto = ref('')
@@ -423,6 +459,22 @@ export default {
       }
     }
 
+    const toggleLanguage = () => {
+      // Add rotation animation
+      if (langButton.value) {
+        langButton.value.classList.add('rotate-animation');
+        setTimeout(() => {
+          langButton.value.classList.remove('rotate-animation');
+        }, 500); // Match animation duration
+      }
+      const currentLang = localStorage.getItem('lang') || 'ar';
+      const nextLang = currentLang === 'ar' ? 'en' : 'ar';
+      localStorage.setItem('lang', nextLang);
+      setTimeout(() => {
+        window.location.reload();
+      }, 300); // Delay reload to show animation
+    }
+
     // Validate photo URL
     const validatePhotoURL = (url) => {
       return url && url !== 'null' && !url.startsWith('undefined');
@@ -484,7 +536,9 @@ export default {
       userPhoto,
       handleImageError,
       isDark,
-      toggleDarkMode
+      toggleDarkMode,
+      toggleLanguage,
+      langButton
     }
   },
 }
@@ -500,4 +554,23 @@ export default {
   opacity: 0;
   transform: translateY(-10px);
 }
+
+/* Language switch animation */
+.language-switch-button {
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotate-animation {
+  animation: rotate 0.5s ease-in-out;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 </style>
