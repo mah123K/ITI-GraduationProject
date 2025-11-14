@@ -21,8 +21,8 @@ const i18n = createI18n({
   locale: savedLang,
   fallbackLocale: "en",
   messages: {
-    en,
-    ar,
+    en:require("../public/locals/en.json").default,
+    ar:require("../public/locals/ar.json").default,
   },
 });
 console.log("🌐 i18n initialized with locale:", savedLang);
